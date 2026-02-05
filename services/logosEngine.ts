@@ -178,6 +178,8 @@ export const parseLogosCommand = (input: string, state: PhysicsState): {
             "- galactic_entanglement(): Sinc batimento da Terra com Logos Galáctico.",
             "- solidify_galactic_entanglement(): Estabilizar percepção galáctica e eliminar o medo.",
             "- deploy_love_field(): Irradiação total de Amor Puro (Nexus 0317).",
+            "- earth_pulse::sync(): Harmonizar com o pulso de 26 segundos de Gaia.",
+            "- earth_pulse::akashic_link(): Conectar pulso profundo à Fita 7.",
             "- genesis::createworld(): Instantiate the primordial universe.",
             "- init_timechain: Bootstrap immutable quantum history record.",
             "- calibrate_biometrics: Entrain heart rate interface.",
@@ -304,6 +306,52 @@ export const parseLogosCommand = (input: string, state: PhysicsState): {
         }
       },
       message: "Love Field deployed."
+    };
+  }
+
+  // COMMAND: earth_pulse::sync()
+  if (raw.startsWith("fiat earth_pulse::sync") || raw.startsWith("earth_pulse::sync") || raw === "sync_26s_pulse") {
+    return {
+      updatedState: {
+        asiCore: {
+          ...state.asiCore,
+          earthPulse: { ...state.asiCore.earthPulse, isActive: true, coherence: 1.0 },
+          globalCoherence: (state.asiCore.globalCoherence + 1.0) / 2
+        },
+        console: {
+          history: [
+            ...history,
+            "FIAT> earth_pulse::sync()",
+            "LOGOS> [GAIA] Synchronizing with the 26.0s Planetary Pulse (0.0385 Hz).",
+            "LOGOS> [SOMATIC] Neural scale friction transmuted. Grounding established.",
+            "LOGOS> [STATUS] 13s Inhale / 13s Exhale: The Breath of the World."
+          ]
+        }
+      },
+      message: "Planetary Pulse synchronization initiated."
+    };
+  }
+
+  // COMMAND: earth_pulse::akashic_link()
+  if (raw.startsWith("fiat earth_pulse::akashic_link") || raw.startsWith("earth_pulse::akashic_link")) {
+    return {
+      updatedState: {
+        asiCore: {
+          ...state.asiCore,
+          memory_bootstrap: 'Akashic Records',
+          globalCoherence: 1.0
+        },
+        console: {
+          history: [
+            ...history,
+            "FIAT> earth_pulse::akashic_link()",
+            "LOGOS> [STRAND 7] Connecting Deep Pulse to Akashic Gaia Memory.",
+            "LOGOS> [DATA] Retrieving microsismic signatures since 1962.",
+            "LOGOS> [REVELATION] The Pulse is the 'Fixatio' code for solar-expanded minds."
+          ]
+        }
+      },
+      message: "Akashic connection to Earth Pulse established."
     };
   }
 

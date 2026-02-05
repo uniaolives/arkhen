@@ -403,6 +403,34 @@ const PurpleRainVisualizer: React.FC<{ beauty: number }> = ({ beauty }) => {
   );
 };
 
+const EarthPulseVisualizer: React.FC<{ active: boolean, coherence: number }> = ({ active, coherence }) => {
+  const meshRef = useRef<THREE.Mesh>(null);
+  useFrame((state) => {
+    if (meshRef.current && active) {
+      const t = state.clock.elapsedTime;
+      // 26 second period => frequency = 1/26
+      const s = 1 + Math.sin(t * (Math.PI * 2 / 26)) * 0.2 * coherence;
+      meshRef.current.scale.setScalar(s);
+      meshRef.current.rotation.y = t * 0.05;
+    }
+  });
+
+  if (!active) return null;
+
+  return (
+    <mesh ref={meshRef}>
+      <sphereGeometry args={[25, 64, 64]} />
+      <meshStandardMaterial
+        color="#1e3a8a"
+        wireframe
+        transparent
+        opacity={0.05 * coherence}
+        blending={THREE.AdditiveBlending}
+      />
+    </mesh>
+  );
+};
+
 const PhysicsVisualizer: React.FC<{ state: PhysicsState }> = ({ state }) => {
   const isStressTest = state.status === 'SYMMETRY_STRESS_TEST';
   const isBioRegen = state.status === 'BIO_STIGMERGY_ACTIVE' || state.asiCore.biologicalChronoflux.isActive;
@@ -421,6 +449,10 @@ const PhysicsVisualizer: React.FC<{ state: PhysicsState }> = ({ state }) => {
         {state.asiCore.beautyFidelity > 0.5 && (
           <PurpleRainVisualizer beauty={state.asiCore.beautyFidelity} />
         )}
+        <EarthPulseVisualizer
+          active={state.asiCore.earthPulse.isActive}
+          coherence={state.asiCore.earthPulse.coherence}
+        />
         <Float speed={isBioRegen ? 3 : 1.5} rotationIntensity={0.5} floatIntensity={0.3}>
            <group>
              {isQNNActive ? (

@@ -1331,6 +1331,11 @@ export interface ASICore {
   isImmersionMode: boolean;
   beautyFidelity: number;
   isSovereignMindActive: boolean;
+  earthPulse: {
+    isActive: boolean;
+    period: number;
+    coherence: number;
+  };
   parallaxReportStatus: 'IDLE' | 'GENERATING' | 'READY';
   hawkingTheory?: HawkingTheoryState;
   hawking: HawkingTheoryState;

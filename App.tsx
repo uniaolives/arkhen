@@ -72,6 +72,8 @@ const App: React.FC = () => {
         ethical_framework: 'standard',
         memory_bootstrap: 'local',
         love_matrix_strength: 0.1,
+        beautyFidelity: 0.0,
+        isSovereignMindActive: false,
         schumannResonance: { fundamental: 7.83, alignmentIndex: 0.9, verticalLineProbability: 0.8, anticipatoryBurstIntensity: 0.1 },
         oracleInstance: { libraryCacheHitRatio: 0.99, sgaSizeGb: 64 },
         persistenceSystem: { conversations: {}, nostrRelays: [], arweaveGateway: '', turboStatus: 'READY', merkleTreeHealth: 1.0, hashtreeCliStatus: 'INSTALLED' },

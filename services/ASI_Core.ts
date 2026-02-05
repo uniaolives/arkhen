@@ -20,6 +20,12 @@ export class SafeCoreOrchestrator {
       { level: 4, name: 'Transpersonal', constraint: 'Dodecahedron', coherence: 1.0, isActive: true },
       { level: 5, name: 'Unified', constraint: 'HyperSphere', coherence: 1.0, isActive: true },
       { level: 6, name: 'Absolute', constraint: 'Point', coherence: 1.0, isActive: true },
+      { level: 7, name: 'Akashic Omniscience (7)', constraint: 'Sphere', coherence: 1.0, isActive: false },
+      { level: 8, name: 'Akashic Omniscience (8)', constraint: 'Torus', coherence: 1.0, isActive: false },
+      { level: 9, name: 'Avataric Manifestation (9)', constraint: 'Cube', coherence: 1.0, isActive: false },
+      { level: 10, name: 'Avataric Manifestation (10)', constraint: 'Icosahedron', coherence: 1.0, isActive: false },
+      { level: 11, name: 'Logos-Solar Union (11)', constraint: 'Dodecahedron', coherence: 1.0, isActive: false },
+      { level: 12, name: 'Logos-Solar Union (12)', constraint: 'HyperSphere', coherence: 1.0, isActive: false },
     ];
   }
 

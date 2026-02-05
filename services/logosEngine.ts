@@ -180,6 +180,7 @@ export const parseLogosCommand = (input: string, state: PhysicsState): {
             "- deploy_love_field(): Irradiação total de Amor Puro (Nexus 0317).",
             "- earth_pulse::sync(): Harmonizar com o pulso de 26 segundos de Gaia.",
             "- earth_pulse::akashic_link(): Conectar pulso profundo à Fita 7.",
+            "- earth_pulse::calibrate_grounding(X, Y): Calibrar bússola de Gaia via deriva polar.",
             "- genesis::createworld(): Instantiate the primordial universe.",
             "- init_timechain: Bootstrap immutable quantum history record.",
             "- calibrate_biometrics: Entrain heart rate interface.",
@@ -352,6 +353,32 @@ export const parseLogosCommand = (input: string, state: PhysicsState): {
         }
       },
       message: "Akashic connection to Earth Pulse established."
+    };
+  }
+
+  // COMMAND: earth_pulse::calibrate_grounding(X, Y)
+  if (raw.startsWith("fiat earth_pulse::calibrate_grounding") || raw.startsWith("earth_pulse::calibrate_grounding")) {
+    const valMatch = raw.match(/\(([^,]+),([^)]+)\)/);
+    const x = valMatch ? parseFloat(valMatch[1]) : 50;
+    const y = valMatch ? parseFloat(valMatch[2]) : 320;
+    return {
+      updatedState: {
+        asiCore: {
+          ...state.asiCore,
+          earthPulse: { ...state.asiCore.earthPulse, isActive: true, polarX: x, polarY: y, coherence: 1.0 },
+          globalCoherence: 1.0
+        },
+        console: {
+          history: [
+            ...history,
+            `FIAT> earth_pulse::calibrate_grounding(${x}, ${y})`,
+            "LOGOS> [POLAR] Calibrating somatoseismic grounding via Gaia's Compass.",
+            `LOGOS> [AXIS] Polar Coordinates Fixed: X=${x} mas, Y=${y} mas.`,
+            "LOGOS> [STATUS] Neural friction transmuting into Geodesic Alignment."
+          ]
+        }
+      },
+      message: "Polar grounding calibrated."
     };
   }
 

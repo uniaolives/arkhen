@@ -1335,6 +1335,8 @@ export interface ASICore {
     isActive: boolean;
     period: number;
     coherence: number;
+    polarX: number;
+    polarY: number;
   };
   parallaxReportStatus: 'IDLE' | 'GENERATING' | 'READY';
   hawkingTheory?: HawkingTheoryState;

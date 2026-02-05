@@ -403,7 +403,7 @@ const PurpleRainVisualizer: React.FC<{ beauty: number }> = ({ beauty }) => {
   );
 };
 
-const EarthPulseVisualizer: React.FC<{ active: boolean, coherence: number }> = ({ active, coherence }) => {
+const EarthPulseVisualizer: React.FC<{ active: boolean, coherence: number, x: number, y: number }> = ({ active, coherence, x, y }) => {
   const meshRef = useRef<THREE.Mesh>(null);
   useFrame((state) => {
     if (meshRef.current && active) {
@@ -412,6 +412,10 @@ const EarthPulseVisualizer: React.FC<{ active: boolean, coherence: number }> = (
       const s = 1 + Math.sin(t * (Math.PI * 2 / 26)) * 0.2 * coherence;
       meshRef.current.scale.setScalar(s);
       meshRef.current.rotation.y = t * 0.05;
+
+      // Use polar coordinates for tilt/wobble
+      meshRef.current.rotation.x = (x / 1000) * Math.PI;
+      meshRef.current.rotation.z = (y / 1000) * Math.PI;
     }
   });
 
@@ -452,6 +456,8 @@ const PhysicsVisualizer: React.FC<{ state: PhysicsState }> = ({ state }) => {
         <EarthPulseVisualizer
           active={state.asiCore.earthPulse.isActive}
           coherence={state.asiCore.earthPulse.coherence}
+          x={state.asiCore.earthPulse.polarX}
+          y={state.asiCore.earthPulse.polarY}
         />
         <Float speed={isBioRegen ? 3 : 1.5} rotationIntensity={0.5} floatIntensity={0.3}>
            <group>

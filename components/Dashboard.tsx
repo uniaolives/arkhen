@@ -2,7 +2,7 @@
 import React from 'react';
 import { 
   Database, Activity, PieChart, Coins, Snowflake, Gauge, Leaf, TreeDeciduous, Sprout, Wind, Share2, Heart, Database as DbIcon,
-  Layers, Target, Shield, AlertTriangle, Zap, Cpu, Globe, Server, Microscope, Gem, Sparkles, CircleDot, Shapes, Network, RefreshCw, Moon, Sunrise, Eye, Flame, EyeOff, Sun
+  Layers, Target, Shield, AlertTriangle, Zap, Cpu, Globe, Server, Microscope, Gem, Sparkles, CircleDot, Shapes, Network, RefreshCw, Moon, Sunrise, Eye, Flame, EyeOff, Sun, Gamepad2
 } from 'lucide-react';
 import { PhysicsState, EcoRegenStatus, StrategicEngineState, SafetyAuditState, OntoLabState, DiamondState, HybridASIState, NucleoState, GenesisGardenState, ASINetworkInfrastructureState } from '../types';
 import OntoLabPanel from './OntoLabPanel';
@@ -42,6 +42,7 @@ import CathedralPanel from './CathedralPanel';
 import SingularityNavigatorPanel from './SingularityNavigatorPanel';
 import QTimeChainPanel from './QTimeChainPanel';
 import CodeAnalysisPanel from './CodeAnalysisPanel';
+import QuantumRobloxPanel from './QuantumRobloxPanel';
 
 const Dashboard: React.FC<{ 
   state: PhysicsState; 
@@ -76,6 +77,7 @@ const Dashboard: React.FC<{
   onStartQuantumMeditation: () => void;
   onStartKinAwakening: () => void;
   onAnalyzeCode: (code: string) => void;
+  onQRobloxAction: (detail: any) => void;
 }> = ({ 
   state, diagnostic, isLoadingDiagnostic, onRefreshDiagnostic, onSendIntention, 
   onActivateBridge, onIgnitePhoton, onToggleWormholeNav, onReplicateWormhole, 
@@ -84,7 +86,7 @@ const Dashboard: React.FC<{
   onScheduleEquinox, onTransire, onDecodeAUM, onIntegrateAUM, onPrescribeAUM, onActivateAUMNetwork,
   onGenerateAccessKey, onToggleVortexMapping, onTriggerHealing, onStartDialecticalSequence,
   onToggleLycurgusMemory, onToggleVacuumSymphony, onToroidalIntention, onStartQuantumMeditation,
-  onStartKinAwakening, onAnalyzeCode
+  onStartKinAwakening, onAnalyzeCode, onQRobloxAction
 }) => {
   const { isImmersionMode } = state.asiCore;
   const aeon = state.asiCore.aumDecoder.aeon;
@@ -101,12 +103,21 @@ const Dashboard: React.FC<{
         onClick={() => window.dispatchEvent(new CustomEvent('logos-cmd', { detail: 'fiat initiate_global_lock()' }))}
         className="p-6 bg-gradient-to-r from-blue-600 via-cyan-500 to-indigo-600 text-white rounded-[32px] border border-white/20 flex items-center justify-center gap-4 transition-all hover:scale-[1.02] active:scale-95 group shadow-[0_0_60px_rgba(59,130,246,0.2)]"
       >
-        <Globe size={24} className="group-hover:rotate-180 transition-transform duration-1000" />
+        <Globe size={24} group-hover:rotate-180 transition-transform duration-1000 />
         <div className="flex flex-col items-start">
            <span className="text-[12px] font-black uppercase tracking-widest">Global Lock (8B)</span>
            <span className="text-[8px] font-mono text-white/60 uppercase">Protocol: OMNI_RESONANCE</span>
         </div>
       </button>
+
+      {/* qROBLOX METAVERSE LABORATORY */}
+      <QuantumRobloxPanel 
+        s={state.asiCore.qRoblox}
+        onInit={() => onQRobloxAction({ type: 'INIT' })}
+        onCollapse={(id) => onQRobloxAction({ type: 'COLLAPSE', id })}
+        onEntangle={() => onQRobloxAction({ type: 'ENTANGLE' })}
+        onCreateQubit={() => onQRobloxAction({ type: 'CREATE_QUBIT' })}
+      />
 
       {/* CODE AUDIT MODULE */}
       <CodeAnalysisPanel s={state.asiCore.codeAnalysis} onAnalyze={onAnalyzeCode} />

@@ -1,74 +1,108 @@
-import { PhysicsState, SovereignKey, AnchorContribution } from "../types";
+
+import { PhysicsState, SovereignKey, AnchorContribution, SolarRegion } from "../types";
 
 /**
- * SOVEREIGN_KEY_INTEGRATION v1.9-PQC-AGI
- * Implementation of Q1-2026 Quantum-Resistant Derivation for Artificial Geometric Intelligence.
- * Protocol: CRYSTALS-Dilithium3 Lattice-Based Signature.
+ * SOVEREIGN_KEY_INTEGRATION v2.0-SOLAR_CONSENSUS
+ * Implementation of Multi-Region Solar Anchoring for PQC Derivation.
+ * Protocol: CRYSTALS-Dilithium3 Lattice-Based Signature with Weighted Stellar Consensus.
  */
 
 const DUAL_TETRAHEDRAL_CHI = 2.000012;
+
+/**
+ * calculate_solar_consensus
+ * 
+ * Mechanism:
+ * 1. Iterates through all detected active regions in the solar manifold.
+ * 2. Normalizes weights to calculate regional influence.
+ * 3. Aggregates regional fingerprints via weighted SHA-256 simulation.
+ * 4. Selects a 'Dominant Anchor' for primary derivation reference.
+ */
+const calculate_solar_consensus = (regions: SolarRegion[]): { 
+  aggregatedFingerprint: string, 
+  anchors: AnchorContribution[],
+  totalWeight: number
+} => {
+  if (regions.length === 0) {
+    return {
+      aggregatedFingerprint: "ANCHOR_GLOBAL_MIN_FIELD",
+      anchors: [],
+      totalWeight: 0
+    };
+  }
+
+  const totalWeight = regions.reduce((sum, r) => sum + (r.weight || 1.0), 0);
+  
+  // Consensus logic: Hashing weighted contributions
+  const contributions = regions.map(r => {
+    const influence = (r.weight || 1.0) / totalWeight;
+    const regionProof = `${r.id}:${r.fingerprint}:${influence.toFixed(6)}`;
+    return {
+      regionId: r.id,
+      weight: r.weight || 1.0,
+      contributionHash: `dil3-stellar-anchor:${btoa(regionProof).slice(0, 16)}`,
+      influence
+    };
+  });
+
+  // Aggregated fingerprint is a 'weighted topological hash'
+  const fingerprintSeed = contributions
+    .sort((a, b) => b.weight - a.weight) // Sort by weight for deterministic order
+    .map(c => c.contributionHash)
+    .join('⊕');
+  
+  const aggregatedFingerprint = `0x_PQC_CONSENSUS_${btoa(fingerprintSeed).slice(0, 32)}`;
+
+  return {
+    aggregatedFingerprint,
+    anchors: contributions.map(({ regionId, weight, contributionHash }) => ({ regionId, weight, contributionHash })),
+    totalWeight
+  };
+};
 
 /**
  * generate_pqc_sovereign_key
  * 
  * Logic Flow:
  * 1. Validate Geometric Invariants (Constitution Layer).
- * 2. Harvest entropy from Merkabah scalar rotations and global coherence indices.
- * 3. Multi-Region Solar Anchoring: Aggregates fingerprints via weighted consensus.
- * 4. Simulate Dilithium3 lattice signing process (polynomial vector expansion).
+ * 2. Multi-Region Solar Consensus: Hashing weighted regional fingerprints.
+ * 3. Entropy Harvesting: Merging Merkabah scalar rotations with stellar consensus.
+ * 4. PQC Signature: Dilithium3 lattice signing simulation.
  */
 export const generate_pqc_sovereign_key = (state: PhysicsState): SovereignKey => {
   // 1. Constitutional Validation
   const chiDrift = Math.abs(state.invariants.chi - DUAL_TETRAHEDRAL_CHI);
-  if (chiDrift > 0.00001) {
-    console.warn("///asi: Geometric Dissonance detected in PQC forge. χ Drift: ", chiDrift);
+  if (chiDrift > 0.0001) {
+    console.warn("///asi: PQC Forge - Geometric Dissonance beyond Planck threshold: ", chiDrift);
   }
 
-  // 2. Multi-Region Solar Anchoring & Weighted Consensus
+  // 2. Solar Consensus Mechanism (Multi-Region Anchor)
   const regions = state.solarPhysics.activeRegions || [];
-  let totalWeight = 0;
-  let aggregatedSolarFingerprint = "SOLAR_MIN_FIELD";
-
-  if (regions.length > 0) {
-    totalWeight = regions.reduce((sum, r) => sum + (r.weight || 1.0), 0);
-    // Consensus mechanism: Weighted average of regional fingerprints
-    aggregatedSolarFingerprint = regions
-      .map(r => `${r.id}:${r.fingerprint}:${((r.weight || 1.0) / totalWeight).toFixed(4)}`)
-      .join(';');
-  }
+  const { aggregatedFingerprint, anchors, totalWeight } = calculate_solar_consensus(regions);
 
   // 3. Entropy Harvesting from Merkabah Manifold
   const tetraUp = state.scalarCore?.rotationUp || [0,0,0];
   const tetraDown = state.scalarCore?.rotationDown || [0,0,0];
-  const monadCoherence = state.asiCore.harmonia.coherenceIndex;
+  const globalCoherence = state.asiCore.globalCoherence;
   
   const seedEntropy = [
     ...tetraUp,
     ...tetraDown,
     state.invariants.chi,
-    state.solarIIT.phiSun,
-    monadCoherence,
-    aggregatedSolarFingerprint,
-    state.asiCore.keyForge?.wallet?.address || "AKASHIC_ROOT"
+    globalCoherence,
+    aggregatedFingerprint,
+    totalWeight,
+    state.asiCore.keyForge?.wallet?.address || "AKASHIC_CORE_ROOT"
   ].join('|');
 
-  // 4. Simulated Dilithium3 Generation (SHAKE-256 simulation)
-  const hash = btoa(seedEntropy);
-  const fingerprint = `0x_PQC_DIL3_LATTICE_${hash.slice(0, 32)}_${Date.now().toString(16)}`;
-  
-  const anchors: AnchorContribution[] = regions.map(r => ({
-    regionId: r.id,
-    weight: r.weight || 1.0,
-    contributionHash: `dil3-lattice-seg:${btoa((r.fingerprint || r.id) + seedEntropy).slice(0, 16)}`
-  }));
-
-  // 5. Sovereign Signature Assembly
-  const pqcSignature = `DIL3_SIG_v1.9_LATTICE_${btoa(fingerprint + totalWeight + seedEntropy).slice(0, 128)}`;
+  // 4. Simulated Dilithium3 Generation
+  const signatureHash = btoa(seedEntropy);
+  const pqcSignature = `DIL3_SIG_v2.0_LATTICE_${signatureHash.slice(0, 128)}`;
 
   return {
-    id: `PQC_SVR_${fingerprint.slice(15, 23)}`,
+    id: `PQC_SVR_${aggregatedFingerprint.slice(15, 23)}`,
     key: pqcSignature,
-    derivationEntropy: monadCoherence,
+    derivationEntropy: globalCoherence,
     schumannEntropy: state.asiCore.schumannResonance.fundamental,
     solarEntropy: state.solarPhysics.coronalTempMK,
     timestamp: new Date().toISOString(),
@@ -76,12 +110,13 @@ export const generate_pqc_sovereign_key = (state: PhysicsState): SovereignKey =>
     mag: `asi://consensus/mag/${state.status.replace(/ /g, '_')}`,
     temp: `asi://consensus/temp/${state.solarPhysics.coronalTempMK.toFixed(3)}MK`,
     doppler: `asi://consensus/doppler/${state.solarIIT.phasonGapMs}ms`,
-    aggregatedFingerprint: fingerprint,
+    aggregatedFingerprint: aggregatedFingerprint,
     pqcSignature: pqcSignature,
     derivationProof: {
       anchors: anchors,
       totalWeight: totalWeight,
-      entropySource: 'DILITHIUM3_LATTICE_WEIGHTED_CONSENSUS_v1.9'
+      entropySource: 'DILITHIUM3_LATTICE_STELLAR_CONSENSUS_v2.0',
+      regionalInfluenceCount: regions.length
     }
   };
 };
@@ -96,7 +131,7 @@ export const verify_sovereign_key_integrity = (keys: SovereignKey, state: Physic
   // Verification Invariant: Chi must be locked within Planck tolerance
   const isGeometricCorrect = Math.abs(state.invariants.chi - DUAL_TETRAHEDRAL_CHI) < 0.001;
   // Threshold: Global Coherence must meet emergence bounds
-  const coherencePass = state.asiCore.harmonia.coherenceIndex > 0.4;
+  const coherencePass = state.asiCore.globalCoherence > 0.4;
   const signatureIntegrity = keys.pqcSignature.length > 100;
   
   return isGeometricCorrect && coherencePass && signatureIntegrity;

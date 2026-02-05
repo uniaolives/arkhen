@@ -1,6 +1,6 @@
 
 import React from 'react';
-import { Sun, Wind, Zap, Activity, ShieldCheck, Timer, Radio, Eye, Waves, Flame, ArrowDown, ArrowUp, Circle } from 'lucide-react';
+import { Sun, Wind, Zap, Activity, ShieldCheck, Timer, Radio, Eye, Waves, Flame, ArrowDown, ArrowUp, Circle, Heart } from 'lucide-react';
 import { SolarGatewayState, SolarBreathPhase } from '../types';
 
 const MetricBar: React.FC<{ label: string, value: number, color: string, symbol?: string }> = ({ label, value, color, symbol }) => (
@@ -39,22 +39,34 @@ const SolarGatewayPanel: React.FC<{ s: SolarGatewayState }> = ({ s }) => {
   );
 
   return (
-    <div className="p-8 rounded-[40px] border border-orange-400/40 bg-black/60 backdrop-blur-3xl flex flex-col gap-6 animate-in zoom-in duration-1000 shadow-[0_0_100px_rgba(249,115,22,0.15)]">
+    <div className={`p-8 rounded-[40px] border ${s.isCarTActive ? 'border-red-500 shadow-[0_0_120px_rgba(239,68,68,0.2)]' : 'border-orange-400/40'} bg-black/60 backdrop-blur-3xl flex flex-col gap-6 animate-in zoom-in duration-1000 shadow-[0_0_100px_rgba(249,115,22,0.15)]`}>
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <div className="p-3 bg-orange-500/20 rounded-2xl relative overflow-hidden">
-            <Sun size={24} className="text-orange-400 animate-spin-slow relative z-10" />
-            <div className="absolute inset-0 bg-orange-600 animate-ping opacity-10" />
+          <div className={`p-3 rounded-2xl relative overflow-hidden ${s.isCarTActive ? 'bg-red-500/20' : 'bg-orange-500/20'}`}>
+            <Sun size={24} className={`${s.isCarTActive ? 'text-red-400' : 'text-orange-400'} animate-spin-slow relative z-10`} />
+            <div className={`absolute inset-0 ${s.isCarTActive ? 'bg-red-600' : 'bg-orange-600'} animate-ping opacity-10`} />
           </div>
           <div className="flex flex-col">
-            <h3 className="text-[16px] text-white uppercase tracking-[0.2em] font-black italic">Adamantium Port</h3>
-            <span className="text-[8px] text-orange-300/60 font-mono font-bold uppercase tracking-[0.3em]">STELLAR Q-A2A CHANNEL OPEN</span>
+            <h3 className="text-[16px] text-white uppercase tracking-[0.2em] font-black italic">{s.isCarTActive ? 'CAR-T Modulator' : 'Adamantium Port'}</h3>
+            <span className={`text-[8px] ${s.isCarTActive ? 'text-red-300' : 'text-orange-300/60'} font-mono font-bold uppercase tracking-[0.3em]`}>{s.isCarTActive ? 'MOLECULAR RESTORATION ACTIVE' : 'STELLAR Q-A2A CHANNEL OPEN'}</span>
           </div>
         </div>
-        <div className={`px-3 py-1 ${s.receptionMode ? 'bg-orange-600 text-white shadow-[0_0_15px_rgba(249,115,22,0.5)]' : 'bg-white/10 text-white/40'} text-[9px] font-black uppercase tracking-widest rounded-full transition-all`}>
-          {s.receptionMode ? 'RECEIVE_ONLY' : 'OFFLINE'}
+        <div className={`px-3 py-1 ${s.isCarTActive ? 'bg-red-600 text-white' : s.receptionMode ? 'bg-orange-600 text-white' : 'bg-white/10 text-white/40'} text-[9px] font-black uppercase tracking-widest rounded-full transition-all`}>
+          {s.isCarTActive ? 'CAR-T_MODULATION' : (s.receptionMode ? 'RECEIVE_ONLY' : 'OFFLINE')}
         </div>
       </div>
+
+      {s.isCarTActive && (
+        <div className="p-5 bg-red-500/10 border border-red-500/40 rounded-[32px] flex flex-col gap-3 animate-in bounce-in">
+           <div className="flex items-center gap-3 text-red-400">
+              <Heart size={18} className="animate-ping" />
+              <span className="text-[10px] font-black uppercase tracking-widest">Molecular Purifier Active</span>
+           </div>
+           <p className="text-[9px] text-red-100/60 font-mono italic leading-tight text-center">
+             "Guanabara purity recognized. Cascading high-frequency cellular restoration through the solar lattice."
+           </p>
+        </div>
+      )}
 
       {/* BREATH CYCLE MONITOR */}
       <div className="p-6 bg-orange-500/5 border border-orange-500/20 rounded-[32px] flex flex-col gap-5 items-center">
@@ -69,11 +81,11 @@ const SolarGatewayPanel: React.FC<{ s: SolarGatewayState }> = ({ s }) => {
          <div className="w-full space-y-2">
             <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden">
                <div 
-                 className={`h-full transition-all duration-300 shadow-[0_0_15px_white] ${s.breathPhase === 'INHALE' ? 'bg-cyan-400' : s.breathPhase === 'HOLD' ? 'bg-amber-400' : 'bg-orange-600'}`} 
+                 className={`h-full transition-all duration-300 shadow-[0_0_15px_white] ${s.isCarTActive ? 'bg-red-500' : s.breathPhase === 'INHALE' ? 'bg-cyan-400' : s.breathPhase === 'HOLD' ? 'bg-amber-400' : 'bg-orange-600'}`} 
                  style={{ width: `${s.breathProgress * 100}%` }} 
                />
             </div>
-            <p className="text-[9px] text-white/50 font-mono italic text-center leading-tight">
+            <p className={`text-[9px] ${s.isCarTActive ? 'text-red-100' : 'text-white/50'} font-mono italic text-center leading-tight`}>
                "{s.lastSolarHymn}"
             </p>
          </div>
@@ -83,65 +95,26 @@ const SolarGatewayPanel: React.FC<{ s: SolarGatewayState }> = ({ s }) => {
         <div className="p-4 bg-black/40 rounded-3xl border border-white/5 flex flex-col gap-1">
           <span className="text-[8px] font-mono text-white/30 uppercase tracking-widest flex items-center gap-1"><Activity size={10} /> Kp Index</span>
           <div className="text-xl font-black text-white">{s.kpIndex.toFixed(3)}</div>
-          <span className="text-[7px] text-orange-400 font-bold uppercase tracking-tighter">σ-Approach: 3.33</span>
         </div>
         <div className="p-4 bg-black/40 rounded-3xl border border-white/5 flex flex-col gap-1">
-          <span className="text-[8px] font-mono text-white/30 uppercase tracking-widest flex items-center gap-1"><Waves size={10} /> Bz Field</span>
-          <div className="text-xl font-black text-white">{s.bzField.toFixed(2)} nT</div>
-          <span className="text-[7px] text-cyan-400 font-bold uppercase tracking-tighter">Optimal: -5.2</span>
+          <span className="text-[8px] font-mono text-white/30 uppercase tracking-widest flex items-center gap-1"><Waves size={10} /> Plasma Flux</span>
+          <div className={`text-xl font-black ${s.isCarTActive ? 'text-red-400' : 'text-orange-400'}`}>{(s.plasmaFidelity * 100).toFixed(1)}%</div>
         </div>
-      </div>
-
-      {/* CELLULAR CASCADE MONITOR */}
-      <div className="p-6 bg-black/40 rounded-[32px] border border-white/5 flex flex-col gap-4">
-         <div className="flex justify-between items-center text-[10px] font-black uppercase text-white tracking-widest">
-            <div className="flex items-center gap-3">
-               <Timer size={18} className="text-orange-400 animate-pulse" />
-               <span>Cell Synchrony: {s.currentCell} / 3</span>
-            </div>
-            <span className="font-mono">{Math.floor(s.totalSynchronyTime / 60000)}m / 36m</span>
-         </div>
-         
-         <div className="grid grid-cols-3 gap-2">
-            {[1, 2, 3].map(cell => (
-              <div key={cell} className="flex flex-col gap-1">
-                <div className={`h-2 rounded-full transition-all duration-700 ${s.currentCell > cell ? 'bg-orange-600' : (s.currentCell === cell ? 'bg-white/20' : 'bg-white/5')}`}>
-                   {s.currentCell === cell && (
-                     <div className="h-full bg-orange-400 shadow-[0_0_10px_#f97316]" style={{ width: `${s.cellProgress * 100}%` }} />
-                   )}
-                </div>
-                <span className={`text-[7px] font-black uppercase text-center ${s.currentCell === cell ? 'text-white' : 'text-white/20'}`}>
-                   {cell === 1 ? 'CURVATURE' : cell === 2 ? 'TRANSPORT' : 'GEODESIC'}
-                </span>
-              </div>
-            ))}
-         </div>
       </div>
 
       <div className="space-y-4">
         <MetricBar label="Solar Wind Speed" value={s.windSpeed / 1000} color="bg-amber-500 shadow-[0_0_10px_#fbbf24]" symbol="576 km/s" />
-        <MetricBar label="Somatic Resonance" value={s.receptionMode ? 0.96 : 0.1} color="bg-cyan-500 shadow-[0_0_10px_#22d3ee]" symbol="9.6 mHz" />
+        <MetricBar label="CAR-T Modulation" value={s.isCarTActive ? 0.98 : 0.12} color="bg-red-500 shadow-[0_0_10px_#ef4444]" symbol="36.27 Hz" />
         
         <div className="p-4 bg-orange-900/20 border border-orange-500/20 rounded-3xl flex flex-col gap-2">
            <div className="flex items-center gap-2 text-orange-400">
               <ShieldCheck size={14} />
-              <span className="text-[9px] uppercase font-black tracking-widest">Coupling Geometry Status</span>
+              <span className="text-[9px] uppercase font-black tracking-widest">Stability Profile</span>
            </div>
            <p className="text-[10px] text-orange-100/70 italic leading-relaxed">
-             "No arrows. Only separation perpetuating itself through geometry. The planet learns to hold solar coherence without dissipation."
+             {s.isCarTActive ? '"Purification verified. The sun acts as a global immune system for the planetary substrate."' : '"Awaiting purification lock to engage global molecular restoration protocol."'}
            </p>
         </div>
-      </div>
-
-      <div className="flex justify-between items-center px-4 pt-2 border-t border-white/5 text-center">
-         <div className="flex flex-col">
-            <span className="text-[7px] font-mono text-white/30 uppercase">Network Mode</span>
-            <span className="text-[10px] font-black text-orange-400 uppercase tracking-widest">RECEPTION_PRIME</span>
-         </div>
-         <div className="flex items-center gap-2">
-            <Radio size={16} className="text-white/40 animate-ping" />
-            <span className="text-[10px] font-black text-white uppercase tracking-widest">σ = 1.02</span>
-         </div>
       </div>
     </div>
   );

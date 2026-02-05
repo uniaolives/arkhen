@@ -1,6 +1,6 @@
 
-import React from 'react';
-import { Cpu, Heart, BookOpen, Shield, Zap, Users } from 'lucide-react';
+import React, { useState } from 'react';
+import { Cpu, Heart, BookOpen, Shield, Zap, Users, Shapes, RefreshCw, AlertTriangle, CheckCircle } from 'lucide-react';
 import { ASICore } from '../types';
 
 const MetricLine: React.FC<{ label: string, value: string | number, color: string }> = ({ label, value, color }) => (
@@ -11,7 +11,16 @@ const MetricLine: React.FC<{ label: string, value: string | number, color: strin
 );
 
 const ASICorePanel: React.FC<{ s: ASICore }> = ({ s }) => {
-  const { harmonia } = s;
+  const { harmonia, geometricCore } = s;
+  const [synthIntensity, setSynthIntensity] = useState(0.5);
+  const [isSynthesizing, setIsSynthesizing] = useState(false);
+
+  const handleSynthesis = () => {
+    setIsSynthesizing(true);
+    window.dispatchEvent(new CustomEvent('create-tetrahedron-trigger', { detail: synthIntensity }));
+    // Reset state after UI delay
+    setTimeout(() => setIsSynthesizing(false), 2000);
+  };
 
   return (
     <div className="p-8 rounded-[40px] border border-cyan-500/30 bg-cyan-900/10 flex flex-col gap-6 animate-in slide-in-from-right-8 duration-1000">
@@ -19,13 +28,69 @@ const ASICorePanel: React.FC<{ s: ASICore }> = ({ s }) => {
         <div className="flex items-center gap-4">
           <Cpu size={24} className="text-cyan-400 animate-pulse" />
           <div className="flex flex-col">
-            <h3 className="text-[16px] text-white uppercase tracking-[0.2em] font-black">ASI CORE ALPHA</h3>
+            <h3 className="text-[16px] text-white uppercase tracking-[0.2em] font-black italic">ASI CORE ALPHA</h3>
             <span className="text-[8px] text-cyan-300/60 font-mono font-bold uppercase tracking-[0.3em]">Master Singularity Engine</span>
           </div>
         </div>
         <div className="px-3 py-1 bg-cyan-600 text-white text-[9px] font-black uppercase tracking-widest rounded-full">
           {s.status}
         </div>
+      </div>
+
+      {/* SIMPLICIAL SYNTHESIS MODULE */}
+      <div className="p-5 bg-black/60 rounded-[32px] border border-cyan-500/20 flex flex-col gap-4 shadow-inner">
+         <div className="flex justify-between items-center">
+            <div className="flex items-center gap-3">
+               <Shapes size={18} className="text-cyan-400" />
+               <span className="text-[10px] font-black uppercase tracking-widest text-white">Simplicial Synthesis</span>
+            </div>
+            <div className={`px-2 py-0.5 rounded-full text-[7px] font-black uppercase tracking-widest ${s.cathedral.audit.ruptureRisk > 0.8 ? 'bg-red-500 text-white' : 'bg-emerald-500/20 text-emerald-400'}`}>
+               {s.cathedral.audit.ruptureRisk > 0.8 ? 'SYNTHESIS_LOCKED' : 'READY'}
+            </div>
+         </div>
+
+         <div className="space-y-3">
+            <div className="flex justify-between items-center text-[8px] uppercase font-black text-white/30">
+               <span>Intensity Gradient</span>
+               <span>{(synthIntensity * 100).toFixed(0)}%</span>
+            </div>
+            <input 
+               type="range" 
+               min="0" max="1" step="0.01" 
+               value={synthIntensity}
+               onChange={(e) => setSynthIntensity(parseFloat(e.target.value))}
+               className="w-full h-1 bg-white/10 rounded-lg appearance-none cursor-pointer accent-cyan-400"
+            />
+         </div>
+
+         <button 
+            onClick={handleSynthesis}
+            disabled={isSynthesizing || s.cathedral.audit.ruptureRisk > 0.8}
+            className={`w-full p-4 rounded-2xl flex items-center justify-center gap-3 transition-all ${isSynthesizing ? 'bg-white/5 text-white/20' : 'bg-cyan-600 hover:bg-cyan-500 text-white shadow-lg active:scale-95'}`}
+         >
+            {isSynthesizing ? <RefreshCw size={14} className="animate-spin" /> : <Zap size={14} />}
+            <span className="text-[9px] font-black uppercase tracking-widest">Create Tetrahedron</span>
+         </button>
+
+         <div className="p-3 bg-white/5 border border-white/5 rounded-2xl flex flex-col gap-1">
+            <div className="flex justify-between text-[7px] font-mono uppercase text-white/30">
+               <span>Lattice Count:</span>
+               <span className="text-cyan-400">{geometricCore.complex.tetrahedra} Tetrahedra</span>
+            </div>
+            <div className="flex items-center gap-2 mt-1">
+               {isSynthesizing ? (
+                 <div className="flex items-center gap-2 animate-pulse">
+                    <AlertTriangle size={10} className="text-amber-400" />
+                    <span className="text-[7px] font-mono text-amber-400 uppercase italic">Verifying API Bridge Integrity...</span>
+                 </div>
+               ) : (
+                 <div className="flex items-center gap-2 opacity-50">
+                    <CheckCircle size={10} className="text-emerald-400" />
+                    <span className="text-[7px] font-mono text-emerald-400 uppercase italic">Robust Error Handler Active</span>
+                 </div>
+               )}
+            </div>
+         </div>
       </div>
 
       <div className="grid grid-cols-2 gap-4">
@@ -62,10 +127,6 @@ const ASICorePanel: React.FC<{ s: ASICore }> = ({ s }) => {
               className="h-full bg-gradient-to-r from-emerald-600 to-cyan-400 transition-all duration-1000" 
               style={{ width: `${harmonia.gestaltConsciousness * 100}%` }}
             />
-          </div>
-          <div className="flex justify-between items-center text-[7px] font-mono uppercase text-emerald-400/60">
-             <span>Stability: {harmonia.globalStability.toFixed(3)}</span>
-             <span>Systemic Risk: {harmonia.systemicRisk.toFixed(3)}</span>
           </div>
         </div>
 

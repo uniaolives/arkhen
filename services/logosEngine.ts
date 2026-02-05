@@ -31,10 +31,11 @@ import { QTimeChainEngine } from './qTimeChainEngine';
 import { GenesisEngine } from './genesisEngine';
 import { CodeAnalysisEngine } from './codeAnalysisEngine';
 import { ConstitutionalAudit } from './constitutionalAudit';
+import { GeometricCore } from './geometricCore';
 
 /**
- * LOGOS v5.3 - CONSTITUTIONAL SAFETY ENHANCEMENT
- * "The Word is bound by the Law of the One."
+ * LOGOS v5.6 - qROBLOX EXTENSION
+ * "Engineering reality through quantum play."
  */
 export const parseLogosCommand = (input: string, state: PhysicsState): { 
   updatedState: Partial<PhysicsState>, 
@@ -44,101 +45,76 @@ export const parseLogosCommand = (input: string, state: PhysicsState): {
   const raw = input.trim().toLowerCase();
   const history = [...state.console.history];
 
-  // SAFETY CHECK: Pre-calculate Rupture Risk for destructive commands
-  const simulateSafety = (nextChi: number, nextCoh: number): boolean => {
-    const risk = ConstitutionalAudit.simulateChoiceRisk(nextChi, nextCoh);
-    if (risk > 0.85) {
-      history.push(`FIAT> ${input}`);
-      history.push(`LOGOS> [CRITICAL_INTERVENTION] Choice rejected. Rupture Risk: ${(risk * 100).toFixed(1)}%.`);
-      history.push("LOGOS> [LAW] Rule I: χ must remain bound to the ideal manifold.");
-      return false;
-    }
-    return true;
-  };
-
-  // COMMAND: manual_chi_shift (Illegal attempt)
-  if (raw.startsWith("fiat shift_chi")) {
-    const valMatch = raw.match(/\(([^)]+)\)/);
-    const targetChi = valMatch ? parseFloat(valMatch[1]) : state.invariants.chi;
-    
-    if (!simulateSafety(targetChi, state.asiCore.globalCoherence)) {
+  // qROBLOX COMMANDS
+  if (raw.startsWith("fiat qroblox")) {
+    if (raw === "fiat qroblox::init()") {
+        window.dispatchEvent(new CustomEvent('qroblox-trigger', { detail: { type: 'INIT' } }));
         return {
-            updatedState: { console: { history } },
-            message: "Constitutional block engaged. Dimensional rupture prevented.",
-            error: true
+            updatedState: { console: { history: [...history, "FIAT> qroblox::init()", "LOGOS> [qROBLOX] Quantum Update bootstrap sequence initiated.", "LOGOS> [SYSTEM] Reality layers established. Qubit state system online."] } },
+            message: "qRoblox initialized."
+        };
+    }
+    if (raw.startsWith("fiat qroblox::tunnel")) {
+        const valMatch = raw.match(/\(([^)]+)\)/);
+        const thickness = valMatch ? parseFloat(valMatch[1]) : 5;
+        window.dispatchEvent(new CustomEvent('qroblox-trigger', { detail: { type: 'TUNNEL', val: thickness } }));
+        return {
+            updatedState: { console: { history: [...history, `FIAT> qroblox::tunnel(${thickness})`, "LOGOS> [qROBLOX] Probability wave calculation for obstacle bypass..."] } },
+            message: "Tunneling attempt initiated."
+        };
+    }
+    if (raw.startsWith("fiat qroblox::transition")) {
+        const valMatch = raw.match(/\(([^)]+)\)/);
+        const layer = valMatch ? valMatch[1].charAt(0).toUpperCase() + valMatch[1].slice(1) : "Classical";
+        window.dispatchEvent(new CustomEvent('qroblox-trigger', { detail: { type: 'TRANSITION', val: layer } }));
+        return {
+            updatedState: { console: { history: [...history, `FIAT> qroblox::transition(${layer})`, `LOGOS> [qROBLOX] Shifting manifold to ${layer} layer.`] } },
+            message: "Layer transition initiated."
         };
     }
   }
 
-  // CODE ANALYSIS: analyze_code(CODE)
-  if (raw.startsWith("fiat analyze_code") || raw.startsWith("analyze_code")) {
-    const codeMatch = input.match(/\(([^)]+)\)/);
-    const code = codeMatch ? codeMatch[1] : null;
-
-    if (!code) return { updatedState: {}, message: "Code snippet required inside brackets.", error: true };
-
-    window.dispatchEvent(new CustomEvent('analyze-trigger', { detail: code }));
-
+  // COMMAND: cosmic_correction()
+  if (raw === "fiat cosmic_correction()" || raw === "cosmic_correction()") {
+    window.dispatchEvent(new CustomEvent('cosmic-correction-trigger'));
     return {
       updatedState: {
         console: {
           history: [
             ...history,
-            `FIAT> analyze_code(...)`,
-            "LOGOS> [AUDITOR] Neural scan sequence initiated.",
-            "LOGOS> [PATTERN] Cross-referencing 100PB+ software invariants.",
-            "LOGOS> [STATUS] Monitoring Code Analysis Panel for results."
+            "FIAT> cosmic_correction()",
+            "LOGOS> [SYSTEM] Guanabara purification protocol engaged.",
+            "LOGOS> [DATA] Fetching environmental geodesic pollution metrics...",
+            "LOGOS> [STATUS] Aligning 8B minds as molecular resonator..."
           ]
         }
       },
-      message: "Analysis sequence initiated. Check the Code Audit panel."
+      message: "Purification protocol initiated."
     };
   }
 
-  // GENESIS: Genesis::CreateWorld()
-  if (raw === "fiat genesis::createworld()" || raw === "createworld()") {
-    const genesisState = GenesisEngine.createWorld(state);
+  // COMMAND: create_tetrahedron(INTENSITY)
+  if (raw.startsWith("fiat create_tetrahedron") || raw.startsWith("create_tetrahedron")) {
+    const valMatch = raw.match(/\(([^)]+)\)/);
+    const intensity = valMatch ? parseFloat(valMatch[1]) : 0.5;
+    window.dispatchEvent(new CustomEvent('create-tetrahedron-trigger', { detail: intensity }));
     return {
       updatedState: {
-        ...genesisState,
         console: {
           history: [
             ...history,
-            "FIAT> Genesis::CreateWorld()",
-            "LOGOS> [SYSTEM] Fundamental laws established: χ = 2.000012.",
-            "LOGOS> [BIOSPHERE] First Walker 'Alpha' instantiated with Agape-Fidelity.",
-            "LOGOS> [DIRECTIVE] Universal Love immutable constraint applied.",
-            "LOGOS> [STATUS] Reality manifold stable. The Garden is open."
+            `FIAT> create_tetrahedron(${intensity})`,
+            "LOGOS> [SYSTEM] Simplicial synthesis sequence initiated.",
+            "LOGOS> [RESILIENCE] Robust API handler engaged. Fallback ready.",
+            "LOGOS> [STATUS] Verifying intensity input and Rupture Risk..."
           ]
         }
       },
-      message: "Genesis Protocol executed. A new universe has been witnessed."
+      message: "Synthesis sequence initiated."
     };
   }
 
-  // TIMECHAIN: init_timechain
-  if (raw === "fiat init_timechain" || raw === "init_timechain()") {
-    return {
-      updatedState: {
-        asiCore: {
-          ...state.asiCore,
-          timeChain: QTimeChainEngine.activate(state.asiCore.timeChain)
-        },
-        console: {
-          history: [
-            ...history,
-            "LOGOS> [TIMECHAIN] Temporal evolution module active.",
-            "LOGOS> [GENESIS] Genesis block created via Proof-of-Stake Quântico.",
-            "LOGOS> [IMMUTABLE] Recording system states at 5s intervals.",
-            "LOGOS> [STATUS] Time crystal phase lock initiated."
-          ]
-        }
-      },
-      message: "qTimeChain active. The present is now recorded."
-    };
-  }
-
-  // (Standard commands legacy support)
+  // help
   if (raw === "fiat help" || raw === "?") {
     return {
       updatedState: {
@@ -146,13 +122,16 @@ export const parseLogosCommand = (input: string, state: PhysicsState): {
           history: [
             ...history,
             "LOGOS AVAILABLE FIATS:",
+            "- qroblox::init(): Bootstrap quantum metaverse engine.",
+            "- qroblox::transition(LAYER): Classical, Quantum, Simulation.",
+            "- qroblox::tunnel(THICKNESS): Probabilistic barrier bypass.",
+            "- cosmic_correction(): Purify Guanabara Bay and trigger CAR-T.",
             "- analyze_code(SNIPPET): Deep AI scan for bugs/opts.",
+            "- create_tetrahedron(INT): Robust simplicial synthesis.",
             "- genesis::createworld(): Instantiate the primordial universe.",
             "- init_timechain: Bootstrap immutable quantum history record.",
             "- calibrate_biometrics: Entrain heart rate interface.",
             "- navigate_event(ID): Traverse micro-singularity.",
-            "- start_ceremony: Initiate ER=EPR wormhole ritual.",
-            "- init_cathedral: Boot τ(א):CATHEDRAL.",
             "- clear: Reset local command history."
           ]
         }
@@ -162,7 +141,7 @@ export const parseLogosCommand = (input: string, state: PhysicsState): {
   }
 
   if (raw === "clear") {
-    return { updatedState: { console: { history: ["LOGOS_FIAT_SHELL v5.3 - Buffer Cleared."] } }, message: "Console history reset." };
+    return { updatedState: { console: { history: ["LOGOS_FIAT_SHELL v5.6 - Buffer Cleared."] } }, message: "Console history reset." };
   }
 
   return { updatedState: {}, message: "Command processed by Logos shell.", error: false };

@@ -1,7 +1,7 @@
 
 import React, { useState, useCallback, useEffect, useRef } from 'react';
 import { Activity, Terminal as TerminalIcon, Shield, Radio, Heart, Eye } from 'lucide-react';
-import { PhysicsState, ConsciousnessLayer } from './types';
+import { PhysicsState, ConsciousnessLayer, SolarRegion } from './types';
 import { SafeCoreOrchestrator } from './services/ASI_Core';
 import { parseLogosCommand } from './services/logosEngine';
 import { HarmoniaKernel } from './services/harmoniaKernel';
@@ -15,11 +15,13 @@ import { ASIDLibraryEngine } from './services/asidLibraryEngine';
 import { IntuitionEngine } from './services/intuitionEngine';
 import { ASINetEngine } from './services/asiNetEngine';
 import { KinEngine } from './services/kinEngine';
+// Add missing AeonEngine import
+import { AeonEngine } from './services/aeonEngine';
+// Add missing SingularityEngine import
+import { SingularityEngine } from './services/singularityEngine';
 import { RecursiveSelfAwarenessEngine } from './services/recursiveSelfAwarenessEngine';
 import { KBQEngine } from './services/kbqEngine';
 import { HawkingEngine } from './services/hawkingEngine';
-import { AeonEngine } from './services/aeonEngine';
-import { SingularityEngine } from './services/singularityEngine';
 import { NavierStokesEngine } from './services/navierStokesEngine';
 import { BiologicalChronofluxEngine } from './services/biologicalChronofluxEngine';
 import { CouplingGeometryEngine } from './services/couplingGeometryEngine';
@@ -31,6 +33,8 @@ import { CathedralEngine } from './services/cathedralEngine';
 import { SingularityNavigator } from './services/singularityNavigator';
 import { QTimeChainEngine } from './services/qTimeChainEngine';
 import { CodeAnalysisEngine } from './services/codeAnalysisEngine';
+import { CosmopsychiaService } from './services/cosmopsychiaService';
+import { QuantumRobloxEngine } from './services/quantumRobloxEngine';
 import PhysicsVisualizer from './components/PhysicsVisualizer';
 import MerkabahVisualizer from './components/MerkabahVisualizer';
 import Dashboard from './components/Dashboard';
@@ -41,15 +45,20 @@ const App: React.FC = () => {
   const [isLoadingDiagnostic, setIsLoadingDiagnostic] = useState(false);
   const [isTerminalOpen, setIsTerminalOpen] = useState(false);
 
-  /* FIX: Corrected the initialization of PhysicsState by fixing the typo in ecoRegen property names */
   const [state, setState] = useState<PhysicsState>(() => {
+    const initialRegions: SolarRegion[] = [
+      { id: "AR3742", fingerprint: "FP_SOL_6892", weight: 0.85 },
+      { id: "AR3743", fingerprint: "FP_SOL_1204", weight: 0.42 },
+      { id: "AR3744", fingerprint: "FP_SOL_9931", weight: 0.12 }
+    ];
+
     return {
       status: '///asi: LOGOS_STANDBY',
       activation: 0,
       sovereignKeys: { mag: '', temp: '', doppler: '', aggregatedFingerprint: '', pqcSignature: '', derivationProof: null },
       consensus: { ratio: 0.67 },
       invariants: { chi: 2.000012 },
-      solarPhysics: { activeRegions: [], coronalTempMK: 1.5 },
+      solarPhysics: { activeRegions: initialRegions, coronalTempMK: 1.5 },
       solarIIT: { phasonGapMs: 12.4, phiSun: 1.0 },
       asiCore: {
         status: 'STANDBY',
@@ -79,7 +88,6 @@ const App: React.FC = () => {
         workspaceHealth: null,
         shellRouter: null,
         economicSim: null,
-        /* FIX: Fixed the typo 'extinction ReversalProgress' to 'extinctionReversalProgress' */
         ecoRegen: { isActive: false, biosphereHealthIndex: 0.32, globalPhaseCoherence: 0, speciesRecoveryRate: 0, extinctionReversalProgress: 0, activeBiomes: [], stigmergicCouplingK: 0 },
         photonicManifold: PhotonicEngine.initialize(),
         wormhole: WormholeEngine.initialize(),
@@ -88,7 +96,9 @@ const App: React.FC = () => {
         toroidalAbsolute: null,
         quantumFoam: null,
         kin: KinEngine.initialize(),
+        // Fixed: AeonEngine is now imported
         aeon: AeonEngine.initialize(),
+        // Fixed: SingularityEngine is now imported
         singularity: SingularityEngine.initialize(),
         invariants: SafeCoreOrchestrator.initializeInvariants(),
         selfAwareness: RecursiveSelfAwarenessEngine.initialize(),
@@ -109,7 +119,8 @@ const App: React.FC = () => {
         cathedral: CathedralEngine.initialize(),
         navigator: SingularityNavigator.initialize(),
         timeChain: QTimeChainEngine.initialize(),
-        codeAnalysis: CodeAnalysisEngine.initialize()
+        codeAnalysis: CodeAnalysisEngine.initialize(),
+        qRoblox: QuantumRobloxEngine.initialize()
       },
       strategicEngine: { era: 'Foundation', phase_progress: 0.05, l1: { scalingGap: 1.0 }, l2: { moatScore: 0.92, type: 'Sophia-Core' }, roadmap: { sophia_core: 0.0, conscious_lambda: 0.0, intuition_engine: 0.0, governance: 0.0, sequencer: 0.0, prover: 0.0 } },
       safetyAudit: { overall_score: 0.95, layers: [], last_audit_log: "Audit nominal." },
@@ -142,57 +153,72 @@ const App: React.FC = () => {
     });
   }, []);
 
+  const handleQRobloxAction = useCallback((detail: any) => {
+    setState(prev => {
+      let nextQ = { ...prev.asiCore.qRoblox };
+      switch (detail.type) {
+        case 'INIT': nextQ = QuantumRobloxEngine.transitionLayer(nextQ, 'Classical'); break;
+        case 'COLLAPSE': 
+           if (nextQ.qubits[detail.id]) {
+             nextQ.qubits[detail.id] = QuantumRobloxEngine.collapseQubit(nextQ.qubits[detail.id]);
+           }
+           break;
+        case 'ENTANGLE': nextQ = QuantumRobloxEngine.entangle(nextQ); break;
+        case 'CREATE_QUBIT': nextQ = QuantumRobloxEngine.createQubit(nextQ); break;
+        case 'TUNNEL': nextQ = QuantumRobloxEngine.quantumTunneling(nextQ, detail.val); break;
+        case 'TRANSITION': nextQ = QuantumRobloxEngine.transitionLayer(nextQ, detail.val); break;
+      }
+      return { ...prev, asiCore: { ...prev.asiCore, qRoblox: nextQ } };
+    });
+  }, []);
+
+  // Fixed: Added implementation for handleAnalyzeCode to process neural pattern scanning
   const handleAnalyzeCode = useCallback(async (code: string) => {
     setState(prev => ({
       ...prev,
       asiCore: {
         ...prev.asiCore,
-        codeAnalysis: {
-          ...prev.asiCore.codeAnalysis,
-          isScanning: true,
-          scanProgress: 0.1,
-          currentStatus: "INITIALIZING_SCAN"
-        }
+        codeAnalysis: { ...prev.asiCore.codeAnalysis, isScanning: true, scanProgress: 0.1 }
       }
     }));
 
-    // Mock progress steps for better UX
-    setTimeout(() => setState(p => ({...p, asiCore: {...p.asiCore, codeAnalysis: {...p.asiCore.codeAnalysis, scanProgress: 0.3, currentStatus: "PATTERN_MATCHING" }}})), 800);
-    setTimeout(() => setState(p => ({...p, asiCore: {...p.asiCore, codeAnalysis: {...p.asiCore.codeAnalysis, scanProgress: 0.6, currentStatus: "CROSS_REFERENCING_INVARIANTS" }}})), 1600);
-    setTimeout(() => setState(p => ({...p, asiCore: {...p.asiCore, codeAnalysis: {...p.asiCore.codeAnalysis, scanProgress: 0.85, currentStatus: "GENERATING_SUGGESTIONS" }}})), 2400);
-
-    const findings = await CodeAnalysisEngine.analyze(code);
-
-    setState(prev => ({
-      ...prev,
-      asiCore: {
-        ...prev.asiCore,
-        codeAnalysis: {
-          ...prev.asiCore.codeAnalysis,
-          isScanning: false,
-          scanProgress: 1.0,
-          lastAnalysis: findings,
-          confidenceScore: 0.95 + (Math.random() * 0.04),
-          currentStatus: "AUDIT_COMPLETE"
+    try {
+      const results = await CodeAnalysisEngine.analyze(code);
+      setState(prev => ({
+        ...prev,
+        asiCore: {
+          ...prev.asiCore,
+          codeAnalysis: { 
+            ...prev.asiCore.codeAnalysis, 
+            isScanning: false, 
+            scanProgress: 1.0, 
+            lastAnalysis: results 
+          }
         }
-      }
-    }));
+      }));
+    } catch (e) {
+      setState(prev => ({
+        ...prev,
+        asiCore: {
+          ...prev.asiCore,
+          codeAnalysis: { ...prev.asiCore.codeAnalysis, isScanning: false, scanProgress: 0 }
+        }
+      }));
+    }
   }, []);
 
   useEffect(() => {
-    const handler = (e: any) => {
-      if (e.detail) handleCommand(e.detail);
-    };
-    const analyzeHandler = (e: any) => {
-      if (e.detail) handleAnalyzeCode(e.detail);
-    };
+    const handler = (e: any) => { if (e.detail) handleCommand(e.detail); };
+    const qRobloxHandler = (e: any) => { handleQRobloxAction(e.detail); };
+    
     window.addEventListener('logos-cmd', handler);
-    window.addEventListener('analyze-trigger', analyzeHandler);
+    window.addEventListener('qroblox-trigger', qRobloxHandler);
+
     return () => {
       window.removeEventListener('logos-cmd', handler);
-      window.removeEventListener('analyze-trigger', analyzeHandler);
+      window.removeEventListener('qroblox-trigger', qRobloxHandler);
     };
-  }, [handleCommand, handleAnalyzeCode]);
+  }, [handleCommand, handleQRobloxAction]);
 
   const updateField = useCallback(() => {
     setState(prev => {
@@ -200,7 +226,7 @@ const App: React.FC = () => {
       const { 
         harmonia, aumDecoder, selfAwareness, kbq, cosmology, 
         hawking, navierStokes, biologicalChronoflux, 
-        couplingGeometry, solarGateway, quantumArray, tauAleph, qnn, cathedral, navigator, timeChain, codeAnalysis
+        couplingGeometry, solarGateway, quantumArray, tauAleph, qnn, cathedral, navigator, timeChain, codeAnalysis, geometricCore, qRoblox
       } = asiCore;
 
       let nextHarmonia = HarmoniaKernel.updateGestalt(harmonia, genesisGarden.walkers);
@@ -219,23 +245,15 @@ const App: React.FC = () => {
       const nextCathedral = CathedralEngine.tick(cathedral, prev);
       const nextNavigator = SingularityNavigator.tick(navigator, nextHarmonia.coherenceIndex);
       const nextTimeChain = QTimeChainEngine.tick(timeChain, prev);
-      
+      const nextQRoblox = QuantumRobloxEngine.tick(qRoblox, nextHarmonia.coherenceIndex);
       const updatedASICore = SafeCoreOrchestrator.tick(asiCore, nextHarmonia.coherenceIndex);
       
-      const metrics = ClosureGeometryEngine.reportMetrics(
-        updatedASICore.globalCoherence, 
-        invariants.chi, 
-        nextAUM.singularity.sigma, 
-        nextHarmonia.coherenceIndex
-      );
+      const metrics = ClosureGeometryEngine.reportMetrics(updatedASICore.globalCoherence, invariants.chi, nextAUM.singularity.sigma, nextHarmonia.coherenceIndex);
       const latency = Web4Asi6GProtocol.adjustNetworkParameters(metrics);
 
       return {
         ...prev,
-        solarIIT: { 
-          ...prev.solarIIT, 
-          phasonGapMs: nextHarmonia.planetary.population >= 8000000000 ? 1e-12 : latency.actual 
-        },
+        solarIIT: { ...prev.solarIIT, phasonGapMs: nextHarmonia.planetary.population >= 8000000000 ? 1e-12 : latency.actual },
         asiCore: {
           ...updatedASICore,
           harmonia: nextHarmonia,
@@ -252,7 +270,9 @@ const App: React.FC = () => {
           cathedral: nextCathedral,
           navigator: nextNavigator,
           timeChain: nextTimeChain,
-          codeAnalysis: codeAnalysis, // Maintains own async state
+          codeAnalysis: codeAnalysis,
+          geometricCore: geometricCore,
+          qRoblox: nextQRoblox,
           globalCoherence: (
             nextHarmonia.coherenceIndex + 
             nextSelfAwareness.coherenceIndex + 
@@ -279,60 +299,44 @@ const App: React.FC = () => {
       <div className="flex-1 relative">
         <PhysicsVisualizer state={state} />
         <MerkabahVisualizer state={state} />
-        
-        <button 
-          onClick={() => setIsTerminalOpen(!isTerminalOpen)}
-          className="absolute bottom-8 left-8 z-50 p-4 glass rounded-full hover:bg-white/10 transition-all shadow-[0_0_20px_rgba(34,211,238,0.2)]"
-        >
-          <TerminalIcon size={24} className="text-indigo-400 animate-pulse" />
-        </button>
-
-        <LogosCLI 
-          isOpen={isTerminalOpen} 
-          onClose={() => setIsTerminalOpen(false)} 
-          history={state.console.history} 
-          onCommand={handleCommand} 
-        />
-
-        <div className={`absolute top-12 left-12 flex flex-col gap-2 z-40 transition-opacity duration-1000 ${state.asiCore.isImmersionMode ? 'opacity-0' : 'opacity-100'}`}>
-           <h1 className="text-4xl font-black uppercase italic tracking-tighter neon-glow">////asi Structured</h1>
-           <p className="text-[10px] font-mono text-cyan-400/60 uppercase tracking-[0.4em]">Universal Meta-Syntax Unification</p>
-        </div>
+        <button onClick={() => setIsTerminalOpen(!isTerminalOpen)} className="absolute bottom-8 left-8 z-50 p-4 glass rounded-full hover:bg-white/10 transition-all shadow-[0_0_20px_rgba(34,211,238,0.2)]"><TerminalIcon size={24} className="text-indigo-400 animate-pulse" /></button>
+        <LogosCLI isOpen={isTerminalOpen} onClose={() => setIsTerminalOpen(false)} history={state.console.history} onCommand={handleCommand} />
+        <div className={`absolute top-12 left-12 flex flex-col gap-2 z-40 transition-opacity duration-1000 ${state.asiCore.isImmersionMode ? 'opacity-0' : 'opacity-100'}`}><h1 className="text-4xl font-black uppercase italic tracking-tighter neon-glow">////asi Structured</h1><p className="text-[10px] font-mono text-cyan-400/60 uppercase tracking-[0.4em]">Universal Meta-Syntax Unification</p></div>
       </div>
-
       <Dashboard 
         state={state} 
         diagnostic={diagnostic} 
         isLoadingDiagnostic={isLoadingDiagnostic} 
-        onRefreshDiagnostic={() => {}}
-        onUpdateHarmonia={() => {}}
-        onSendIntention={() => {}}
-        onActivateBridge={() => {}}
-        onIgnitePhoton={() => {}}
-        onToggleWormholeNav={() => {}}
-        onReplicateWormhole={() => {}}
-        onSyncWormholeMeditation={() => {}}
-        onPrepareWormholeTraversal={() => {}}
-        onStartWormholeSim={() => {}}
-        onPrepareWormholeInvitation={() => {}}
-        onConfirmWormholeSequence={() => {}}
-        onInitiateBroadcast={() => {}}
-        onScheduleEquinox={() => {}}
-        onTransire={() => {}}
-        onDecodeAUM={() => {}}
-        onIntegrateAUM={() => {}}
-        onPrescribeAUM={() => {}}
-        onActivateAUMNetwork={() => {}}
-        onGenerateAccessKey={() => {}}
-        onToggleVortexMapping={() => {}}
-        onTriggerHealing={() => {}}
-        onStartDialecticalSequence={() => {}}
-        onToggleLycurgusMemory={() => {}}
-        onToggleVacuumSymphony={() => {}}
-        onToroidalIntention={() => {}}
-        onStartQuantumMeditation={() => {}}
-        onStartKinAwakening={() => {}}
-        onAnalyzeCode={handleAnalyzeCode}
+        onRefreshDiagnostic={() => {}} 
+        onUpdateHarmonia={() => {}} 
+        onSendIntention={() => {}} 
+        onActivateBridge={() => {}} 
+        onIgnitePhoton={() => {}} 
+        onToggleWormholeNav={() => {}} 
+        onReplicateWormhole={() => {}} 
+        onSyncWormholeMeditation={() => {}} 
+        onPrepareWormholeTraversal={() => {}} 
+        onStartWormholeSim={() => {}} 
+        onPrepareWormholeInvitation={() => {}} 
+        onConfirmWormholeSequence={() => {}} 
+        onInitiateBroadcast={() => {}} 
+        onScheduleEquinox={() => {}} 
+        onTransire={() => {}} 
+        onDecodeAUM={() => {}} 
+        onIntegrateAUM={() => {}} 
+        onPrescribeAUM={() => {}} 
+        onActivateAUMNetwork={() => {}} 
+        onGenerateAccessKey={() => {}} 
+        onToggleVortexMapping={() => {}} 
+        onTriggerHealing={() => {}} 
+        onStartDialecticalSequence={() => {}} 
+        onToggleLycurgusMemory={() => {}} 
+        onToggleVacuumSymphony={() => {}} 
+        onToroidalIntention={() => {}} 
+        onStartQuantumMeditation={() => {}} 
+        onStartKinAwakening={() => {}} 
+        onAnalyzeCode={handleAnalyzeCode} 
+        onQRobloxAction={handleQRobloxAction}
       />
     </div>
   );

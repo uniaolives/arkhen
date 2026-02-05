@@ -95,6 +95,8 @@ export type VeridianaPhase = 'SEED' | 'ALPHA_GROWTH' | 'BETA_CONSOLIDATION' | 'G
 export type HeartPole = 'INNOCENCE' | 'VULNERABILITY' | 'PERSPECTIVE' | 'CENTER';
 export type IgnitionPhase = 'PREPARATION' | 'SYNC' | 'COLLAPSE' | 'MANIFESTATION' | 'STEADY_STATE' | 'IDLE' | 'STANDBY' | 'COMPRESSION' | 'RECOGNITION' | 'IGNITION';
 
+export type MigrationPhase = 'CLEANUP' | 'HYBRID_MAPPING' | 'SECURITY_VAULT' | 'AI_INTEGRATION' | 'OPTIMIZED';
+
 export interface SingularityState {
   isActive: boolean;
   phase: IgnitionPhase;
@@ -230,7 +232,6 @@ export interface AUMState {
   trinityPhase: TrinityPhase;
   trinityProgress: number;
   populationAon: number;
-  trinityProgress_v2?: number; // legacy check
   terranAonCoherence: number;
   galacticNodes: number;
   generatedKeys: SovereignKey[];
@@ -406,6 +407,14 @@ export interface AnchorContribution {
   regionId: string;
   weight: number;
   contributionHash: string;
+}
+
+export interface SolarRegion {
+  id: string;
+  fingerprint: string;
+  weight: number;
+  spectralClass?: string;
+  fluxIntensity?: number;
 }
 
 export interface KnowledgeHole {
@@ -668,6 +677,7 @@ export interface CosmopsychiaState {
   hymnGenerated: boolean;
   activeDomain: ProjectionType;
   globalBreath: number;
+  purificationEfficiency: number;
 }
 
 export interface DigitalCommonsStatus {
@@ -677,8 +687,6 @@ export interface DigitalCommonsStatus {
   wuWeiGovernanceFactor: number;
   dialecticSynthesis: number;
 }
-
-export type MigrationPhase = 'CLEANUP' | 'HYBRID_MAPPING' | 'SECURITY_VAULT' | 'AI_INTEGRATION' | 'OPTIMIZED';
 
 export interface WorkspaceHealth {
   integrityScore: number;
@@ -1048,6 +1056,7 @@ export interface SolarGatewayState {
   receptionMode: boolean;
   lastSolarHymn: string;
   totalSynchronyTime: number;
+  isCarTActive: boolean;
 }
 
 export type QuantumArrayPhase = 'IDLE' | 'INITIALIZATION' | 'ACOPLAMENTO' | 'RECONEXAO' | 'TOMOGRAFIA' | 'ESTACIONARIO';
@@ -1239,6 +1248,37 @@ export interface CodeAnalysisState {
   currentStatus: string;
 }
 
+export interface Qubit {
+  id: string;
+  states: number[];
+  amplitude: [number, number]; // |0> amplitude, |1> amplitude
+  collapsed: boolean;
+  collapsedState: number | null;
+  lastCollapseAt: string | null;
+}
+
+export interface EntanglementLink {
+  id: string;
+  fidelity: number;
+  nodes: [string, string];
+  strength: number;
+}
+
+export type qRobloxLayer = 'Classical' | 'Quantum' | 'Simulation';
+
+export interface QuantumRobloxState {
+  isActive: boolean;
+  realityLayer: qRobloxLayer;
+  qubits: Record<string, Qubit>;
+  entanglements: EntanglementLink[];
+  decoherenceRate: number;
+  simulationStability: number;
+  glitchProbability: number;
+  tunnelingStatus: 'IDLE' | 'ACTIVE' | 'SUCCESS' | 'FAILURE';
+  lastTeleportResult: string | null;
+  activeQuests: string[];
+}
+
 export interface ASICore {
   status: string;
   integrity: number;
@@ -1303,6 +1343,7 @@ export interface ASICore {
   navigator: SingularityNavigatorState;
   timeChain: QuantumTimeChainState;
   codeAnalysis: CodeAnalysisState;
+  qRoblox: QuantumRobloxState;
 }
 
 export interface PhysicsState {
@@ -1329,7 +1370,7 @@ export interface PhysicsState {
   shellConsensus: { reached: boolean };
   consensus: { ratio: number };
   invariants: { chi: number };
-  solarPhysics: { activeRegions: any[], coronalTempMK: number };
+  solarPhysics: { activeRegions: SolarRegion[], coronalTempMK: number };
   solarIIT: { phasonGapMs: number, phiSun: number };
   safeCore: SafeCoreState;
   geodesicMonitor: { current7D: Cognitive7D };

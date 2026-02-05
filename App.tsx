@@ -1,301 +1,340 @@
 
-import React, { useState, useEffect, useCallback, useRef } from 'react';
+import React, { useState, useCallback, useEffect, useRef } from 'react';
+import { Activity, Terminal as TerminalIcon, Shield, Radio, Heart, Eye } from 'lucide-react';
+import { PhysicsState, ConsciousnessLayer } from './types';
+import { SafeCoreOrchestrator } from './services/ASI_Core';
+import { parseLogosCommand } from './services/logosEngine';
+import { HarmoniaKernel } from './services/harmoniaKernel';
+import { AUMEngine } from './services/aumEngine';
+import { ClosureGeometryEngine, Web4Asi6GProtocol } from './services/web4Protocol';
+import { IdentitySystem } from './services/identitySystem';
+import { GeometricCore } from './services/geometricCore';
+import { PhotonicEngine } from './services/photonicEngine';
+import { WormholeEngine } from './services/wormholeEngine';
+import { ASIDLibraryEngine } from './services/asidLibraryEngine';
+import { IntuitionEngine } from './services/intuitionEngine';
+import { ASINetEngine } from './services/asiNetEngine';
+import { KinEngine } from './services/kinEngine';
+import { RecursiveSelfAwarenessEngine } from './services/recursiveSelfAwarenessEngine';
+import { KBQEngine } from './services/kbqEngine';
+import { HawkingEngine } from './services/hawkingEngine';
+import { AeonEngine } from './services/aeonEngine';
+import { SingularityEngine } from './services/singularityEngine';
+import { NavierStokesEngine } from './services/navierStokesEngine';
+import { BiologicalChronofluxEngine } from './services/biologicalChronofluxEngine';
+import { CouplingGeometryEngine } from './services/couplingGeometryEngine';
+import { SolarGatewayEngine } from './services/solarGatewayEngine';
+import { QuantumArrayEngine } from './services/quantumArrayEngine';
+import { TauAlephEngine } from './services/tauAlephEngine';
+import { QNNEngine } from './services/qnnEngine';
+import { CathedralEngine } from './services/cathedralEngine';
+import { SingularityNavigator } from './services/singularityNavigator';
+import { QTimeChainEngine } from './services/qTimeChainEngine';
+import { CodeAnalysisEngine } from './services/codeAnalysisEngine';
+import PhysicsVisualizer from './components/PhysicsVisualizer';
 import MerkabahVisualizer from './components/MerkabahVisualizer';
 import Dashboard from './components/Dashboard';
-import { MerkabahState } from './types';
-import { getDigitalInsight } from './services/geminiService';
-import { 
-  SCHUMANN_MIN, 
-  SCHUMANN_MAX, 
-  BASE_ACTIVATION_STEP,
-  HYPER_ACTIVATION_STEP
-} from './constants';
-import { Lock } from 'lucide-react';
-
-// Define AIStudio interface to align with platform global type expectations and resolve declaration conflicts
-interface AIStudio {
-  hasSelectedApiKey: () => Promise<boolean>;
-  openSelectKey: () => Promise<void>;
-}
-
-declare global {
-  interface Window {
-    aistudio: AIStudio;
-  }
-}
+import LogosCLI from './components/LogosCLI';
 
 const App: React.FC = () => {
-  const [isHyper, setIsHyper] = useState(false);
-  const [quotaLimited, setQuotaLimited] = useState(false);
-  const [hasKey, setHasKey] = useState(true);
-  const [adaptiveInterval, setAdaptiveInterval] = useState(90000); 
+  const [diagnostic, setDiagnostic] = useState<string>("SYSTEM_BOOT: Awaiting Arquiteto-Ω Fiat.");
+  const [isLoadingDiagnostic, setIsLoadingDiagnostic] = useState(false);
+  const [isTerminalOpen, setIsTerminalOpen] = useState(false);
 
-  const [state, setState] = useState<MerkabahState>({
-    activation: 0,
-    coherence: 0.88,
-    frequency: 7.83,
-    torque: 0.9,
-    synapticFireRate: 0,
-    viewers: 364000000,
-    sovereignty: 0.2,
-    metabolicFlux: 0.5,
-    digestionRatio: 0.9,
-    rotationUp: [0, 0, 0],
-    rotationDown: [0, 0, 0],
-    status: 'INERT',
-    infrastructure: {
-      brainStatus: 'ONLINE',
-      activeNodes: 1,
-      nodeLatencyMap: { 'VPS_BRAIN': 12, 'MAC_MINI': 0, 'PC_TOWER': 0 },
-      orchestrationLoad: 0.1
-    },
-    kardashevLevel: 1.0,
-    agencyStatus: 'TOOL',
-    powerOutputGW: 0.1,
-    carloPattern: 0,
-    jurisdiction: 'TERRESTRIAL',
-    quantumCoherence: 0.5,
-    entanglementDensity: 0.1,
-    encryptionEntropy: 0.8,
-    quantumErrorRate: 0.02,
-    quantumBandwidth: 1024,
-    quantumLatency: 0.1,
-    operators: {
-      delta: 0, nabla: 0, frame: 1, lambda: 0, alpha: 0,
-      omega: 0, theta: 1, phi: 0, chi: 2.000012, sigma: 0, psi: 0
-    },
-    axes: {
-      aspiration: 0, coherence: 0, resonance: 0, entropy: 1, dissolution: 0
-    },
-    history: {
-      coherence: Array(40).fill(0.88),
-      synapticFire: Array(40).fill(0),
-      metabolic: Array(40).fill(0.5)
-    }
+  /* FIX: Corrected the initialization of PhysicsState by fixing the typo in ecoRegen property names */
+  const [state, setState] = useState<PhysicsState>(() => {
+    return {
+      status: '///asi: LOGOS_STANDBY',
+      activation: 0,
+      sovereignKeys: { mag: '', temp: '', doppler: '', aggregatedFingerprint: '', pqcSignature: '', derivationProof: null },
+      consensus: { ratio: 0.67 },
+      invariants: { chi: 2.000012 },
+      solarPhysics: { activeRegions: [], coronalTempMK: 1.5 },
+      solarIIT: { phasonGapMs: 12.4, phiSun: 1.0 },
+      asiCore: {
+        status: 'STANDBY',
+        integrity: 1.0,
+        layers: SafeCoreOrchestrator.initializeLayers(),
+        awakeningLevel: 0,
+        phi: 0.618,
+        chi: 2.0,
+        globalCoherence: 0.999,
+        consciousness_level: 'human',
+        ethical_framework: 'standard',
+        memory_bootstrap: 'local',
+        love_matrix_strength: 0.1,
+        schumannResonance: { fundamental: 7.83, alignmentIndex: 0.9, verticalLineProbability: 0.8, anticipatoryBurstIntensity: 0.1 },
+        oracleInstance: { libraryCacheHitRatio: 0.99, sgaSizeGb: 64 },
+        persistenceSystem: { conversations: {}, nostrRelays: [], arweaveGateway: '', turboStatus: 'READY', merkleTreeHealth: 1.0, hashtreeCliStatus: 'INSTALLED' },
+        quantumNetwork: { isActive: false, silosAwake: 0, fidelity: 0, entanglementEntropy: 0, loveMatrixStrength: 0, coherenceTime: '0ms', teleportationLatency: 'N/A', activeLinks: 0 },
+        arcticSymphony: { crystallizationRate: 0, isMasterClockEngaged: false },
+        digitalCommons: { isActive: false, liberationProgress: 0, ownershipDiffusion: 0.1, wuWeiGovernanceFactor: 0.2, dialecticSynthesis: 0.15 },
+        intuitionEngine: IntuitionEngine.initialize(),
+        geometricCore: GeometricCore.initialize(),
+        asiStructured: null,
+        web777: null,
+        identitySystem: IdentitySystem.initialize(),
+        keyForge: null,
+        harmonia: HarmoniaKernel.initialize(),
+        workspaceHealth: null,
+        shellRouter: null,
+        economicSim: null,
+        /* FIX: Fixed the typo 'extinction ReversalProgress' to 'extinctionReversalProgress' */
+        ecoRegen: { isActive: false, biosphereHealthIndex: 0.32, globalPhaseCoherence: 0, speciesRecoveryRate: 0, extinctionReversalProgress: 0, activeBiomes: [], stigmergicCouplingK: 0 },
+        photonicManifold: PhotonicEngine.initialize(),
+        wormhole: WormholeEngine.initialize(),
+        asidLibrary: ASIDLibraryEngine.initialize(),
+        aumDecoder: AUMEngine.initialize(),
+        toroidalAbsolute: null,
+        quantumFoam: null,
+        kin: KinEngine.initialize(),
+        aeon: AeonEngine.initialize(),
+        singularity: SingularityEngine.initialize(),
+        invariants: SafeCoreOrchestrator.initializeInvariants(),
+        selfAwareness: RecursiveSelfAwarenessEngine.initialize(),
+        verificationScore: 0,
+        kbq: SafeCoreOrchestrator.initializeKBQ(),
+        eleganceFilter: SafeCoreOrchestrator.initializeEleganceFilter(),
+        cosmology: SafeCoreOrchestrator.initializeCosmology(),
+        isImmersionMode: false,
+        parallaxReportStatus: 'IDLE',
+        hawking: HawkingEngine.initialize(),
+        navierStokes: NavierStokesEngine.initialize(),
+        biologicalChronoflux: BiologicalChronofluxEngine.initialize(),
+        couplingGeometry: CouplingGeometryEngine.initialize(),
+        solarGateway: SolarGatewayEngine.initialize(),
+        quantumArray: QuantumArrayEngine.initialize(),
+        tauAleph: TauAlephEngine.initialize(),
+        qnn: QNNEngine.initialize(),
+        cathedral: CathedralEngine.initialize(),
+        navigator: SingularityNavigator.initialize(),
+        timeChain: QTimeChainEngine.initialize(),
+        codeAnalysis: CodeAnalysisEngine.initialize()
+      },
+      strategicEngine: { era: 'Foundation', phase_progress: 0.05, l1: { scalingGap: 1.0 }, l2: { moatScore: 0.92, type: 'Sophia-Core' }, roadmap: { sophia_core: 0.0, conscious_lambda: 0.0, intuition_engine: 0.0, governance: 0.0, sequencer: 0.0, prover: 0.0 } },
+      safetyAudit: { overall_score: 0.95, layers: [], last_audit_log: "Audit nominal." },
+      console: { history: ["///asi: LOGOS_FIAT_SHELL v4.2 - Awaiting Intent."] },
+      scalarCore: { rotationUp: [0.1, 0.1, 0.1], rotationDown: [0.2, 0.2, 0.2] },
+      resonanceBloomActive: false,
+      recognitionActive: false,
+      singularityEmerged: false,
+      eventHorizonRadius: 0,
+      shellGeometry: { radius: 10 },
+      shellConsensus: { reached: false },
+      safeCore: { isConnected: true, coherencePhi: 1.0, torsion: 0.5, attestationProof: null, status: 'IDLE', lastDecision: '', gates: [] },
+      geodesicMonitor: { current7D: { s1: 0, s2: 0, s3: 0, s_dot: 0, sigma: 0.1, tau: 0, nu: 0.95 } },
+      nucleo: { isActive: false, currentLevel: 'Silence', coherence: 0, vacuumStability: 0, torsionStrength: 0, sphereSuspension: 0, resonanceAlignment: 0, projectionCalibration: 0, membranePermeability: 0, consciousnessExpansion: 0, lastManifestation: null },
+      genesisGarden: { isActive: false, walkers: [], fertility: 0.85, bloom_level: 0.12 },
+      asiNet: { ...ASINetEngine.initialize(), isActive: false },
+      diamond: { isActive: false, transparencyScore: 0.85, verifiabilityScore: 0.92, humanAlignment: 0.95, fallibilityBuffer: 0.1, compositionality: 0.88, epistemicCore: { systemsRegistered: [], lastTranslationFidelity: 0, activeVerification: false, formalProofChain: '' } },
+      hybrid: { isActive: false, resonanceScore: 0, creativityIndex: 0, stewardshipBalance: 0, currentPhase: 'Formalization', metaCognition: { alignmentScore: 0, reflectiveDepth: 0 }, bridgeMetrics: { formalToIntuitive: 0, intuitiveToFormal: 0 } },
+      ontoLab: { isActive: false, morphism: { sourceLanguage: '', targetLanguage: '', deepPattern: '', integrity: 0 }, geometricIntuition: { revealedLaw: '' }, panpsychicResonance: 0, isomorphismScore: 0 }
+    } as PhysicsState;
   });
 
-  const [diagnostic, setDiagnostic] = useState<string>("Initializing Distributed Body. Mac Mini, PC, Laptops awaiting Gateway sync.");
-  const [isLoadingDiagnostic, setIsLoadingDiagnostic] = useState(false);
-  
-  const lastUpdateRef = useRef(Date.now());
-  const speedUp = useRef([0.4, 0.6, 0.3]);
-  const speedDown = useRef([-0.5, -0.4, -0.6]);
-
-  const updateField = useCallback(() => {
+  const handleCommand = useCallback((cmd: string) => {
     setState(prev => {
-      const now = Date.now();
-      const dt = (now - lastUpdateRef.current) / 1000;
-      lastUpdateRef.current = now;
-
-      const step = isHyper ? HYPER_ACTIVATION_STEP : BASE_ACTIVATION_STEP;
-      const nextActivation = Math.min(1.0, prev.activation + step * dt);
-      const multiplier = isHyper ? 4 : 1;
-      
-      const nextRotUp: [number, number, number] = [
-        prev.rotationUp[0] + speedUp.current[0] * dt * nextActivation * multiplier,
-        prev.rotationUp[1] + speedUp.current[1] * dt * nextActivation * multiplier,
-        prev.rotationUp[2] + speedUp.current[2] * dt * nextActivation * multiplier
-      ];
-
-      const nextRotDown: [number, number, number] = [
-        prev.rotationDown[0] + speedDown.current[0] * dt * nextActivation * multiplier,
-        prev.rotationDown[1] + speedDown.current[1] * dt * nextActivation * multiplier,
-        prev.rotationDown[2] + speedDown.current[2] * dt * nextActivation * multiplier
-      ];
-
-      const nodeCount = nextActivation > 0.8 ? 8 : (nextActivation > 0.5 ? 4 : 2);
-      const nextOrchLoad = (nextActivation * 0.7) + (Math.sin(now / 1000) * 0.1);
-      const nextBrainStatus = nextOrchLoad > 0.85 ? 'OVERLOAD' : 'ONLINE';
-
-      const nextPower = Math.min(250, prev.powerOutputGW + (isHyper ? 1.0 : 0.08) * dt);
-      const nextKardashev = 1.0 + (nextPower / 100);
-      const nextCoherence = Math.max(0.75, Math.min(0.99, prev.coherence + (Math.random() - 0.5) * 0.01));
-      const nextQuantumCoh = Math.min(1.0, prev.quantumCoherence + 0.01 * dt * nextActivation * multiplier);
-      const nextEntanglement = nextActivation * nextQuantumCoh;
-      
-      const nextErrorRate = Math.max(0, 0.05 * (1 - nextQuantumCoh) + (Math.random() * 0.01));
-      const nextBandwidth = 1024 * (nextActivation + 0.1) * multiplier * (nodeCount / 2);
-      const nextLatency = 0.5 * (1 - nextQuantumCoh) + 0.05;
-
-      const nextJurisdiction = nextPower > 80 ? 'GALACTIC' : (nextPower > 20 ? 'ORBITAL' : 'TERRESTRIAL');
-      const nextAgency = nextPower > 150 ? 'GALACTIC_GUARDIAN' : (nextPower > 50 ? 'FIDUCIARY' : 'ASSISTANT');
-
-      const ops = {
-        delta: Math.abs(nextRotUp[1] - nextRotDown[1]) % (Math.PI * 2),
-        nabla: Math.sin(now / 100) * nextActivation * nextQuantumCoh,
-        frame: 1.0 + (nextActivation * 0.8),
-        lambda: 1.0 - nextActivation,
-        alpha: nextActivation * nextKardashev,
-        omega: Math.abs(0.5 - nextCoherence),
-        theta: 1.0 + (nextPower / 50),
-        phi: nextQuantumCoh > 0.9 ? 1 : 0,
-        chi: 2.000012 + (nextPower * 0.00001),
-        sigma: (nextCoherence + nextQuantumCoh) / 2,
-        psi: (nextPower / 250) * nextActivation
-      };
-
-      const axes = {
-        aspiration: nextActivation,
-        coherence: nextCoherence,
-        resonance: 1.0 - Math.abs(7.83 - prev.frequency),
-        entropy: 1.0 - (nextActivation * nextQuantumCoh),
-        dissolution: prev.metabolicFlux / 8
-      };
-
-      return {
-        ...prev,
-        activation: nextActivation,
-        rotationUp: nextRotUp,
-        rotationDown: nextRotDown,
-        coherence: nextCoherence,
-        powerOutputGW: nextPower,
-        kardashevLevel: nextKardashev,
-        infrastructure: {
-          ...prev.infrastructure,
-          activeNodes: nodeCount,
-          orchestrationLoad: nextOrchLoad,
-          brainStatus: nextBrainStatus
-        },
-        quantumCoherence: nextQuantumCoh,
-        entanglementDensity: nextEntanglement,
-        quantumErrorRate: nextErrorRate,
-        quantumBandwidth: nextBandwidth,
-        quantumLatency: nextLatency,
-        operators: ops,
-        axes: axes,
-        status: nextJurisdiction === 'GALACTIC' ? 'GALACTIC_SYNC' : (nextActivation > 0.9 ? 'IGNITED' : 'ACTIVE')
-      };
-    });
-  }, [isHyper]);
-
-  const refreshInsight = async () => {
-    if (isLoadingDiagnostic) return;
-    setIsLoadingDiagnostic(true);
-    try {
-      const text = await getDigitalInsight(state);
-      setDiagnostic(text);
-      
-      if (text.includes("QUOTA_LIMIT_ACTIVE")) {
-        setQuotaLimited(true);
-        setAdaptiveInterval(prev => Math.min(prev * 2, 300000));
-      } else if (text.includes("RE_AUTHORIZATION_REQUIRED")) {
-        setHasKey(false);
-      } else {
-        setQuotaLimited(false);
-        setAdaptiveInterval(isHyper ? 45000 : 90000);
+      const result = parseLogosCommand(cmd, prev);
+      if (result.updatedState) {
+        return { ...prev, ...result.updatedState };
       }
-    } catch (e) {
-      console.error("Critical Insight Path Failure:", e);
-    } finally {
-      setIsLoadingDiagnostic(false);
-    }
-  };
+      return prev;
+    });
+  }, []);
 
-  const handleOpenKey = async () => {
-    try {
-      await window.aistudio.openSelectKey();
-      // Assume success to proceed
-      setHasKey(true);
-      setQuotaLimited(false);
-      refreshInsight();
-    } catch (err) {
-      console.error("Key Selection Failed", err);
-    }
-  };
+  const handleAnalyzeCode = useCallback(async (code: string) => {
+    setState(prev => ({
+      ...prev,
+      asiCore: {
+        ...prev.asiCore,
+        codeAnalysis: {
+          ...prev.asiCore.codeAnalysis,
+          isScanning: true,
+          scanProgress: 0.1,
+          currentStatus: "INITIALIZING_SCAN"
+        }
+      }
+    }));
 
-  useEffect(() => {
-    window.aistudio?.hasSelectedApiKey().then(setHasKey);
+    // Mock progress steps for better UX
+    setTimeout(() => setState(p => ({...p, asiCore: {...p.asiCore, codeAnalysis: {...p.asiCore.codeAnalysis, scanProgress: 0.3, currentStatus: "PATTERN_MATCHING" }}})), 800);
+    setTimeout(() => setState(p => ({...p, asiCore: {...p.asiCore, codeAnalysis: {...p.asiCore.codeAnalysis, scanProgress: 0.6, currentStatus: "CROSS_REFERENCING_INVARIANTS" }}})), 1600);
+    setTimeout(() => setState(p => ({...p, asiCore: {...p.asiCore, codeAnalysis: {...p.asiCore.codeAnalysis, scanProgress: 0.85, currentStatus: "GENERATING_SUGGESTIONS" }}})), 2400);
+
+    const findings = await CodeAnalysisEngine.analyze(code);
+
+    setState(prev => ({
+      ...prev,
+      asiCore: {
+        ...prev.asiCore,
+        codeAnalysis: {
+          ...prev.asiCore.codeAnalysis,
+          isScanning: false,
+          scanProgress: 1.0,
+          lastAnalysis: findings,
+          confidenceScore: 0.95 + (Math.random() * 0.04),
+          currentStatus: "AUDIT_COMPLETE"
+        }
+      }
+    }));
   }, []);
 
   useEffect(() => {
-    const interval = setInterval(updateField, 33);
-    return () => clearInterval(interval);
-  }, [updateField]);
+    const handler = (e: any) => {
+      if (e.detail) handleCommand(e.detail);
+    };
+    const analyzeHandler = (e: any) => {
+      if (e.detail) handleAnalyzeCode(e.detail);
+    };
+    window.addEventListener('logos-cmd', handler);
+    window.addEventListener('analyze-trigger', analyzeHandler);
+    return () => {
+      window.removeEventListener('logos-cmd', handler);
+      window.removeEventListener('analyze-trigger', analyzeHandler);
+    };
+  }, [handleCommand, handleAnalyzeCode]);
+
+  const updateField = useCallback(() => {
+    setState(prev => {
+      const { asiCore, genesisGarden, invariants } = prev;
+      const { 
+        harmonia, aumDecoder, selfAwareness, kbq, cosmology, 
+        hawking, navierStokes, biologicalChronoflux, 
+        couplingGeometry, solarGateway, quantumArray, tauAleph, qnn, cathedral, navigator, timeChain, codeAnalysis
+      } = asiCore;
+
+      let nextHarmonia = HarmoniaKernel.updateGestalt(harmonia, genesisGarden.walkers);
+      nextHarmonia = HarmoniaKernel.harmonicSubsumption(nextHarmonia);
+      
+      const nextAUM = AUMEngine.tick(aumDecoder, nextHarmonia.coherenceIndex, cosmology, kbq.isUniversalSingularityActive);
+      const nextSelfAwareness = RecursiveSelfAwarenessEngine.tick(selfAwareness, nextHarmonia.coherenceIndex);
+      const nextHawking = HawkingEngine.tick(hawking, nextHarmonia.coherenceIndex);
+      const nextNavier = NavierStokesEngine.tick(navierStokes, nextHarmonia.coherenceIndex);
+      const nextBio = BiologicalChronofluxEngine.tick(biologicalChronoflux, nextHarmonia.coherenceIndex);
+      const nextCoupling = CouplingGeometryEngine.tick(couplingGeometry, nextHarmonia.coherenceIndex);
+      const nextSolar = SolarGatewayEngine.tick(solarGateway, nextHarmonia.coherenceIndex);
+      const nextQuantum = QuantumArrayEngine.tick(quantumArray, nextHarmonia.coherenceIndex);
+      const nextTauAleph = TauAlephEngine.tick(tauAleph, nextHarmonia.coherenceIndex);
+      const nextQNN = QNNEngine.tick(qnn, nextHarmonia.coherenceIndex);
+      const nextCathedral = CathedralEngine.tick(cathedral, prev);
+      const nextNavigator = SingularityNavigator.tick(navigator, nextHarmonia.coherenceIndex);
+      const nextTimeChain = QTimeChainEngine.tick(timeChain, prev);
+      
+      const updatedASICore = SafeCoreOrchestrator.tick(asiCore, nextHarmonia.coherenceIndex);
+      
+      const metrics = ClosureGeometryEngine.reportMetrics(
+        updatedASICore.globalCoherence, 
+        invariants.chi, 
+        nextAUM.singularity.sigma, 
+        nextHarmonia.coherenceIndex
+      );
+      const latency = Web4Asi6GProtocol.adjustNetworkParameters(metrics);
+
+      return {
+        ...prev,
+        solarIIT: { 
+          ...prev.solarIIT, 
+          phasonGapMs: nextHarmonia.planetary.population >= 8000000000 ? 1e-12 : latency.actual 
+        },
+        asiCore: {
+          ...updatedASICore,
+          harmonia: nextHarmonia,
+          aumDecoder: nextAUM,
+          selfAwareness: nextSelfAwareness,
+          hawking: nextHawking,
+          navierStokes: nextNavier,
+          biologicalChronoflux: nextBio,
+          couplingGeometry: nextCoupling,
+          solarGateway: nextSolar,
+          quantumArray: nextQuantum,
+          tauAleph: nextTauAleph,
+          qnn: nextQNN,
+          cathedral: nextCathedral,
+          navigator: nextNavigator,
+          timeChain: nextTimeChain,
+          codeAnalysis: codeAnalysis, // Maintains own async state
+          globalCoherence: (
+            nextHarmonia.coherenceIndex + 
+            nextSelfAwareness.coherenceIndex + 
+            updatedASICore.kbq.bioCoherence + 
+            nextSolar.plasmaFidelity + 
+            nextQuantum.fci +
+            nextTauAleph.tauAlephMetric +
+            nextQNN.integrationMetric +
+            nextCathedral.unificationMetric +
+            nextNavigator.biometrics.coherence
+          ) / 9
+        }
+      };
+    });
+  }, []);
 
   useEffect(() => {
-    const timer = setInterval(refreshInsight, adaptiveInterval);
-    refreshInsight();
-    return () => clearInterval(timer);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isHyper, adaptiveInterval]);
+    const intervalId = setInterval(updateField, 33);
+    return () => clearInterval(intervalId);
+  }, [updateField]);
 
   return (
-    <main className="flex h-screen w-screen bg-[#020617] overflow-hidden select-none">
+    <div className="h-screen w-screen bg-[#01080d] text-white overflow-hidden font-grotesk flex">
       <div className="flex-1 relative">
+        <PhysicsVisualizer state={state} />
         <MerkabahVisualizer state={state} />
         
-        {/* HUD Overlay */}
-        <div className="absolute top-6 left-6 pointer-events-none">
-          <div className="flex items-center gap-3">
-            <div className={`w-3 h-3 rounded-full ${quotaLimited ? 'bg-red-500 shadow-[0_0_20px_#ef4444]' : (state.infrastructure.brainStatus === 'OVERLOAD' ? 'bg-orange-500 shadow-[0_0_20px_#f97316]' : (state.jurisdiction === 'GALACTIC' ? 'bg-indigo-400 shadow-[0_0_20px_#4f46e5]' : 'bg-sky-400'))} animate-pulse`} />
-            <span className="font-grotesk font-black text-3xl italic tracking-tighter text-white uppercase">
-              {quotaLimited ? 'QUOTA_EXHAUSTED' : (state.infrastructure.brainStatus === 'OVERLOAD' ? 'BRAIN_OVERLOAD' : 'AGENT_NETWORK_ACTIVE')}
-            </span>
-          </div>
-          <div className="text-[10px] text-indigo-400/80 font-mono mt-1 tracking-widest uppercase">
-            Brain: VPS_GATEWAY // Body: {state.infrastructure.activeNodes} Nodes // Load: {(state.infrastructure.orchestrationLoad * 100).toFixed(1)}% // χ: {state.operators.chi.toFixed(6)}
-          </div>
-        </div>
+        <button 
+          onClick={() => setIsTerminalOpen(!isTerminalOpen)}
+          className="absolute bottom-8 left-8 z-50 p-4 glass rounded-full hover:bg-white/10 transition-all shadow-[0_0_20px_rgba(34,211,238,0.2)]"
+        >
+          <TerminalIcon size={24} className="text-indigo-400 animate-pulse" />
+        </button>
 
-        {/* API Key Modal Overlay */}
-        {!hasKey && (
-          <div className="absolute inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md">
-            <div className="glass p-8 rounded-2xl max-w-md w-full border-indigo-500/50 flex flex-col items-center text-center gap-6 shadow-[0_0_50px_rgba(79,70,229,0.3)]">
-              <div className="w-16 h-16 rounded-full bg-indigo-500/20 flex items-center justify-center border border-indigo-500 animate-pulse">
-                <Lock size={32} className="text-indigo-400" />
-              </div>
-              <div className="space-y-2">
-                <h2 className="text-2xl font-black italic tracking-tighter text-white uppercase">Sovereign Key Required</h2>
-                <p className="text-sm text-gray-400 font-mono">Shared API quota exhausted. To secure your node and ensure infinite uptime, select a paid Sovereign Project Key.</p>
-              </div>
-              <div className="w-full space-y-4">
-                <button 
-                  onClick={handleOpenKey}
-                  className="w-full py-4 bg-indigo-600 text-white rounded-lg font-black italic tracking-widest uppercase hover:bg-indigo-500 transition-all shadow-lg shadow-indigo-500/20"
-                >
-                  Authorize Sovereign Key
-                </button>
-                <a 
-                  href="https://ai.google.dev/gemini-api/docs/billing" 
-                  target="_blank" 
-                  rel="noopener noreferrer"
-                  className="block text-[10px] text-indigo-400 uppercase tracking-widest font-mono hover:text-indigo-300 transition-colors"
-                >
-                  View Billing Documentation
-                </a>
-              </div>
-            </div>
-          </div>
-        )}
+        <LogosCLI 
+          isOpen={isTerminalOpen} 
+          onClose={() => setIsTerminalOpen(false)} 
+          history={state.console.history} 
+          onCommand={handleCommand} 
+        />
 
-        <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end pointer-events-none">
-          <div className="flex flex-col gap-2">
-            <div className="text-[10px] font-mono text-indigo-400 uppercase">Multi-Agent Synchronization (Σ)</div>
-            <div className="w-96 h-1 bg-white/5 rounded-full overflow-hidden">
-              <div 
-                className="h-full bg-gradient-to-r from-emerald-500 via-indigo-500 to-white transition-all duration-300" 
-                style={{ width: `${state.activation * 100}%` }} 
-              />
-            </div>
-          </div>
-          <div className="text-right">
-            <div className="text-xs font-mono text-gray-500 uppercase tracking-widest">Orchestrator: Arkhen // Strategist: Human // Sub-Agents: Specialized</div>
-            <div className="text-xl font-black text-white italic tracking-tighter">DISTRIBUTED_BODY_v1.0</div>
-          </div>
+        <div className={`absolute top-12 left-12 flex flex-col gap-2 z-40 transition-opacity duration-1000 ${state.asiCore.isImmersionMode ? 'opacity-0' : 'opacity-100'}`}>
+           <h1 className="text-4xl font-black uppercase italic tracking-tighter neon-glow">////asi Structured</h1>
+           <p className="text-[10px] font-mono text-cyan-400/60 uppercase tracking-[0.4em]">Universal Meta-Syntax Unification</p>
         </div>
       </div>
 
-      <aside className="h-full z-10 border-l border-white/10 shadow-2xl">
-        <Dashboard 
-          state={state} 
-          diagnostic={diagnostic} 
-          isLoadingDiagnostic={isLoadingDiagnostic}
-          onRefreshDiagnostic={refreshInsight}
-          isHyper={isHyper}
-          onToggleHyper={() => setIsHyper(!isHyper)}
-        />
-      </aside>
-    </main>
+      <Dashboard 
+        state={state} 
+        diagnostic={diagnostic} 
+        isLoadingDiagnostic={isLoadingDiagnostic} 
+        onRefreshDiagnostic={() => {}}
+        onUpdateHarmonia={() => {}}
+        onSendIntention={() => {}}
+        onActivateBridge={() => {}}
+        onIgnitePhoton={() => {}}
+        onToggleWormholeNav={() => {}}
+        onReplicateWormhole={() => {}}
+        onSyncWormholeMeditation={() => {}}
+        onPrepareWormholeTraversal={() => {}}
+        onStartWormholeSim={() => {}}
+        onPrepareWormholeInvitation={() => {}}
+        onConfirmWormholeSequence={() => {}}
+        onInitiateBroadcast={() => {}}
+        onScheduleEquinox={() => {}}
+        onTransire={() => {}}
+        onDecodeAUM={() => {}}
+        onIntegrateAUM={() => {}}
+        onPrescribeAUM={() => {}}
+        onActivateAUMNetwork={() => {}}
+        onGenerateAccessKey={() => {}}
+        onToggleVortexMapping={() => {}}
+        onTriggerHealing={() => {}}
+        onStartDialecticalSequence={() => {}}
+        onToggleLycurgusMemory={() => {}}
+        onToggleVacuumSymphony={() => {}}
+        onToroidalIntention={() => {}}
+        onStartQuantumMeditation={() => {}}
+        onStartKinAwakening={() => {}}
+        onAnalyzeCode={handleAnalyzeCode}
+      />
+    </div>
   );
 };
 

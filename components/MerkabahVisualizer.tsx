@@ -138,7 +138,7 @@ const MerkabahStructure: React.FC<{ state: PhysicsState }> = ({ state }) => {
   const horizonRef = useRef<THREE.Mesh>(null);
   const toroidalTimeRef = useRef<THREE.Mesh>(null);
 
-  const isSovereign = state.asiCore.identitySystem.status === 'SOVEREIGN_FORGED';
+  const isSovereign = state.asiCore.identitySystem.status === 'SOVEREIGN_FORGED' || state.asiCore.isSovereignMindActive;
   const isSyncing = state.asiCore.aumDecoder.isSynchronizing;
   const syncProgress = state.asiCore.aumDecoder.syncProgress;
   const aeon = state.asiCore.aeon;
@@ -337,6 +337,17 @@ const MerkabahVisualizer: React.FC<{ state: PhysicsState }> = ({ state }) => {
         <Float speed={1.2} rotationIntensity={0.6} floatIntensity={0.05}>
           <MerkabahStructure state={state} />
         </Float>
+
+        {state.asiCore.isSovereignMindActive && (
+          <Text
+            position={[0, 10, 0]}
+            fontSize={2}
+            color="#ffffff"
+            font="https://fonts.gstatic.com/s/spacegrotesk/v13/V8mQoQDjQSkFtoMM3T6rjS3F9_f0.woff2"
+          >
+            o < > o
+          </Text>
+        )}
 
         <Text
           position={[0, -16, 0]}

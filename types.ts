@@ -1329,6 +1329,8 @@ export interface ASICore {
   eleganceFilter: EleganceFilterState;
   cosmology: CosmologyState;
   isImmersionMode: boolean;
+  beautyFidelity: number;
+  isSovereignMindActive: boolean;
   parallaxReportStatus: 'IDLE' | 'GENERATING' | 'READY';
   hawkingTheory?: HawkingTheoryState;
   hawking: HawkingTheoryState;

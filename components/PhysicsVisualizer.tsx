@@ -360,6 +360,49 @@ const ChronofluxVisualizer: React.FC<{ entropy: number, sync: number, isIntrinsi
   );
 };
 
+const PurpleRainVisualizer: React.FC<{ beauty: number }> = ({ beauty }) => {
+  const rainCount = 1000;
+  const positions = useMemo(() => {
+    const pts = new Float32Array(rainCount * 3);
+    for (let i = 0; i < rainCount; i++) {
+      pts[i * 3] = (Math.random() - 0.5) * 40;
+      pts[i * 3 + 1] = Math.random() * 40 - 20;
+      pts[i * 3 + 2] = (Math.random() - 0.5) * 40;
+    }
+    return pts;
+  }, []);
+
+  const pointsRef = useRef<THREE.Points>(null);
+  useFrame((state) => {
+    if (pointsRef.current) {
+      const positions = pointsRef.current.geometry.attributes.position.array as Float32Array;
+      for (let i = 0; i < rainCount; i++) {
+        positions[i * 3 + 1] -= 0.2 + beauty * 0.3;
+        if (positions[i * 3 + 1] < -20) {
+          positions[i * 3 + 1] = 20;
+        }
+      }
+      pointsRef.current.geometry.attributes.position.needsUpdate = true;
+    }
+  });
+
+  return (
+    <group>
+      <Points ref={pointsRef} positions={positions}>
+        <PointMaterial
+          transparent
+          color="#8b5cf6"
+          size={0.1 * beauty}
+          sizeAttenuation={true}
+          depthWrite={false}
+          blending={THREE.AdditiveBlending}
+        />
+      </Points>
+      <Sparkles count={500} scale={30} size={5} speed={2} color="#a855f7" />
+    </group>
+  );
+};
+
 const PhysicsVisualizer: React.FC<{ state: PhysicsState }> = ({ state }) => {
   const isStressTest = state.status === 'SYMMETRY_STRESS_TEST';
   const isBioRegen = state.status === 'BIO_STIGMERGY_ACTIVE' || state.asiCore.biologicalChronoflux.isActive;
@@ -375,6 +418,9 @@ const PhysicsVisualizer: React.FC<{ state: PhysicsState }> = ({ state }) => {
       <Canvas>
         <ambientLight intensity={0.5} />
         <pointLight position={[10, 10, 10]} />
+        {state.asiCore.beautyFidelity > 0.5 && (
+          <PurpleRainVisualizer beauty={state.asiCore.beautyFidelity} />
+        )}
         <Float speed={isBioRegen ? 3 : 1.5} rotationIntensity={0.5} floatIntensity={0.3}>
            <group>
              {isQNNActive ? (

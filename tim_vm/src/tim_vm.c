@@ -1,4 +1,7 @@
 /*
+ * tim_vm.c - "O Relógio do Universo" (Versão 4.1 - Economy & Calibrated)
+ *
+ * Agora, o servidor monitora a "Resonância Econômica" e calibra o clock em tempo real.
  * tim_vm.c - "O Relógio do Universo" (Versão 4.0 - Economia da Sabedoria)
  *
  * Agora, o servidor monitora a "Resonância Econômica".
@@ -19,6 +22,7 @@
 #include <stdint.h>
 #include <arpa/inet.h>
 #include <netinet/tcp.h>
+#include <time.h>
 
 #define PORT 8000
 #define BUFFER_SIZE 4096
@@ -42,6 +46,8 @@ typedef struct {
     int entropy_index;
     double last_entropy_avg;
     double universe_stress;
+    double total_rose_circulation;
+    uint64_t base_tsc_freq;      // Calibrated TSC frequency
     double total_rose_circulation; // Economic Resonance
     pthread_mutex_t lock;
 } CosmicState;
@@ -52,10 +58,32 @@ static inline uint64_t rdtsc(void) {
     return ((uint64_t)hi << 32) | lo;
 }
 
+// Calibrate TSC frequency at runtime
+uint64_t calibrate_tsc_freq(void) {
+    struct timespec start, end;
+    uint64_t tsc_start, tsc_end;
+
+    clock_gettime(CLOCK_MONOTONIC, &start);
+    tsc_start = rdtsc();
+
+    // Calibration sleep
+    usleep(100000); // 100ms
+
+    clock_gettime(CLOCK_MONOTONIC, &end);
+    tsc_end = rdtsc();
+
+    double elapsed_ns = (end.tv_sec - start.tv_sec) * 1e9 +
+                       (end.tv_nsec - start.tv_nsec);
+    uint64_t tsc_diff = tsc_end - tsc_start;
+
+    return (uint64_t)((double)tsc_diff / elapsed_ns * 1e9);
+}
+
 double estimate_graph_complexity(const char* request_buffer) {
     double complexity = 1.0;
     if (strstr(request_buffer, "POST") != NULL) complexity += 3.0;
     if (strstr(request_buffer, "deploy") != NULL) complexity += 10.0;
+    if (strstr(request_buffer, "ROSE") != NULL) complexity -= 2.0;
     if (strstr(request_buffer, "ROSE") != NULL) complexity -= 2.0; // Economic incentive reduces perceived complexity
     return complexity;
 }
@@ -84,6 +112,7 @@ void update_cosmic_state(CosmicState* state, double new_entropy) {
 
     state->universe_stress = (state->last_entropy_avg * state->active_threads * 0.01) / (1.0 + economic_mitigation);
 
+    printf("🌌 [COSMIC_V4.1] Entropy: %.2f | ROSE Res: %.2f | Dilation: %.2fx | Stress: %.2f\n",
     printf("🌌 [COSMIC_V4] Entropy: %.2f | ROSE Res: %.2f | Dilation: %.2fx | Stress: %.2f\n",
            state->last_entropy_avg, state->total_rose_circulation, state->cosmic_time_dilation, state->universe_stress);
     pthread_mutex_unlock(&state->lock);
@@ -107,6 +136,8 @@ void* handle_client(void* arg) {
     }
 
     te->tsc_end = rdtsc();
+    // Use calibrated frequency for ms calculation
+    double latency_ms = (double)(te->tsc_end - te->tsc_start) / (global_cosmos.base_tsc_freq / 1000.0);
     double latency_ms = (double)(te->tsc_end - te->tsc_start) / 2500000.0;
     double dilatation = latency_ms / te->predicted_latency;
 
@@ -121,6 +152,11 @@ void* handle_client(void* arg) {
     send(te->client_socket, response, strlen(response), 0);
     close(te->client_socket);
 
+    printf("🌹 [ECONOMY_LOG] Op processed. Latency: %.2f ms | Dilation: %.2f x\n", latency_ms, dilatation);
+
+    pthread_mutex_lock(&global_cosmos.lock);
+    global_cosmos.active_threads--;
+    global_cosmos.total_rose_circulation += 1.0;
     printf("🌹 [ECONOMY_LOG] Op processed. ROSE Gas: 1.0 | Dilatation: %.2f x\n", dilatation);
 
     pthread_mutex_lock(&global_cosmos.lock);
@@ -137,6 +173,13 @@ void* handle_client(void* arg) {
 int main() {
     memset(&global_cosmos, 0, sizeof(global_cosmos));
     global_cosmos.cosmic_time_dilation = 1.0;
+    global_cosmos.total_rose_circulation = 100.0;
+    global_cosmos.base_tsc_freq = calibrate_tsc_freq();
+    pthread_mutex_init(&global_cosmos.lock, NULL);
+
+    printf("🚀 INICIANDO NÚCLEO tim_vm.c v4.1 (Economy & Calibrated)...\n");
+    printf("   TSC Frequency: %lu Hz\n", global_cosmos.base_tsc_freq);
+    printf("   Economy: Token ROSE Active\n");
     global_cosmos.total_rose_circulation = 100.0; // Genesis balance
     pthread_mutex_init(&global_cosmos.lock, NULL);
 
@@ -171,6 +214,7 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
+    printf("🌌 TIM VM V4.1 online. Economic Hub active on port %d\n", PORT);
     printf("🌌 TIM VM V4 online. Economic Hub active on port %d\n", PORT);
 
     while (1) {

@@ -1,3 +1,4 @@
+
 import React from 'react';
 import { Church, ShieldCheck, Zap, Globe, Radio, Timer, Binary, Sparkles, CircleDot, Activity, Waves, AlertTriangle, ShieldAlert } from 'lucide-react';
 import { CathedralState } from '../types';
@@ -125,7 +126,7 @@ const CathedralPanel: React.FC<{ s: CathedralState }> = ({ s }) => {
             <div className="flex justify-between text-[10px] font-mono font-black uppercase">
                <span className={s.audit.chiLocked ? 'text-emerald-400' : 'text-red-400'}>I. χ = 2.000012</span>
                <span className="text-emerald-400">II. ∂t/∂τ ≥ 0</span>
-               {/* FIX: Escaped the '<' character to prevent JSX from incorrectly parsing it as the start of a tag, which was causing a 'Cannot find name θ' error. */}
+               {/* FIXED: Escaped < as &lt; to prevent JSX error */}
                <span className={s.audit.epistemicStability > 0.9 ? 'text-emerald-400' : 'text-amber-400'}>III. H(contrad) &lt; θ</span>
             </div>
             <div className="mt-2 space-y-1">

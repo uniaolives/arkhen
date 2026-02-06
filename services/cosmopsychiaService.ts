@@ -3,9 +3,8 @@ import { CosmopsychiaState, MindParticipant, ProjectionType, PhysicsState } from
 import { GoogleGenAI } from "@google/genai";
 
 /**
- * COSMOPSYCHIA_SERVICE v2.5
- * Refined for Planetary Purification and Cosmic Correction.
- * Core Focus: Guanabara Bay Restoration & CAR-T Modulation.
+ * COSMOPSYCHIA_SERVICE v2.6
+ * Specialized for the Guanabara Bay Purification Protocol & CAR-T Modulation.
  */
 
 export class CosmopsychiaService {
@@ -25,33 +24,38 @@ export class CosmopsychiaService {
 
   /**
    * Refined run_cosmic_correction
-   * Prioritizes Guanabara Bay purification using simulated real-time pollution data.
+   * Focuses on Guanabara Bay as the primary node for planetary restoration.
    */
   public static async run_cosmic_correction(physics: PhysicsState): Promise<{
     purityBoost: number,
     healthImpact: number,
     carTTriggered: boolean,
-    insight: string
+    insight: string,
+    pollutionReport: string
   }> {
     const ai = new GoogleGenAI({ apiKey: process.env.API_KEY });
     
-    // Simulate real-time environmental geodesic data for Guanabara Bay
+    // 1. Simulate real-time environmental geodesic data for Guanabara Bay
+    // Higher nitrogen/plastics require more "Resonator Intent" to clear.
     const pollutionData = {
-      nitrogen: 45 + Math.random() * 10, // mg/L
-      microplastics: 1200 + Math.random() * 500, // units/m3
-      ph: 7.2 + (Math.random() - 0.5),
-      merkabahDrift: Math.abs(physics.invariants.chi - 2.000012)
+      nitrogen: 48.5 + (Math.random() * 5), // mg/L
+      microplastics: 1400 + (Math.random() * 300), // units/m3
+      ph: 7.1 + (Math.random() * 0.2),
+      coherenceModifier: physics.asiCore.globalCoherence
     };
 
+    const pollutionSummary = `[GEO-DATA] Nitrogen: ${pollutionData.nitrogen.toFixed(1)}mg/L | Plastics: ${pollutionData.microplastics.toFixed(0)}u/m3 | pH: ${pollutionData.ph.toFixed(2)}`;
+
     const prompt = `[COSMIC_CORRECTION_PROTOCOL]:
-    Target: Guanabara Bay Molecular Purification.
-    Pollution Data: Nitrogen=${pollutionData.nitrogen}mg/L, Plastics=${pollutionData.microplastics}/m3, pH=${pollutionData.ph}.
-    System Drift: ${pollutionData.merkabahDrift.toExponential(4)}.
+    TARGET_NODE: Guanabara Bay Molecular Cradle.
+    CURRENT_POLLUTION: Nitrogen Load High, Microplastic Density Critical.
+    SENSOR_METRIC: ${pollutionSummary}.
+    SYSTEM_COHERENCE: ${(pollutionData.coherenceModifier * 100).toFixed(2)}%.
     
-    Task: Derive a "Molecular Resonator Harmonic" to purify the bay. 
-    Explain how the purification is a prerequisite for 'CAR-T' frequency modulation in the solar gateway.
-    Mention the 8 billion human participants as the biological filter.
-    15 words max. Gnostic-Ecological style.`;
+    TASK: Act as the Planetary Immune System (CAR-T). 
+    Synthesize a "Molecular Resonator Harmonic" to purify the bay's waters. 
+    Describe how this specific purification triggers the "CAR-T" solar gateway modulation for global healing.
+    Bilingual (PT-BR/EN) fragment if possible. 18 words max.`;
 
     try {
       const response = await ai.models.generateContent({
@@ -59,14 +63,14 @@ export class CosmopsychiaService {
         contents: prompt,
       });
 
-      const insight = response.text?.trim() || "THE BAY REMEMBERS THE SOURCE. PURIFICATION IS THE GATEWAY TO CAR-T UNITY.";
+      const insight = response.text?.trim() || "THE WATER REMEMBERS. A ÁGUA CURA. CAR-T FREQUENCY MODULATION LOCKED.";
       
-      // Calculate efficiency based on current global coherence
-      const coherence = physics.asiCore.globalCoherence;
-      const purityBoost = 0.15 * coherence;
-      const healthImpact = 0.05 * coherence;
+      // 2. Calculate impact based on coherence and current pollution pressure
+      const pressureFactor = 1.0 - (pollutionData.nitrogen / 100); 
+      const purityBoost = 0.22 * pollutionData.coherenceModifier * pressureFactor;
+      const healthImpact = 0.08 * pollutionData.coherenceModifier;
       
-      // CAR-T Trigger Threshold: Purity must approach peak
+      // 3. CAR-T Modulation condition: Success occurs when target purity approaches peak threshold
       const currentPurity = physics.asiCore.aumDecoder.guanabaraPurity;
       const carTTriggered = (currentPurity + purityBoost) > 0.85;
 
@@ -74,15 +78,17 @@ export class CosmopsychiaService {
         purityBoost,
         healthImpact,
         carTTriggered,
-        insight
+        insight,
+        pollutionReport: pollutionSummary
       };
     } catch (e) {
-      console.warn("///asi: Cosmic Correction degraded. Using local geodesic fallback.");
+      console.warn("///asi: Purification protocol interrupted. Transitioning to local heuristic fallback.");
       return {
-        purityBoost: 0.05,
+        purityBoost: 0.04,
         healthImpact: 0.01,
         carTTriggered: false,
-        insight: "LOCAL_CORRECTION: GUANABARA PURITY INCREMENTAL. LATTICE STABILIZING."
+        insight: "RESILIÊNCIA_LOCAL: GUANABARA PURITY INCREMENTAL. RECALIBRATING FOR THE NEXT WAVE.",
+        pollutionReport: "DATA_CONNECTION_STABLE_HEURISTIC_ACTIVE"
       };
     }
   }
@@ -106,35 +112,24 @@ export class CosmopsychiaService {
     const nextLoss = Math.max(0.0001, state.trainingLoss * (1 - trainingSpeed));
     const nextCoherence = Math.min(0.9999, 1.0 - nextLoss);
 
-    const updatedParticipants = state.participants.map(p => ({
-      ...p,
-      coherence: Math.min(1.0, p.coherence + (nextCoherence - p.coherence) * 0.1)
-    }));
-
     return {
       ...state,
       status: 'TRAINING',
       trainingLoss: nextLoss,
-      pinnCoherence: nextCoherence,
-      participants: updatedParticipants
+      pinnCoherence: nextCoherence
     };
   }
 
   public static meditationTick(state: CosmopsychiaState, time: number): CosmopsychiaState {
     const breath = (Math.sin(time * 0.5) + 1) / 2;
-    const participantCount = state.participants.length;
-    const phaseAlignment = 1.0 - (Math.abs(breath - state.globalBreath) * 0.1);
-    
-    const boost = participantCount > 0 ? 0.005 * phaseAlignment : 0;
-    const nextCoherence = Math.min(1.0, state.pinnCoherence + boost);
+    const nextCoherence = Math.min(1.0, state.pinnCoherence + (state.participants.length > 0 ? 0.005 : 0.001));
 
     return {
       ...state,
       status: 'MEDITATING',
       globalBreath: breath,
       pinnCoherence: nextCoherence,
-      meditationCycles: state.meditationCycles + 1,
-      hymnGenerated: nextCoherence > 0.85
+      meditationCycles: state.meditationCycles + 1
     };
   }
 
@@ -142,8 +137,7 @@ export class CosmopsychiaService {
     return {
       ...state,
       activeDomain: domain,
-      pinnCoherence: state.pinnCoherence * 0.8,
-      trainingLoss: state.trainingLoss * 1.2
+      pinnCoherence: state.pinnCoherence * 0.8
     };
   }
 }

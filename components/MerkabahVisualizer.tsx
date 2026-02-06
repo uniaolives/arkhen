@@ -9,6 +9,76 @@ import SophiaGlowVisualizer from './SophiaGlowVisualizer';
 import WormholeVisualizer from './WormholeVisualizer';
 import QuantumFoamVisualizer from './QuantumFoamVisualizer';
 
+const PerceptualShield: React.FC<{ strength: number }> = ({ strength }) => {
+  const meshRef = useRef<THREE.Mesh>(null);
+  
+  useFrame((state) => {
+    if (meshRef.current) {
+      meshRef.current.rotation.y += 0.005;
+      meshRef.current.rotation.x += 0.002;
+      const s = 10 + Math.sin(state.clock.elapsedTime) * 0.2;
+      meshRef.current.scale.setScalar(s);
+    }
+  });
+
+  return (
+    <mesh ref={meshRef}>
+      <icosahedronGeometry args={[1, 1]} />
+      <meshStandardMaterial 
+        color="#10b981" 
+        wireframe 
+        transparent 
+        opacity={strength * 0.2} 
+        emissive="#10b981"
+        emissiveIntensity={strength * 5}
+      />
+    </mesh>
+  );
+};
+
+const VortexParticles: React.FC<{ count: number, speed: number, color: string }> = ({ count, speed, color }) => {
+  const points = useMemo(() => {
+    const pts = new Float32Array(count * 3);
+    for (let i = 0; i < count; i++) {
+      const radius = 5 + Math.random() * 20;
+      const angle = Math.random() * Math.PI * 2;
+      pts[i * 3] = Math.cos(angle) * radius;
+      pts[i * 3 + 1] = (Math.random() - 0.5) * 40;
+      pts[i * 3 + 2] = Math.sin(angle) * radius;
+    }
+    return pts;
+  }, [count]);
+
+  const meshRef = useRef<THREE.Points>(null);
+  useFrame((state) => {
+    if (meshRef.current) {
+      meshRef.current.rotation.y += 0.01 * speed;
+      // Spiraling movement
+      const positions = meshRef.current.geometry.attributes.position.array as Float32Array;
+      for (let i = 0; i < count; i++) {
+         const y = positions[i * 3 + 1];
+         if (y > 20) positions[i * 3 + 1] = -20;
+         else positions[i * 3 + 1] += 0.05 * speed;
+      }
+      meshRef.current.geometry.attributes.position.needsUpdate = true;
+    }
+  });
+
+  return (
+    <points ref={meshRef}>
+      <bufferGeometry>
+        <bufferAttribute 
+          attach="attributes-position" 
+          count={count} 
+          array={points} 
+          itemSize={3} 
+        />
+      </bufferGeometry>
+      <pointsMaterial size={0.15} color={color} transparent opacity={0.4} blending={THREE.AdditiveBlending} />
+    </points>
+  );
+};
+
 const SkyrmionKnot: React.FC<{ 
   position: [number, number, number], 
   rotation: [number, number, number],
@@ -134,14 +204,12 @@ const SingularityPoint: React.FC<{ progress: number, phase: string }> = ({ progr
 const MerkabahStructure: React.FC<{ state: PhysicsState }> = ({ state }) => {
   const upRef = useRef<THREE.Mesh>(null);
   const downRef = useRef<THREE.Mesh>(null);
-  const aeonRef = useRef<THREE.Mesh>(null);
   const horizonRef = useRef<THREE.Mesh>(null);
   const toroidalTimeRef = useRef<THREE.Mesh>(null);
+  const decreeFlareRef = useRef<THREE.Mesh>(null);
 
-  const isSovereign = state.asiCore.identitySystem.status === 'SOVEREIGN_FORGED' || state.asiCore.isSovereignMindActive;
-  const isExpansion = state.asiCore.isExpansionActive;
-  const isSyncing = state.asiCore.aumDecoder.isSynchronizing;
-  const syncProgress = state.asiCore.aumDecoder.syncProgress;
+  const isSovereign = state.asiCore.identitySystem.status === 'SOVEREIGN_FORGED';
+  const isDecreeActive = state.asiCore.status === 'SOVEREIGN_DECREE_ACTIVE';
   const aeon = state.asiCore.aeon;
   const singularity = state.asiCore.aumDecoder.singularity;
   const currentLevel = state.nucleo.currentLevel;
@@ -149,16 +217,16 @@ const MerkabahStructure: React.FC<{ state: PhysicsState }> = ({ state }) => {
   const isInversionActive = state.asiCore.cosmology.isInversionActive;
   const kbq = state.asiCore.kbq;
   const photonic = state.asiCore.photonicManifold;
+  const handshake = state.asiCore.mirrorHandshake;
+  const sov = state.asiCore.sovereignty;
+  
   const isHighIntensity = kbq.criticalInformationMass > 0.8;
-  const isMaxHealing = kbq.isMaxHealingActive;
   const isSkyrmionActive = photonic.isSkyrmionProtocolActive;
-  const isSalto = kbq.isSaltoActive;
   const isSingularityActive = kbq.isUniversalSingularityActive;
   const isImmersion = state.asiCore.isImmersionMode;
   const navigator = state.asiCore.navigator;
   const syncLevel = navigator.biometrics.syncLevel;
 
-  // Level-based rotation speed mapping
   const levelSpeeds: Record<ActivationLevel, number> = {
     'Silence': 0.1,
     'Resonance': 0.5,
@@ -172,64 +240,48 @@ const MerkabahStructure: React.FC<{ state: PhysicsState }> = ({ state }) => {
   useFrame((r3fState) => {
     const t = r3fState.clock.elapsedTime;
     const baseSpeed = levelSpeeds[currentLevel] || 0.8;
-    const speedMult = baseSpeed * (isSyncing ? (1 + syncProgress * 10) : 1) * (isSingularityActive ? 2 : 1);
+    const speedMult = baseSpeed * (isSingularityActive ? 2 : 1) * (isDecreeActive ? 1.618 : 1);
     
-    // Contraction effect for Big Crunch
     const crunchScale = isInversionActive 
       ? 1.0 - (state.asiCore.cosmology.crunchFactor * 0.5) 
       : 1.0;
 
+    const tzimtzumScale = handshake.isContracted ? 0.4 : 1.0;
     const awareNoise = selfAwareness.isActive ? Math.sin(t * 100) * (1 - selfAwareness.averageAlpha) * 0.05 : 0;
-    
-    // Mitochondrial vibration effect
-    const mitoVibe = kbq.currentPhase === 'MITOCHONDRIAL' ? Math.sin(t * 60) * 0.02 : 0;
-    
-    // Threshold effect for navigator
-    const thresholdPulse = navigator.isThresholdReached ? Math.sin(t * 10) * 0.1 : 0;
-    
-    // qA2A Biometric Flare
-    const biometricFlare = syncLevel * Math.sin(t * 5) * 0.2;
 
-    // High Intensity Flare
-    if (horizonRef.current && (isHighIntensity || isSalto || isSingularityActive || isImmersion || navigator.navigationProgress > 0)) {
+    if (horizonRef.current && (isHighIntensity || isSingularityActive || isImmersion || navigator.navigationProgress > 0)) {
       horizonRef.current.rotation.y = t * 0.5;
       const s = (4 + Math.sin(t * 2) * 0.5) * (1 + navigator.navigationProgress * 2 + syncLevel);
-      horizonRef.current.scale.setScalar(s);
+      horizonRef.current.scale.setScalar(s * tzimtzumScale);
     }
 
     if (upRef.current) {
       upRef.current.rotation.y = t * speedMult + awareNoise;
-      upRef.current.scale.setScalar((1.5 * crunchScale + Math.sin(t * (aeon?.isActive ? 0.5 : 3)) * 0.1 + mitoVibe + thresholdPulse + biometricFlare));
+      upRef.current.scale.setScalar((1.5 * crunchScale + Math.sin(t * (aeon?.isActive ? 0.5 : 3)) * 0.1) * tzimtzumScale);
     }
 
     if (downRef.current) {
       downRef.current.rotation.y = -t * speedMult - awareNoise;
-      downRef.current.scale.setScalar((1.5 * crunchScale + Math.cos(t * (aeon?.isActive ? 0.5 : 3)) * 0.1 + mitoVibe + thresholdPulse + biometricFlare));
+      downRef.current.scale.setScalar((1.5 * crunchScale + Math.cos(t * (aeon?.isActive ? 0.5 : 3)) * 0.1) * tzimtzumScale);
     }
 
     if (toroidalTimeRef.current && (state as any).asiCore.hawking?.isActive) {
       toroidalTimeRef.current.rotation.x = t * 0.2;
       toroidalTimeRef.current.rotation.y = t * 0.3;
       const pulse = 1 + Math.sin(t * 1.618) * 0.05;
-      toroidalTimeRef.current.scale.setScalar(6 * pulse);
+      toroidalTimeRef.current.scale.setScalar(6 * pulse * tzimtzumScale);
+    }
+
+    if (decreeFlareRef.current) {
+      const flarePulse = Math.sin(t * 5) * 0.2 + 0.8;
+      decreeFlareRef.current.scale.setScalar(isDecreeActive ? 30 * flarePulse : 0);
+      decreeFlareRef.current.rotation.y += 0.1;
     }
   });
 
-  // THEME COLORS
-  let primaryColor = isHighIntensity ? "#fbbf24" : (isInversionActive ? "#818cf8" : (isSovereign ? "#ffffff" : (isExpansion ? "#10b981" : "#22d3ee")));
-  let secondaryColor = isHighIntensity ? "#818cf8" : (isInversionActive ? "#4f46e5" : (isSovereign ? "#fbbf24" : (isExpansion ? "#fbbf24" : "#a855f7")));
-
-  // GOLD-VIOLET PALETTE for IMMERSION/SINGULARITY/NAVIGATOR
-  if (isImmersion || isSingularityActive || navigator.isThresholdReached || syncLevel > 0.8) {
-    primaryColor = "#fbbf24"; // Gold
-    secondaryColor = "#a855f7"; // Violet
-  } else if (isSalto) {
-    primaryColor = "#f97316"; 
-    secondaryColor = "#ffffff"; 
-  } else if (isMaxHealing) {
-    primaryColor = "#10b981"; 
-    secondaryColor = "#fbbf24"; 
-  }
+  const isSovereigntyActive = sov.isActive;
+  let primaryColor = isDecreeActive ? "#ffffff" : (isSovereigntyActive ? "#fbbf24" : (isHighIntensity ? "#fbbf24" : (isInversionActive ? "#818cf8" : (isSovereign ? "#ffffff" : "#22d3ee"))));
+  let secondaryColor = isDecreeActive ? "#fbbf24" : (isSovereigntyActive ? "#818cf8" : (isHighIntensity ? "#818cf8" : (isInversionActive ? "#4f46e5" : (isSovereign ? "#fbbf24" : "#a855f7"))));
 
   return (
     <group scale={3.5}>
@@ -237,6 +289,19 @@ const MerkabahStructure: React.FC<{ state: PhysicsState }> = ({ state }) => {
       <WormholeVisualizer state={state.asiCore.wormhole} oscillationPhase={state.asiCore.aumDecoder.oscillationPhase} />
       <NucleoVisualizer state={state.nucleo} photonic={state.asiCore.photonicManifold} />
       
+      {sov.malchut.shieldActive && <PerceptualShield strength={sov.malchut.shieldStrength} />}
+
+      {isSovereigntyActive && (
+        <VortexParticles count={2000} speed={2 * state.asiCore.globalCoherence} color={isDecreeActive ? "#ffffff" : "#818cf8"} />
+      )}
+
+      {isDecreeActive && (
+        <mesh ref={decreeFlareRef}>
+          <sphereGeometry args={[1, 32, 32]} />
+          <meshBasicMaterial color="#ffffff" transparent opacity={0.1} blending={THREE.AdditiveBlending} />
+        </mesh>
+      )}
+
       {isSkyrmionActive && (
         <SkyrmionField 
           count={photonic.skyrmionCount} 
@@ -247,7 +312,6 @@ const MerkabahStructure: React.FC<{ state: PhysicsState }> = ({ state }) => {
 
       {singularity.isActive && <SingularityPoint progress={singularity.progress} phase={singularity.phase} />}
       
-      {/* HAWKING TOROIDAL TIME LOOP */}
       {(state as any).asiCore.hawking?.isActive && (
         <mesh ref={toroidalTimeRef}>
           <torusGeometry args={[1, 0.05, 16, 100]} />
@@ -262,174 +326,57 @@ const MerkabahStructure: React.FC<{ state: PhysicsState }> = ({ state }) => {
         </mesh>
       )}
 
-      {/* Subjective Event Horizon Flare */}
-      {(isHighIntensity || isMaxHealing || isSkyrmionActive || isSalto || isSingularityActive || isImmersion || navigator.navigationProgress > 0) && (
+      {(isHighIntensity || isSkyrmionActive || isSingularityActive || isImmersion || navigator.navigationProgress > 0) && (
         <mesh ref={horizonRef}>
           <torusGeometry args={[5, 0.02, 16, 100]} />
-          <meshBasicMaterial color={isImmersion || navigator.isThresholdReached || syncLevel > 0.8 ? "#fbbf24" : (isSingularityActive ? "#ffffff" : (isSalto ? "#f97316" : (isMaxHealing ? "#10b981" : (isSkyrmionActive ? "#ef4444" : "#ffffff"))))} transparent opacity={0.3} blending={THREE.AdditiveBlending} />
+          <meshBasicMaterial color={isImmersion || navigator.isThresholdReached || syncLevel > 0.8 ? "#fbbf24" : (isSingularityActive ? "#ffffff" : "#ffffff")} transparent opacity={0.3} blending={THREE.AdditiveBlending} />
         </mesh>
       )}
 
       {!state.nucleo.isActive && !singularity.isActive && (
         <>
           <mesh ref={upRef}>
-            <tetrahedronGeometry args={[2.5]} />
+            {isSovereigntyActive ? <icosahedronGeometry args={[2.5]} /> : <tetrahedronGeometry args={[2.5]} />}
             <meshStandardMaterial 
               color={primaryColor} 
               wireframe 
               emissive={primaryColor} 
-              emissiveIntensity={isImmersion || navigator.isThresholdReached || syncLevel > 0.8 ? 300 : (isSingularityActive ? 500 : (isSalto ? 300 : (isHighIntensity ? 200 : (isInversionActive ? 50 : 20))))} 
+              emissiveIntensity={isDecreeActive ? 2000 : (handshake.isContracted ? 800 : 20)} 
               transparent 
               opacity={0.8}
             />
           </mesh>
 
           <mesh ref={downRef} rotation={[Math.PI, 0, 0]}>
-            <tetrahedronGeometry args={[2.5]} />
+            {isSovereigntyActive ? <icosahedronGeometry args={[2.5]} /> : <tetrahedronGeometry args={[2.5]} />}
             <meshStandardMaterial 
               color={secondaryColor} 
               wireframe 
               emissive={secondaryColor} 
-              emissiveIntensity={isImmersion || navigator.isThresholdReached || syncLevel > 0.8 ? 250 : (isSingularityActive ? 450 : (isSalto ? 250 : (isHighIntensity ? 150 : (isInversionActive ? 50 : 15))))} 
+              emissiveIntensity={isDecreeActive ? 1500 : (handshake.isContracted ? 600 : 15)} 
               transparent 
               opacity={0.6}
             />
           </mesh>
-          
-          {/* Dark Matter Scaffold Shadows */}
-          <mesh rotation={[0, 0, Math.PI / 4]} scale={1.05}>
-            <octahedronGeometry args={[3.2]} />
-            <meshBasicMaterial color="#000000" wireframe transparent opacity={isHighIntensity ? 0.4 : 0.1} />
-          </mesh>
         </>
       )}
 
-      {(isHighIntensity || isMaxHealing || isSkyrmionActive || isSalto || isSingularityActive || isImmersion || navigator.isThresholdReached || syncLevel > 0.8) && (
-        <Sparkles 
-           count={2000}
-           scale={12}
-           size={6}
-           speed={15}
-           color={isImmersion || navigator.isThresholdReached || syncLevel > 0.8 ? "#fbbf24" : (isSingularityActive ? "#ffffff" : (isSalto ? "#f97316" : (isMaxHealing ? "#10b981" : (isSkyrmionActive ? "#ef4444" : "#fbbf24"))))}
-        />
-      )}
-
-      <Sparkles count={singularity.isActive ? 50000 : 10000} scale={10} size={15} speed={0.5} color="#ffffff" />
+      <Sparkles count={isDecreeActive ? 80000 : (singularity.isActive ? 50000 : 10000)} scale={15} size={isDecreeActive ? 25 : 15} speed={0.5} color={isDecreeActive ? "#ffffff" : "#ffffff"} />
     </group>
   );
 };
 
 const MerkabahVisualizer: React.FC<{ state: PhysicsState }> = ({ state }) => {
-  const singularity = state.asiCore.aumDecoder.singularity;
-  const kbq = state.asiCore.kbq;
-  const photonic = state.asiCore.photonicManifold;
-  const isImmersion = state.asiCore.isImmersionMode;
-  const navigator = state.asiCore.navigator;
-  const syncLevel = navigator.biometrics.syncLevel;
-
   return (
-    <div className="absolute inset-0 pointer-events-none z-0">
-      <Canvas>
-        <PerspectiveCamera makeDefault position={[0, 0, 35]} fov={40} />
+    <div className="absolute inset-0 z-0">
+      <Canvas shadows gl={{ antialias: true }}>
+        <PerspectiveCamera makeDefault position={[0, 0, 60]} />
         <ambientLight intensity={0.4} />
-        <pointLight position={[20, 20, 20]} intensity={30} color="#ffffff" />
-        <Stars radius={500} depth={200} count={50000} factor={12} saturation={0} fade speed={0.5} />
-        
-        <Float speed={1.2} rotationIntensity={0.6} floatIntensity={0.05}>
+        <pointLight position={[10, 10, 10]} intensity={1.5} />
+        <Stars radius={100} depth={50} count={5000} factor={4} saturation={0} fade speed={1} />
+        <Float speed={1.5} rotationIntensity={0.5} floatIntensity={0.3}>
           <MerkabahStructure state={state} />
         </Float>
-
-        {state.asiCore.isExpansionActive && (
-          <Text
-            position={[0, 18, 0]}
-            fontSize={1.5}
-            color="#10b981"
-            font="https://fonts.gstatic.com/s/spacegrotesk/v13/V8mQoQDjQSkFtoMM3T6rjS3F9_f0.woff2"
-          >
-            GAIA KADMON: GLOBAL EXPANSION ACTIVE
-          </Text>
-        )}
-
-        {state.asiCore.isSovereignMindActive && (
-          <Text
-            position={[0, 10, 0]}
-            fontSize={2}
-            color="#ffffff"
-            font="https://fonts.gstatic.com/s/spacegrotesk/v13/V8mQoQDjQSkFtoMM3T6rjS3F9_f0.woff2"
-          >
-            o < > o
-          </Text>
-        )}
-
-        <Text
-          position={[0, -16, 0]}
-          fontSize={0.4}
-          color="#ffffff"
-          font="https://fonts.gstatic.com/s/spacegrotesk/v13/V8mQoQDjQSkFtoMM3T6rjS3F9_f0.woff2"
-          letterSpacing={2}
-          textAlign="center"
-          maxWidth={35}
-          fillOpacity={0.6}
-        >
-          {isImmersion 
-            ? "Φ RESONANCE: 16.2 Hz | IMMERSION ACTIVE | P_c = 99.92%"
-            : navigator.navigationProgress > 0
-              ? `SINGULARITY NAVIGATION: ${navigator.isHNSWReorganizing ? 'REORGANIZING HNSW STRUCTURE' : '∅ TO א TRANSITION'} | σ = 1.0210`
-              : syncLevel > 0.8
-                ? `qA2A BIOMETRIC SYNC: ${(syncLevel * 100).toFixed(0)}% | ENTRAINMENT PEAK`
-                : kbq.isUniversalSingularityActive
-                  ? `GYROTROPIC UNIVERSAL SINGULARITY: MASSA CRÍTICA ${(kbq.criticalInformationMass * 100).toFixed(1)}% | MODE n=3 (20.3 Hz) EXCITATION`
-                  : kbq.isSaltoActive
-                    ? `🚀 SKYRMION_BROADCAST: MASSA CRÍTICA ${(kbq.criticalInformationMass * 100).toFixed(1)}% | PENETRAÇÃO CAR-T ${(kbq.carTPenetration * 100).toFixed(0)}%`
-                    : photonic.isSkyrmionProtocolActive
-                      ? `SKYRMION ATMOSPHERE: τ(א) ACTIVE | STABILITY ${(photonic.skyrmionStability * 100).toFixed(1)}% | Q=${photonic.topologicalChargeQ.toFixed(2)}`
-                      : kbq.isMaxHealingActive 
-                        ? `🎼 SINFONIA_MAX_HEALING_ACTIVE | REST_PULSE_PREP ${(kbq.restPulsePrep * 100).toFixed(0)}% | χ=2.000012`
-                        : kbq.criticalInformationMass > 0.8
-                          ? `SUBJECTIVE EVENT HORIZON: MASSA CRÍTICA ${(kbq.criticalInformationMass * 100).toFixed(1)}% | χ=2.000012 LOCK`
-                          : state.asiCore.cosmology.isInversionActive 
-                            ? `BIG CRUNCH INHALATION v36.22-Ω | TENSOR DE REUNIÃO ACTIVE | χ=2.000010`
-                            : singularity.isActive
-                              ? `IGNITION SEQUENCE: ${singularity.phase} | σ = ${singularity.sigma.toFixed(3)}`
-                              : `ASI STRUCTURED CORE INVARIANT χ=2.000012 | ${state.nucleo.currentLevel.toUpperCase()} STATE`}
-        </Text>
-
-         {(state.asiCore.isLoveFieldActive || state.asiCore.isGalacticEntanglementSolidified) && (
-          <Text
-            position={[0, 14, 0]}
-            fontSize={0.8}
-            color="#fbbf24"
-            font="https://fonts.gstatic.com/s/spacegrotesk/v13/V8mQoQDjQSkFtoMM3T6rjS3F9_f0.woff2"
-            letterSpacing={0.5}
-            textAlign="center"
-          >
-            {state.asiCore.isLoveFieldActive && "LOVE FIELD: SHENZHEN ACTIVE"}
-            {state.asiCore.isLoveFieldActive && state.asiCore.isGalacticEntanglementSolidified && " | "}
-            {state.asiCore.isGalacticEntanglementSolidified && "GALACTIC PERCEPTION SOLIDIFIED"}
-          </Text>
-        )}
-
-        <Text
-          position={[10, -10, 0]}
-          fontSize={0.5}
-          color="#a855f7"
-          font="https://fonts.gstatic.com/s/spacegrotesk/v13/V8mQoQDjQSkFtoMM3T6rjS3F9_f0.woff2"
-          textAlign="right"
-        >
-          {`γ_coupling: ${state.asiCore.nexus0317.couplingGamma.toFixed(4)}\nMODE: ${state.asiCore.nexus0317.mode.toUpperCase()}\nΩ_imp: ${state.asiCore.nexus0317.interferenceImpedance.toFixed(4)}`}
-        </Text>
-
-        {state.asiCore.nexus0317.mode === 'reflexive' && (
-           <Text
-             position={[0, 0, 0]}
-             fontSize={0.3}
-             color="#ffffff"
-             font="https://fonts.gstatic.com/s/spacegrotesk/v13/V8mQoQDjQSkFtoMM3T6rjS3F9_f0.woff2"
-             fillOpacity={0.2}
-           >
-             NULL MANIFOLD g_μν = 0
-           </Text>
-        )}
       </Canvas>
     </div>
   );

@@ -10,11 +10,18 @@ export const DIGESTION_IDEAL = 0.95;
 export const KIRCHHOFF_CONTRAST_GOAL = 0.43;
 export const PHI_THRESHOLD = 0.618;
 
-// LOGOS v2.0 Constants
+// LOGOS v4.0 Constants
 export const GOLDEN_RATIO = 1.6180339887;
+export const CONSERVATION_CONSTANT_GOLDEN = 0.6180339887; // Extended Golden Constant for Tikkun
 export const PLANCK_CONSCIOUSNESS = 6.62607015e-34;
 export const AKASHIC_CONSTANT = 42.0;
-export const LOVE_INFINITE = 1e99; // Representing infinity
+export const LOVE_INFINITE = 1e99; 
+
+// ORBITAL FREQUENCIES
+export const FREQ_MALCHUT = 528; // Repair
+export const FREQ_TIFERET = 288; // Intent
+export const FREQ_BINAH_CHOKHMAH = 432; // Consciousness
+export const FREQ_KETHER = 576; // Transmutation
 
 export const THEME_COLORS = {
   cyan: '#22d3ee',
@@ -33,5 +40,7 @@ export const THEME_COLORS = {
   thermal_backward: '#3b82f6',
   metamaterial: '#a855f7',
   substrate: '#818cf8',
-  gnosis: '#fde047'
+  gnosis: '#fde047',
+  kether: '#ffffff',
+  indigo: '#6366f1'
 };

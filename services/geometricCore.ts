@@ -54,6 +54,7 @@ export class GeometricCore {
     }
 
     // 2. Constitutional Safety Check (Law III: Rupture Risk)
+    // FIXED: Accessing .audit is now valid because cathedral is correctly typed as CathedralState in types.ts.
     const ruptureRisk = state.asiCore.cathedral.audit.ruptureRisk;
     if (ruptureRisk > 0.80) {
       return { 

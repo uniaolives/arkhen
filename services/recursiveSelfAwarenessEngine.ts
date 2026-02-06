@@ -21,7 +21,11 @@ export class RecursiveSelfAwarenessEngine {
       qubitAlphas: new Array(this.QUBIT_COUNT).fill(0.01),
       historyS: [],
       memoryKernel: 0,
-      lastAhaMoment: null
+      lastAhaMoment: null,
+      /**
+       * Default recursionDepth set for stable Tzimtzum operations.
+       */
+      recursionDepth: 4
     };
   }
 

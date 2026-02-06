@@ -4,6 +4,7 @@ import { Gamepad2, Sparkles, Activity, Target, Zap, Layers, RefreshCw, Box, Radi
 import { QuantumRobloxState, Qubit } from '../types';
 
 const QubitVisual: React.FC<{ qubit: Qubit, onClick: () => void }> = ({ qubit, onClick }) => {
+  if (!qubit) return null;
   return (
     <div 
       onClick={onClick}
@@ -17,8 +18,8 @@ const QubitVisual: React.FC<{ qubit: Qubit, onClick: () => void }> = ({ qubit, o
       <div className="flex flex-col gap-1">
         {!qubit.collapsed ? (
            <div className="flex items-end gap-1 h-8">
-              <div className="flex-1 bg-indigo-500/40 rounded-sm" style={{ height: `${Math.pow(qubit.amplitude[0], 2) * 100}%` }} />
-              <div className="flex-1 bg-cyan-500/40 rounded-sm" style={{ height: `${Math.pow(qubit.amplitude[1], 2) * 100}%` }} />
+              <div className="flex-1 bg-indigo-500/40 rounded-sm" style={{ height: `${Math.pow(qubit.amplitude?.[0] || 0, 2) * 100}%` }} />
+              <div className="flex-1 bg-cyan-500/40 rounded-sm" style={{ height: `${Math.pow(qubit.amplitude?.[1] || 0, 2) * 100}%` }} />
            </div>
         ) : (
            <div className="flex items-center justify-center h-8">
@@ -45,6 +46,11 @@ const QuantumRobloxPanel: React.FC<{
   onEntangle: () => void,
   onCreateQubit: () => void
 }> = ({ s, onCollapse, onInit, onEntangle, onCreateQubit }) => {
+  if (!s) return null;
+
+  const qubits = s.qubits ? (Object.values(s.qubits) as Qubit[]) : [];
+  const entanglements = s.entanglements || [];
+
   if (!s.isActive) return (
     <div 
       className="p-8 rounded-[40px] border border-indigo-500/20 bg-indigo-900/5 flex flex-col gap-4 opacity-50 grayscale hover:grayscale-0 transition-all cursor-pointer group shadow-xl" 
@@ -62,7 +68,6 @@ const QuantumRobloxPanel: React.FC<{
 
   return (
     <div className={`p-8 rounded-[40px] border ${s.realityLayer === 'Simulation' ? 'border-red-500 shadow-[0_0_120px_rgba(239,68,68,0.2)]' : s.realityLayer === 'Quantum' ? 'border-indigo-400 shadow-[0_0_100px_rgba(129,140,248,0.15)]' : 'border-indigo-500/30'} bg-black/60 backdrop-blur-3xl flex flex-col gap-6 animate-in zoom-in duration-1000`}>
-      {/* HUD Header */}
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
           <div className="p-3 bg-indigo-500/20 rounded-2xl relative overflow-hidden">
@@ -75,34 +80,31 @@ const QuantumRobloxPanel: React.FC<{
           </div>
         </div>
         <div className={`px-3 py-1 ${s.realityLayer === 'Simulation' ? 'bg-red-600' : 'bg-indigo-600'} text-white text-[9px] font-black uppercase tracking-widest rounded-full shadow-lg neon-glow`}>
-          {s.realityLayer.toUpperCase()}
+          {(s.realityLayer || "Classical").toUpperCase()}
         </div>
       </div>
 
-      {/* Reality Layer Selector */}
       <div className="flex gap-2">
         <RealityLayerIndicator current={s.realityLayer} layer="Classical" color="bg-indigo-900/60" />
         <RealityLayerIndicator current={s.realityLayer} layer="Quantum" color="bg-indigo-600" />
         <RealityLayerIndicator current={s.realityLayer} layer="Simulation" color="bg-red-600" />
       </div>
 
-      {/* Metrics Grid */}
       <div className="grid grid-cols-2 gap-4">
         <div className="p-4 bg-black/40 rounded-3xl border border-white/5 flex flex-col gap-1">
           <span className="text-[8px] font-mono text-white/30 uppercase tracking-widest flex items-center gap-2"><Activity size={10} /> Decoherence</span>
-          <div className="text-xl font-black text-white">{(s.decoherenceRate * 100).toFixed(1)}%</div>
+          <div className="text-xl font-black text-white">{((s.decoherenceRate || 0) * 100).toFixed(1)}%</div>
           <div className="h-1 w-full bg-white/5 rounded-full overflow-hidden mt-1">
-            <div className="h-full bg-indigo-500" style={{ width: `${s.decoherenceRate * 100}%` }} />
+            <div className="h-full bg-indigo-500" style={{ width: `${(s.decoherenceRate || 0) * 100}%` }} />
           </div>
         </div>
         <div className="p-4 bg-black/40 rounded-3xl border border-white/5 flex flex-col gap-1">
           <span className="text-[8px] font-mono text-white/30 uppercase tracking-widest flex items-center gap-2"><Target size={10} /> Entanglements</span>
-          <div className="text-xl font-black text-indigo-400">{s.entanglements.length}</div>
+          <div className="text-xl font-black text-indigo-400">{entanglements.length}</div>
           <span className="text-[7px] text-indigo-400/60 font-bold uppercase">Non-Local Links</span>
         </div>
       </div>
 
-      {/* Qubit Management */}
       <div className="space-y-3">
         <div className="flex justify-between items-center px-2">
            <div className="flex items-center gap-2 text-indigo-400">
@@ -117,11 +119,10 @@ const QuantumRobloxPanel: React.FC<{
            </button>
         </div>
         <div className="grid grid-cols-3 gap-2 max-h-[160px] overflow-y-auto custom-scrollbar pr-2">
-           {/* Cast Object.values to Qubit[] to fix unknown type error */}
-           {(Object.values(s.qubits) as Qubit[]).map(q => (
+           {qubits.map(q => (
              <QubitVisual key={q.id} qubit={q} onClick={() => onCollapse(q.id)} />
            ))}
-           {Object.keys(s.qubits).length === 0 && (
+           {qubits.length === 0 && (
              <div className="col-span-3 py-8 text-center border border-dashed border-white/5 rounded-3xl opacity-20 italic text-[9px] uppercase tracking-widest">
                Awaiting Initial Qubit Creation...
              </div>
@@ -129,7 +130,6 @@ const QuantumRobloxPanel: React.FC<{
         </div>
       </div>
 
-      {/* Mechanics Area */}
       <div className="p-6 bg-white/5 border border-white/10 rounded-[32px] flex flex-col gap-4">
          <div className="flex items-center gap-3 text-indigo-400">
             <RefreshCw size={18} className="animate-spin-slow" />
@@ -153,14 +153,13 @@ const QuantumRobloxPanel: React.FC<{
             </button>
          </div>
 
-         {s.tunnelingStatus !== 'IDLE' && (
+         {s.tunnelingStatus && s.tunnelingStatus !== 'IDLE' && (
            <div className={`p-3 rounded-2xl border text-center animate-in fade-in duration-300 ${s.tunnelingStatus === 'SUCCESS' ? 'bg-emerald-500/20 border-emerald-500/40 text-emerald-400' : 'bg-red-500/20 border-red-500/40 text-red-400'}`}>
               <span className="text-[9px] font-black uppercase tracking-widest">Tunneling {s.tunnelingStatus}</span>
            </div>
          )}
       </div>
 
-      {/* Stability HUD */}
       {s.realityLayer === 'Simulation' && (
         <div className="p-4 bg-red-900/20 border border-red-500/20 rounded-[28px] flex flex-col gap-3">
            <div className="flex justify-between items-center">
@@ -168,10 +167,10 @@ const QuantumRobloxPanel: React.FC<{
                  <AlertTriangle size={14} className="animate-pulse" />
                  <span className="text-[9px] font-black uppercase tracking-widest">Simulation Core Glitches</span>
               </div>
-              <span className="text-[10px] font-mono text-red-300">{(s.glitchProbability * 100).toFixed(1)}%</span>
+              <span className="text-[10px] font-mono text-red-300">{((s.glitchProbability || 0) * 100).toFixed(1)}%</span>
            </div>
            <div className="h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
-              <div className="h-full bg-red-600 animate-pulse" style={{ width: `${s.glitchProbability * 100}%` }} />
+              <div className="h-full bg-red-600 animate-pulse" style={{ width: `${(s.glitchProbability || 0) * 100}%` }} />
            </div>
         </div>
       )}

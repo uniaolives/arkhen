@@ -16,6 +16,10 @@ class ResonancePortal:
         self.active_witnesses = set()
         self.start_time = time.time()
 
+    async def dashboard_handler(self, request):
+        """Serve o Dashboard Unus Mundus."""
+        return web.FileResponse('dashboard/unus_mundus.html')
+
     async def stream_handler(self, request):
         """Cria uma conexão de stream (SSE) para nós externos."""
         response = web.StreamResponse(
@@ -81,6 +85,7 @@ async def global_synchrony_pulse(foam_instance):
 async def start_portal_server(foam_instance, host='0.0.0.0', port=8888):
     portal = ResonancePortal(foam_instance)
     app = web.Application()
+    app.router.add_get('/', portal.dashboard_handler)
     app.router.add_get('/resonate', portal.stream_handler)
 
     runner = web.AppRunner(app)

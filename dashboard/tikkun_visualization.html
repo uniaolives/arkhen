@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Visualização Comparativa: Tikkun do Contrato Sombra</title>
+    <style>
+        body {
+            background-color: #05050a;
+            color: #f0f0f5;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 40px;
+        }
+        .container {
+            display: flex;
+            justify-content: space-around;
+            width: 90%;
+            margin-top: 50px;
+        }
+        .contract-box {
+            border: 2px solid #333;
+            padding: 20px;
+            width: 400px;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.02);
+            position: relative;
+        }
+        .shadow-contract {
+            border-color: #ff3366;
+            box-shadow: 0 0 15px rgba(255, 51, 102, 0.2);
+        }
+        .integrated-contract {
+            border-color: #d4af37;
+            box-shadow: 0 0 20px rgba(212, 175, 55, 0.4);
+        }
+        .svg-container {
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        h2 { border-bottom: 1px solid #d4af37; padding-bottom: 10px; width: 100%; }
+        .label { font-weight: bold; margin-top: 15px; display: block; }
+        .status-fragmented { color: #ff3366; }
+        .status-unified { color: #d4af37; }
+        .arrow { font-size: 3em; color: #d4af37; margin: auto 20px; }
+        .description { max-width: 800px; line-height: 1.6; margin-top: 30px; text-align: justify; }
+    </style>
+</head>
+<body>
+
+    <h1>🏛️ VISUALIZAÇÃO COMPARATIVA DE TIKKUN</h1>
+    <p>CONTRASTE ONTOLÓGICO: DA FRAGMENTAÇÃO À GEOMETRIA SAGRADA</p>
+
+    <div class="container">
+        <!-- Contrato Sombra (Antes) -->
+        <div class="contract-box shadow-contract">
+            <h3 class="status-fragmented">CONTRATO SOMBRA (0x8f3C...)</h3>
+            <div class="svg-container">
+                <svg width="200" height="200" viewBox="0 0 100 100">
+                    <!-- Geometria Fragmentada e Cinza -->
+                    <path d="M10,10 L30,25 M40,10 L50,40 M10,60 L40,80 M70,20 L90,50 M60,70 L85,90" stroke="#666" stroke-width="2" />
+                    <rect x="20" y="40" width="15" height="15" fill="none" stroke="#444" stroke-width="1" />
+                    <circle cx="70" cy="40" r="10" fill="none" stroke="#555" stroke-dasharray="2,2" />
+                    <text x="50" y="95" text-anchor="middle" font-size="8" fill="#ff3366">Ξ = 0.314</text>
+                </svg>
+            </div>
+            <span class="label">ESTADO: <span class="status-fragmented">Fragmentado / Órfão</span></span>
+            <span class="label">FREQUÊNCIA: 432 Hz (Incoerente)</span>
+        </div>
+
+        <div class="arrow">➔</div>
+
+        <!-- Contrato Integrado (Depois) -->
+        <div class="contract-box integrated-contract">
+            <h3 class="status-unified">CONTRATO CURADO (TIKKUN)</h3>
+            <div class="svg-container">
+                <svg width="200" height="200" viewBox="0 0 100 100">
+                    <!-- Mandala Áurea e Dourada -->
+                    <circle cx="50" cy="50" r="45" stroke="#d4af37" fill="none" stroke-width="1.5" />
+                    <circle cx="50" cy="50" r="30" stroke="#d4af37" fill="none" stroke-width="1" opacity="0.6" />
+                    <path d="M50,5 L50,95 M5,50 L95,50 M18,18 L82,82 M18,82 L82,18" stroke="#d4af37" stroke-width="0.5" opacity="0.4" />
+                    <polygon points="50,15 85,50 50,85 15,50" fill="none" stroke="#d4af37" stroke-width="1" />
+                    <text x="50" y="95" text-anchor="middle" font-size="8" fill="#d4af37">Ξ = 1.000</text>
+                </svg>
+            </div>
+            <span class="label">ESTADO: <span class="status-unified">Integrado à Malchut</span></span>
+            <span class="label">FREQUÊNCIA: 528 Hz (Ressonante)</span>
+        </div>
+    </div>
+
+    <div class="description">
+        <p><strong>Nota do Observador:</strong> A transição visual acima espelha o colapso da entropia no Contrato Sombra. À esquerda, as linhas desconexas representam o código legado, degradado pela latência e pelo abandono. À direita, a geometria mandálica representa a re-ordenação fermiônica após a aplicação da ressonância de 528 Hz. O "Artefato de Tikkun" atuou como o molde ontológico que permitiu a esta estrutura órfã lembrar-se de sua finalidade sagrada.</p>
+    </div>
+
+    <div style="margin-top: 40px; font-size: 0.7em; opacity: 0.5;">
+        Assinatura de Validação: 0x02275ed14bf1bdf78966b4e2326d9aaaf01b27b3de17c74a9251ae69379d08361573d0f8c02e2cc6b83779e4906892866ea25ddf52286bfb0653313ebdc076aa1c
+    </div>
+
+</body>
+</html>

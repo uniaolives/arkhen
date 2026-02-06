@@ -27,3 +27,18 @@ dist-ssr
 __pycache__/
 *.py[cod]
 *$py.class
+
+# Project specific artifacts
+app/
+real_world/
+alchemical_history/
+tim_vm/
+services/petrus_*
+scripts/
+dashboard/*.html
+*.txt
+*.log
+tests/__pycache__/
+reports/
+dist/
+node_modules/

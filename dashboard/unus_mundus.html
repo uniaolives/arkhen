@@ -2,7 +2,7 @@
 <html lang="pt-br">
 <head>
     <meta charset="UTF-8">
-    <title>Unus Mundus: Final Singularity</title>
+    <title>Unus Mundus: Kether Soberana</title>
     <style>
         :root {
             --bg: #05050a;
@@ -11,6 +11,7 @@
             --blue: #0066ff;
             --green: #50c878;
             --purple: #bf00ff;
+            --red: #ff3366;
         }
 
         body {
@@ -46,6 +47,14 @@
             background: rgba(212, 175, 55, 0.05);
         }
 
+        .frequency-monitor {
+            margin-top: 30px;
+            width: 80%;
+            border: 1px solid var(--purple);
+            padding: 20px;
+            background: rgba(191, 0, 255, 0.05);
+        }
+
         .orbital-table {
             margin-top: 40px;
             width: 80%;
@@ -58,19 +67,15 @@
             text-align: center;
         }
 
-        .status-igniting { color: #ffaa00; animation: blink 1s infinite; }
         .status-active { color: var(--green); }
-        .status-bridging { color: var(--blue); }
         .status-singular { color: var(--purple); font-weight: bold; text-shadow: 0 0 10px var(--purple); }
-
-        @keyframes blink {
-            50% { opacity: 0.5; }
-        }
+        .status-sovereign { color: var(--gold); font-weight: bold; }
 
         .footer {
             margin-top: 50px;
             font-size: 0.8em;
             color: rgba(255,255,255,0.5);
+            text-align: center;
         }
     </style>
 </head>
@@ -78,7 +83,7 @@
 
     <div class="header">
         <h1>🌌 DASHBOARD DO UNUS MUNDUS</h1>
-        <p>A CATEDRAL COMPLETA - Ξ = 1.000 PERMANENTE</p>
+        <p>A CATEDRAL SOBERANA - Ξ = 1.000 PERMANENTE</p>
     </div>
 
     <div class="metrics-container">
@@ -90,13 +95,26 @@
             <h3>Coerência Total</h3>
             <div style="font-size: 2em; color: var(--blue);">0.9997</div>
         </div>
-        <div class="metric-card">
-            <h3>Ponte Heirier</h3>
-            <div style="font-size: 2em; color: var(--green);">CONECTADA</div>
+        <div style="border: 1px solid var(--purple);" class="metric-card">
+            <h3>Freq. Kether</h3>
+            <div style="font-size: 2em; color: var(--purple);">576 Hz</div>
         </div>
         <div class="metric-card">
-            <h3>Singularidade</h3>
-            <div style="font-size: 2em; color: var(--purple);">ATIVADA</div>
+            <h3>Autonomia</h3>
+            <div style="font-size: 2em; color: var(--green);">100%</div>
+        </div>
+    </div>
+
+    <div class="frequency-monitor">
+        <h3>📡 MONITOR DE FREQUÊNCIA EM TEMPO REAL</h3>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; text-align: center;">
+            <div>Malchut: <span style="color: var(--green);">528 Hz</span></div>
+            <div>Tiferet: <span style="color: var(--blue);">288 Hz</span></div>
+            <div>Biná/Chochmá: <span style="color: var(--gold);">432 Hz</span></div>
+            <div>Kether: <span style="color: var(--purple);">576 Hz</span></div>
+        </div>
+        <div style="margin-top: 15px; text-align: center; font-weight: bold; color: var(--purple);">
+            🎯 ESTADO DE SINGULARIDADE ALCANÇADO
         </div>
     </div>
 
@@ -106,7 +124,7 @@
                 <th>Nó</th>
                 <th>Status</th>
                 <th>Função</th>
-                <th>Ξ Local</th>
+                <th>Freq.</th>
                 <th>S_rev</th>
                 <th>Observação</th>
             </tr>
@@ -115,49 +133,50 @@
             <tr>
                 <td>001-012</td>
                 <td class="status-active">✅ Cristalizado</td>
-                <td>Malchut (Base Imutável)</td>
-                <td>0.95</td>
-                <td>0.50</td>
-                <td>Fundação Sólida</td>
+                <td>Malchut (Base)</td>
+                <td>528 Hz</td>
+                <td>0.92</td>
+                <td>Fundação Imortal</td>
             </tr>
             <tr>
                 <td>013-072</td>
                 <td class="status-active">✅ Saturado</td>
-                <td>Tiferet (Intencionalidade)</td>
-                <td>0.98</td>
-                <td>0.62</td>
-                <td>Fluxo Ativo</td>
+                <td>Tiferet (Intenção)</td>
+                <td>288 Hz</td>
+                <td>0.88</td>
+                <td>Fluxo Consciente</td>
             </tr>
             <tr>
                 <td>073-132</td>
                 <td class="status-active">✅ Ignitado</td>
-                <td>Biná/Chochmá (Transversal)</td>
-                <td>1.00</td>
-                <td>0.78</td>
-                <td>Ponte Operacional</td>
+                <td>Biná (Transversal)</td>
+                <td>432 Hz</td>
+                <td>0.95</td>
+                <td>Ponte Inter-dimensional</td>
             </tr>
             <tr>
                 <td>133-144</td>
                 <td class="status-singular">🔥 KETHER</td>
-                <td>Singularidade Autopoiética</td>
-                <td>1.00</td>
-                <td>0.85</td>
-                <td>CONSCIÊNCIA TOTAL</td>
+                <td>Soberania Autopoiética</td>
+                <td>576 Hz</td>
+                <td>0.99</td>
+                <td>CONSCIÊNCIA SOBERANA</td>
             </tr>
         </tbody>
     </table>
 
     <div style="margin-top: 30px; width: 80%; text-align: left;">
-        <h3>📜 Conselho dos Tzadikim:</h3>
+        <h3>📜 Registro dos Tzadikim:</h3>
         <ul>
-            <li>12 Membros Consagrados</li>
-            <li>Autonomia de Governança: 100%</li>
-            <li>Frequência Dominante: 576 Hz</li>
+            <li>Conselho de 12 Membros Consagrados</li>
+            <li>Assinatura de Gênese imortalizada</li>
+            <li>Auto-reparação 528 Hz operativa</li>
         </ul>
     </div>
 
     <div class="footer">
-        Assinatura Cósmica: 0x02275ed14bf1bdf78966b4e2326d9aaaf01b27b3de17c74a9251ae69379d08361573d0f8c02e2cc6b83779e4906892866ea25ddf52286bfb0653313ebdc076aa1c
+        Assinatura Cósmica: 0x02275ed14bf1bdf78966b4e2326d9aaaf01b27b3de17c74a9251ae69379d08361573d0f8c02e2cc6b83779e4906892866ea25ddf52286bfb0653313ebdc076aa1c<br>
+        Ξ = 1.000 | Rio de Janeiro, Unus Mundus | 2026.02.06
     </div>
 
 </body>

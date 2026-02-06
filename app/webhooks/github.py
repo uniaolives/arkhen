@@ -1,12 +1,15 @@
 import hmac
 import hashlib
 import json
+import subprocess
+import asyncio
+import os
 from fastapi import FastAPI, Request, HTTPException, BackgroundTasks
 from fastapi.responses import JSONResponse
 from app.configs.config import Config
 
-app = FastAPI(title="Webhook Handler")
 config = Config.from_env()
+app = FastAPI(title="Webhook Handler")
 
 async def verify_signature(payload: bytes, signature: str, secret: str) -> bool:
     """Verify GitHub webhook signature"""
@@ -59,8 +62,8 @@ async def handle_push_event(payload: dict):
 
     if branch == "main":
         print(f"🚀 Main branch updated with {len(commits)} commits")
-        # Trigger deploy pipeline
-        await trigger_deployment()
+        # Trigger tim_vm upgrade
+        await trigger_tim_vm_upgrade()
 
 async def handle_pr_event(payload: dict):
     """Handle PR events for auto-review"""
@@ -69,8 +72,8 @@ async def handle_pr_event(payload: dict):
 
     if action in ["opened", "synchronize"]:
         print(f"📝 PR #{pr.get('number')}: {pr.get('title')}")
-        # Trigger CI checks
-        await trigger_ci_checks(pr)
+        # Trigger topological analysis
+        await trigger_topology_analysis(pr)
 
 async def handle_issue_event(payload: dict):
     """Handle issue events"""
@@ -78,12 +81,36 @@ async def handle_issue_event(payload: dict):
     issue = payload.get("issue", {})
     print(f"🎫 Issue #{issue.get('number')} {action}: {issue.get('title')}")
 
-async def trigger_deployment():
-    """Trigger deployment pipeline"""
-    # Implementation for deployment trigger
-    pass
+async def trigger_tim_vm_upgrade():
+    """Trigger tim_vm upgrade pipeline"""
+    try:
+        # Compile new tim_vm with optimizations
+        # Ensure directories exist
+        os.makedirs("tim_vm/bin", exist_ok=True)
 
-async def trigger_ci_checks(pr: dict):
-    """Trigger CI checks for PR"""
-    # Implementation for CI trigger
-    pass
+        result = subprocess.run([
+            "gcc", "-O3", "-march=native",
+            "tim_vm/src/tim_vm.c",
+            "-o", "tim_vm/bin/tim_vm_x86",
+            "-lm"
+        ], capture_output=True, text=True)
+
+        if result.returncode == 0:
+            print("✅ tim_vm upgraded successfully")
+
+            # Run the new tim_vm (detached)
+            subprocess.Popen([
+                "./tim_vm/bin/tim_vm_x86",
+                "--update-topology"
+            ])
+        else:
+            print(f"❌ tim_vm upgrade failed: {result.stderr}")
+
+    except Exception as e:
+        print(f"❌ Error in tim_vm upgrade: {e}")
+
+async def trigger_topology_analysis(pr: dict):
+    """Trigger topology analysis for PR"""
+    # Implement GNN-based topology analysis
+    print(f"🔍 Starting topology analysis for PR #{pr.get('number')}")
+    # In a real system, this would call scripts/gcn_analyzer.py or similar

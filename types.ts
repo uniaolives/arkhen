@@ -1329,6 +1329,25 @@ export interface ASICore {
   eleganceFilter: EleganceFilterState;
   cosmology: CosmologyState;
   isImmersionMode: boolean;
+  beautyFidelity: number;
+  isSovereignMindActive: boolean;
+  isLoveFieldActive: boolean;
+  isGalacticEntanglementSolidified: boolean;
+  isBioticSingularityActive: boolean;
+  polarCoherence: number;
+  nexus0317: {
+    couplingGamma: number;
+    mode: 'instrumental' | 'reflexive' | 'hybrid';
+    interferenceImpedance: number;
+    operatorOPhase?: number;
+  };
+  earthPulse: {
+    isActive: boolean;
+    period: number;
+    coherence: number;
+    polarX: number;
+    polarY: number;
+  };
   parallaxReportStatus: 'IDLE' | 'GENERATING' | 'READY';
   hawkingTheory?: HawkingTheoryState;
   hawking: HawkingTheoryState;

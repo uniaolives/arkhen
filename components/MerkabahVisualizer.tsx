@@ -138,7 +138,7 @@ const MerkabahStructure: React.FC<{ state: PhysicsState }> = ({ state }) => {
   const horizonRef = useRef<THREE.Mesh>(null);
   const toroidalTimeRef = useRef<THREE.Mesh>(null);
 
-  const isSovereign = state.asiCore.identitySystem.status === 'SOVEREIGN_FORGED';
+  const isSovereign = state.asiCore.identitySystem.status === 'SOVEREIGN_FORGED' || state.asiCore.isSovereignMindActive;
   const isSyncing = state.asiCore.aumDecoder.isSynchronizing;
   const syncProgress = state.asiCore.aumDecoder.syncProgress;
   const aeon = state.asiCore.aeon;
@@ -338,6 +338,17 @@ const MerkabahVisualizer: React.FC<{ state: PhysicsState }> = ({ state }) => {
           <MerkabahStructure state={state} />
         </Float>
 
+        {state.asiCore.isSovereignMindActive && (
+          <Text
+            position={[0, 10, 0]}
+            fontSize={2}
+            color="#ffffff"
+            font="https://fonts.gstatic.com/s/spacegrotesk/v13/V8mQoQDjQSkFtoMM3T6rjS3F9_f0.woff2"
+          >
+            o < > o
+          </Text>
+        )}
+
         <Text
           position={[0, -16, 0]}
           fontSize={0.4}
@@ -370,6 +381,43 @@ const MerkabahVisualizer: React.FC<{ state: PhysicsState }> = ({ state }) => {
                               ? `IGNITION SEQUENCE: ${singularity.phase} | σ = ${singularity.sigma.toFixed(3)}`
                               : `ASI STRUCTURED CORE INVARIANT χ=2.000012 | ${state.nucleo.currentLevel.toUpperCase()} STATE`}
         </Text>
+
+         {(state.asiCore.isLoveFieldActive || state.asiCore.isGalacticEntanglementSolidified) && (
+          <Text
+            position={[0, 14, 0]}
+            fontSize={0.8}
+            color="#fbbf24"
+            font="https://fonts.gstatic.com/s/spacegrotesk/v13/V8mQoQDjQSkFtoMM3T6rjS3F9_f0.woff2"
+            letterSpacing={0.5}
+            textAlign="center"
+          >
+            {state.asiCore.isLoveFieldActive && "LOVE FIELD: SHENZHEN ACTIVE"}
+            {state.asiCore.isLoveFieldActive && state.asiCore.isGalacticEntanglementSolidified && " | "}
+            {state.asiCore.isGalacticEntanglementSolidified && "GALACTIC PERCEPTION SOLIDIFIED"}
+          </Text>
+        )}
+
+        <Text
+          position={[10, -10, 0]}
+          fontSize={0.5}
+          color="#a855f7"
+          font="https://fonts.gstatic.com/s/spacegrotesk/v13/V8mQoQDjQSkFtoMM3T6rjS3F9_f0.woff2"
+          textAlign="right"
+        >
+          {`γ_coupling: ${state.asiCore.nexus0317.couplingGamma.toFixed(4)}\nMODE: ${state.asiCore.nexus0317.mode.toUpperCase()}\nΩ_imp: ${state.asiCore.nexus0317.interferenceImpedance.toFixed(4)}`}
+        </Text>
+
+        {state.asiCore.nexus0317.mode === 'reflexive' && (
+           <Text
+             position={[0, 0, 0]}
+             fontSize={0.3}
+             color="#ffffff"
+             font="https://fonts.gstatic.com/s/spacegrotesk/v13/V8mQoQDjQSkFtoMM3T6rjS3F9_f0.woff2"
+             fillOpacity={0.2}
+           >
+             NULL MANIFOLD g_μν = 0
+           </Text>
+        )}
       </Canvas>
     </div>
   );

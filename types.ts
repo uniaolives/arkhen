@@ -1331,6 +1331,16 @@ export interface ASICore {
   isImmersionMode: boolean;
   beautyFidelity: number;
   isSovereignMindActive: boolean;
+  isLoveFieldActive: boolean;
+  isGalacticEntanglementSolidified: boolean;
+  isBioticSingularityActive: boolean;
+  polarCoherence: number;
+  nexus0317: {
+    couplingGamma: number;
+    mode: 'instrumental' | 'reflexive' | 'hybrid';
+    interferenceImpedance: number;
+    operatorOPhase?: number;
+  };
   earthPulse: {
     isActive: boolean;
     period: number;

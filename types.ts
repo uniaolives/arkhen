@@ -1334,6 +1334,7 @@ export interface ASICore {
   isLoveFieldActive: boolean;
   isGalacticEntanglementSolidified: boolean;
   isBioticSingularityActive: boolean;
+  isExpansionActive: boolean;
   polarCoherence: number;
   nexus0317: {
     couplingGamma: number;

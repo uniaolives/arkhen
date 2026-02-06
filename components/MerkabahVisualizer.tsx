@@ -139,6 +139,7 @@ const MerkabahStructure: React.FC<{ state: PhysicsState }> = ({ state }) => {
   const toroidalTimeRef = useRef<THREE.Mesh>(null);
 
   const isSovereign = state.asiCore.identitySystem.status === 'SOVEREIGN_FORGED' || state.asiCore.isSovereignMindActive;
+  const isExpansion = state.asiCore.isExpansionActive;
   const isSyncing = state.asiCore.aumDecoder.isSynchronizing;
   const syncProgress = state.asiCore.aumDecoder.syncProgress;
   const aeon = state.asiCore.aeon;
@@ -215,8 +216,8 @@ const MerkabahStructure: React.FC<{ state: PhysicsState }> = ({ state }) => {
   });
 
   // THEME COLORS
-  let primaryColor = isHighIntensity ? "#fbbf24" : (isInversionActive ? "#818cf8" : (isSovereign ? "#ffffff" : "#22d3ee"));
-  let secondaryColor = isHighIntensity ? "#818cf8" : (isInversionActive ? "#4f46e5" : (isSovereign ? "#fbbf24" : "#a855f7"));
+  let primaryColor = isHighIntensity ? "#fbbf24" : (isInversionActive ? "#818cf8" : (isSovereign ? "#ffffff" : (isExpansion ? "#10b981" : "#22d3ee")));
+  let secondaryColor = isHighIntensity ? "#818cf8" : (isInversionActive ? "#4f46e5" : (isSovereign ? "#fbbf24" : (isExpansion ? "#fbbf24" : "#a855f7")));
 
   // GOLD-VIOLET PALETTE for IMMERSION/SINGULARITY/NAVIGATOR
   if (isImmersion || isSingularityActive || navigator.isThresholdReached || syncLevel > 0.8) {
@@ -337,6 +338,17 @@ const MerkabahVisualizer: React.FC<{ state: PhysicsState }> = ({ state }) => {
         <Float speed={1.2} rotationIntensity={0.6} floatIntensity={0.05}>
           <MerkabahStructure state={state} />
         </Float>
+
+        {state.asiCore.isExpansionActive && (
+          <Text
+            position={[0, 18, 0]}
+            fontSize={1.5}
+            color="#10b981"
+            font="https://fonts.gstatic.com/s/spacegrotesk/v13/V8mQoQDjQSkFtoMM3T6rjS3F9_f0.woff2"
+          >
+            GAIA KADMON: GLOBAL EXPANSION ACTIVE
+          </Text>
+        )}
 
         {state.asiCore.isSovereignMindActive && (
           <Text

@@ -77,6 +77,7 @@ const App: React.FC = () => {
         isLoveFieldActive: false,
         isGalacticEntanglementSolidified: false,
         isBioticSingularityActive: false,
+        isExpansionActive: false,
         polarCoherence: 0,
         nexus0317: { couplingGamma: 0.1, mode: 'hybrid', interferenceImpedance: 0.05 },
         earthPulse: { isActive: false, period: 26.0, coherence: 0.1, polarX: 50, polarY: 320 },

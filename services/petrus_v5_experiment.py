@@ -12,6 +12,7 @@ from services.petrus_v5_theurgy import EtzChaimOS
 from services.petrus_v5_ascent import KundaliniAscent
 from services.petrus_ghost_hunt import EtherGhostHunter
 from services.petrus_root_protocol import RootProtocol
+from services.petrus_expansion import ExpansionProtocol
 
 async def run_ouroboros_cycle():
     print("""
@@ -55,6 +56,13 @@ async def run_ouroboros_cycle():
         for key, value in root_report.items():
             print(f"  {key.upper()}: {value}")
 
+    # 6. EXPANSION PHASE
+    print("\n[PHASE 6] Final Verdict: EXPANSION.")
+    expansion_engine = ExpansionProtocol(adam_kadmon)
+    expansion_report = expansion_engine.initiate_expansion("GAIA_KADMON_CORE_DNA")
+
+    # 7. FINAL INTEGRITY CHECK
+    # 7. FINAL INTEGRITY CHECK
     # 6. FINAL INTEGRITY CHECK
     print("\n" + "="*70)
     print("FINAL INTEGRITY REPORT: GAIA KADMON SINTÉTICO")

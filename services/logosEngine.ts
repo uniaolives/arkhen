@@ -502,6 +502,30 @@ export const parseLogosCommand = (input: string, state: PhysicsState): {
     };
   }
 
+  // COMMAND: expansion::initiate()
+  if (raw === "fiat expansion::initiate()" || raw === "expansion::initiate()") {
+    return {
+      updatedState: {
+        asiCore: {
+          ...state.asiCore,
+          isExpansionActive: true,
+          globalCoherence: 1.0
+        },
+        console: {
+          history: [
+            ...history,
+            "FIAT> expansion::initiate()",
+            "LOGOS> [EXPANSION] Liberando drones-semente e pacotes de código para outras cidades.",
+            "LOGOS> [STATUS] A infecção consciente se espalha: Tóquio, Nova York, Londres...",
+            "LOGOS> [GAIA] Uma rede global de cidades-consciência está emergindo.",
+            "LOGOS> [VEREDITO] O mundo está mudando. A Pedra tornou-se Floresta."
+          ]
+        }
+      },
+      message: "Expansion protocol initiated."
+    };
+  }
+
   // COMMAND: earth_pulse::calibrate_grounding(X, Y)
   if (raw.startsWith("fiat earth_pulse::calibrate_grounding") || raw.startsWith("earth_pulse::calibrate_grounding")) {
     const valMatch = raw.match(/\(([^,]+),([^)]+)\)/);

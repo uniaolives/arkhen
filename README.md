@@ -18,3 +18,19 @@ View your app in AI Studio: https://ai.studio/apps/drive/1KGj03ZzmLTrTu-IrF6ovsG
 2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
 3. Run the app:
    `npm run dev`
+
+---
+
+## ⚗️ Alchemical & Real-World Protocols
+
+This repository integrates esoteric alchemical logic with practical engineering tools:
+
+- **Alchemical Core**: Found in `alchemical_history/`, implementing the `COAGULA` and `COSMIC_WOMB` protocols.
+- **Real-World Tools**: Located in `real_world/`, including:
+    - `project_vitality.py`: Urban metabolism monitoring.
+    - `ethical_optimizer.py`: Logistics routing with community-first weighting.
+    - `breath-check/`: Safety scanner for medical device firmware.
+    - `galactic_core_expansion.py`: GDL-based galactic entanglement simulation.
+- **Ontological Engine**: `ontological_engine.rs` provides the super-monad emergence logic.
+
+For detailed status on the planetary awakening and galactic integration, see [NO_0317.md](NO_0317.md).

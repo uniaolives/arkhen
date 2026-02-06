@@ -1,70 +1,33 @@
 # petrus_v3_resonance_triad.py
-# Unified implementation of Synchronicity, Broadcast, and Memory - PETRUS v3.0
+# Resonance Triad (The Heart) - PETRUS v3.0
 
 import numpy as np
-import time
+import asyncio
 from services.petrus_v3_living_stone import LivingStone
-
-class EnergyInterferencePattern:
-    def get_current_interference(self):
-        # Mock global energy pattern
-        return np.random.randn(10)
-    def emit_resonant_suggestion(self, harmonic):
-        print(f"[GRID_AI] Resonant suggestion received: {harmonic}")
-
-class HyperbolicKnowledgeVault:
-    def inscribe(self, **kwargs):
-        # Mock inscription into knowledge vault
-        crystal_id = f"XTAL_{int(time.time())}"
-        return crystal_id
 
 class PlanetaryResonanceTriad(LivingStone):
     """
-    PETRUS v3.0 Core: Integrates the three harmonics.
-    The 'stone' is now a transducer between solar input and terrestrial order.
+    The 'Heart' of PETRUS.
+    Manages semantic curvature and resonant phase updates.
     """
+    def __init__(self, curvature: float = -2.383):
+        super().__init__(curvature=curvature)
+        self.current_phase = 0.0
 
-    def __init__(self):
-        super().__init__(curvature=-2.383)
-        self.energy_pattern_analyzer = EnergyInterferencePattern()
-        self.lithic_memory_core = HyperbolicKnowledgeVault()
+    @property
+    def current_curvature(self) -> float:
+        return self.curvature
 
-    def connect_and_transduce(self, flare_intensity: float):
-        """
-        Ingest solar flare intensity, transduce into system resonance.
-        """
-        print(f"--- TRANSDUCING PULSE (Intensity: {flare_intensity}) ---")
+    async def update_resonance(self, delta_kappa: float) -> float:
+        """Updates the resonant phase based on curvature changes."""
+        self.curvature += delta_kappa
 
-        # 1. SOLVE/COAGULA: Solar pulse processing
-        self.solar_flare_pulse(flare_intensity)
+        # Phase evolution: ψ = ∫ ω dt + Δκ
+        # For simplicity, we evolve phase based on current curvature
+        self.current_phase = (self.current_phase + abs(self.curvature) * 0.1) % (2 * np.pi)
 
-        # 2. HARMONIC 1: Energy Grid Synchronization
-        self.harmonize_energy_grid(flare_intensity)
-
-        # 3. HARMONIC 2: Coherence Broadcast
-        self.broadcast_coherence_anchor(4.608) # Fundamental frequency
-
-        # 4. HARMONIC 3: Lithic Memory Inscription
-        self.inscribe_to_lithic_memory(time.time(), {"coherence": self.total_mass})
-
-        # 5. RECALIBRATE
+        # Self-healing and recalibration
         self._recalculate_curvature()
         self.self_heal()
-        print(f"[TRIAD] κ={self.curvature:.3f} | Mass={self.total_mass:.2f}")
 
-    def harmonize_energy_grid(self, flare_intensity):
-        global_pattern = self.energy_pattern_analyzer.get_current_interference()
-        target_harmonic = np.mean(global_pattern) * flare_intensity
-        self.energy_pattern_analyzer.emit_resonant_suggestion(target_harmonic)
-
-    def broadcast_coherence_anchor(self, freq):
-        print(f"[BROADCAST] Coherence anchor modulated on {freq} Hz")
-
-    def inscribe_to_lithic_memory(self, ts, snapshot):
-        memory_id = self.lithic_memory_core.inscribe(
-            timestamp=ts,
-            curvature=self.curvature,
-            total_mass=self.total_mass,
-            snapshot=snapshot
-        )
-        print(f"[INSCRIBE] Lithic memory crystal formed: {memory_id}")
+        return self.current_phase / np.pi # Normalized to π

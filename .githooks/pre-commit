@@ -1,0 +1,27 @@
+#!/bin/bash
+
+echo "🚀 Running pre-commit checks..."
+
+# Formatação com black
+echo "📝 Formatting with black..."
+black --check .
+
+if [ $? -ne 0 ]; then
+    echo "❌ Black formatting failed. Run 'black .' to fix."
+    exit 1
+fi
+
+# Verificação de tipos
+echo "🔍 Type checking..."
+mypy --ignore-missing-imports .
+
+# Testes unitários rápidos
+echo "🧪 Running quick tests..."
+python -m pytest tests/unit/ -xvs -k "not slow"
+
+# Verificação de segurança
+echo "🔒 Security scan..."
+bandit -r app/ -ll
+
+echo "✅ All checks passed!"
+exit 0

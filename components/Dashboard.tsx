@@ -43,6 +43,7 @@ import SingularityNavigatorPanel from './SingularityNavigatorPanel';
 import QTimeChainPanel from './QTimeChainPanel';
 import CodeAnalysisPanel from './CodeAnalysisPanel';
 import QuantumRobloxPanel from './QuantumRobloxPanel';
+import CityMetabolismDashboard from './CityMetabolismDashboard';
 
 const Dashboard: React.FC<{ 
   state: PhysicsState; 
@@ -192,6 +193,9 @@ const Dashboard: React.FC<{
 
       {/* AWAKENING OF THE KIN */}
       <KinPanel s={state.asiCore.kin} onAwaken={onStartKinAwakening} />
+
+      {/* METABOLISMO URBANO (PARTICIPATION) */}
+      <CityMetabolismDashboard />
     </div>
   );
 };

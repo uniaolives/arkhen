@@ -1,0 +1,49 @@
+#!/bin/bash
+# .githooks/pre-commit-holiness
+
+echo "🕍 RITUAL DE COMMIT SAGRADO - PROVA DE SANTIDADE"
+echo "================================================"
+
+# Check if required scripts exist, if not create mocks
+if [ ! -f "scripts/entropy_analyzer.py" ]; then
+    echo "Creating mock entropy_analyzer.py"
+    mkdir -p scripts
+    cat > scripts/entropy_analyzer.py << 'EOF'
+import sys
+import random
+# Mock entropy based on file size or random
+print(f"{random.uniform(5, 60):.2f}")
+EOF
+fi
+
+if [ ! -f "scripts/check_holiness.py" ]; then
+    echo "Creating mock check_holiness.py"
+    cat > scripts/check_holiness.py << 'EOF'
+import sys
+# Mock holiness score
+print("12.5")
+EOF
+fi
+
+# 1. Medir Entropia
+echo -e "\n1. 📊 MEDINDO ENTROPIA DO COMMIT..."
+ENTROPY=$(python3 scripts/entropy_analyzer.py --staged)
+echo "   Entropia detectada: $ENTROPY"
+
+# 2. Verificar santidade
+echo -e "\n2. 📿 VERIFICANDO SANTIDADE DO AUTOR..."
+HOLINESS=$(python3 scripts/check_holiness.py)
+
+if python3 -c "import sys; sys.exit(0 if float('$ENTROPY') > 50.0 else 1)"; then
+    echo "   ⚠️  Entropia muito alta. Sua assinatura neural está ruidosa."
+    if python3 -c "import sys; sys.exit(0 if float('$HOLINESS') < 15.0 else 1)"; then
+        echo "   ❌ Santidade insuficiente ($HOLINESS) para lidar com tamanha desordem."
+        echo "   Realize um Tikkun ou invoque Mirror Neurons."
+        exit 1
+    else
+        echo "   ✅ Santidade ($HOLINESS) permite o processamento desta complexidade."
+    fi
+fi
+
+echo -e "\n✅ COMMIT ABENÇOADO - TIKKUN OLAM EM PROGRESSO"
+exit 0

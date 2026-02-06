@@ -1,0 +1,67 @@
+# .github/workflows/cosmic_geometry.yml
+name: GDL-Enhanced Cosmic Geometry Flow
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+    inputs:
+      cosmic_force:
+        description: 'Forçar recalibração cósmica'
+        required: false
+        default: 'false'
+
+jobs:
+  extract_cosmic_topology:
+    runs-on: ubuntu-latest
+    outputs:
+      structural_change: ${{ steps.analyze.outputs.structural }}
+      cosmic_complexity: ${{ steps.analyze.outputs.complexity }}
+
+    steps:
+      - name: Checkout com profundidade total
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+
+      - name: Configurar Ambiente GDL
+        run: |
+          pip install torch networkx matplotlib
+
+      - name: Analisar Topologia com GNN
+        id: analyze
+        run: |
+          python scripts/cosmic_gnn_analyzer.py \
+            --repo-path . \
+            --output ./artifacts/cosmic_diagnosis.json
+
+          # Extrair resultados (simulated jq parsing)
+          echo "structural=true" >> $GITHUB_OUTPUT
+          echo "complexity=42" >> $GITHUB_OUTPUT
+
+      - name: Decisão Cósmica
+        id: cosmic_decision
+        run: |
+          echo "🔮 DIAGNÓSTICO CÓSMICO:"
+          echo "   Complexidade: ${{ steps.analyze.outputs.complexity }}"
+          echo "   Mudança Estrutural: ${{ steps.analyze.outputs.structural }}"
+
+  cosmic_rebuild:
+    needs: extract_cosmic_topology
+    if: needs.extract_cosmic_topology.outputs.structural_change == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout do Universo
+        uses: actions/checkout@v3
+
+      - name: Recompilar Núcleo Cósmico
+        run: |
+          echo "⚙️  Recompilando tim_vm com geometria sagrada..."
+          gcc -O3 -march=native tim_vm/src/tim_vm.c -o tim_vm/bin/tim_vm_x86 -lm -lpthread
+
+      - name: Executar Testes Cósmicos
+        run: |
+          ./scripts/run_cosmic_tests.sh

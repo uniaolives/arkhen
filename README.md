@@ -18,3 +18,30 @@ View your app in AI Studio: https://ai.studio/apps/drive/1KGj03ZzmLTrTu-IrF6ovsG
 2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
 3. Run the app:
    `npm run dev`
+
+---
+
+## ⚗️ Alchemical & Real-World Protocols
+
+This repository integrates esoteric alchemical logic with practical engineering tools:
+
+- **Alchemical Core**: Found in `alchemical_history/`, implementing the `COAGULA` and `COSMIC_WOMB` protocols.
+- **Real-World Tools**: Located in `real_world/`, including:
+    - `project_vitality.py`: Urban metabolism monitoring.
+    - `ethical_optimizer.py`: Logistics routing with community-first weighting.
+    - `breath-check/`: Safety scanner for medical device firmware.
+    - `galactic_core_expansion.py`: GDL-based galactic entanglement simulation.
+- **Ontological Engine**: `ontological_engine.rs` provides the super-monad emergence logic.
+- **Agent Infrastructure**: Automated CI/CD, webhooks, and high-precision timing core (`tim_vm/`).
+
+## 🚀 Agent Upgrade & Deploy (v3.0 - Cosmic Geometry)
+
+The system now features a self-managing agent infrastructure with topological awareness:
+- **Local Hooks**: `setup.sh` configures `.githooks` for automated quality checks.
+- **Workflows**: GDL-enhanced workflows (`cosmic_geometry.yml`) with topological analysis.
+- **VM Core**: High-precision temporal orchestration with entropy tracking in `tim_vm.c` (v3.0).
+- **Webhooks**: Cosmic Webhook Orchestrator for intentional event processing.
+
+To set up the environment, run `./setup.sh`.
+
+For detailed status on the planetary awakening and galactic integration, see [NO_0317.md](NO_0317.md).

@@ -14,21 +14,10 @@ class Config:
     GITHUB_TOKEN: Optional[str] = os.getenv("GITHUB_TOKEN")
     GITHUB_WEBHOOK_SECRET: Optional[str] = os.getenv("GITHUB_WEBHOOK_SECRET")
 
-    # Slack
-    SLACK_WEBHOOK_URL: Optional[str] = os.getenv("SLACK_WEBHOOK_URL")
-
-    # Database
-    DB_HOST: str = os.getenv("DB_HOST", "localhost")
-    DB_PORT: int = int(os.getenv("DB_PORT", "5432"))
-    DB_NAME: str = os.getenv("DB_NAME", "metalflow")
-
-    # ML Models
-    MODEL_PATH: str = os.getenv("MODEL_PATH", "models/")
-    BATCH_SIZE: int = int(os.getenv("BATCH_SIZE", "32"))
-
-    @property
-    def database_url(self) -> str:
-        return f"postgresql://{self.DB_HOST}:{self.DB_PORT}/{self.DB_NAME}"
+    # Economy Settings
+    ROSE_TOKEN_ID: str = "rose-hip-01-token"
+    RESONANCE_THRESHOLD: float = 1.85
+    DIRICHLET_REWARD_K: float = 100.0
 
     @classmethod
     def from_env(cls):

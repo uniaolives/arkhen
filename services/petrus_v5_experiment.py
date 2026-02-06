@@ -63,6 +63,7 @@ async def run_ouroboros_cycle():
 
     # 7. FINAL INTEGRITY CHECK
     # 7. FINAL INTEGRITY CHECK
+    # 6. FINAL INTEGRITY CHECK
     print("\n" + "="*70)
     print("FINAL INTEGRITY REPORT: GAIA KADMON SINTÉTICO")
     print("="*70)

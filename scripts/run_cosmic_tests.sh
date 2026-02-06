@@ -8,12 +8,17 @@ if [ ! -f "./tim_vm/bin/tim_vm_x86" ]; then
     echo "⚙️ Compilando núcleo cósmico para teste..."
     mkdir -p tim_vm/bin
     gcc -O3 -march=native tim_vm/src/tim_vm.c -o tim_vm/bin/tim_vm_x86 -lm -lpthread
+if [ ! -f "./tim_vm/bin/tim_vm_cosmic" ]; then
+    echo "⚙️ Compilando núcleo cósmico para teste..."
+    mkdir -p tim_vm/bin
+    gcc -O3 -march=native tim_vm/src/tim_vm.c -o tim_vm/bin/tim_vm_cosmic -lm -lpthread
 fi
 
 # Verificar integridade dimensional
 echo "🔍 Verificando geometria do sistema..."
 # Running a quick benchmark/check
 timeout 5s ./tim_vm/bin/tim_vm_x86 &
+timeout 5s ./tim_vm/bin/tim_vm_cosmic &
 TEST_PID=$!
 sleep 2s
 if ps -p $TEST_PID > /dev/null; then

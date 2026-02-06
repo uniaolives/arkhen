@@ -27,6 +27,7 @@ def trigger_upgrade_agent(repository, branch):
         if not os.path.exists("./tim_vm/bin/tim_vm_x86"):
              print("⚙️ Compiling tim_vm core...")
              subprocess.run(["gcc", "-O3", "-march=native", "tim_vm/src/tim_vm.c", "-o", "tim_vm/bin/tim_vm_x86", "-lm", "-lpthread"])
+             subprocess.run(["gcc", "-O3", "-march=native", "tim_vm/src/tim_vm.c", "-o", "tim_vm/bin/tim_vm_x86"])
 
         result = subprocess.run(
             ["./tim_vm/bin/tim_vm_x86", "--update-topology"],

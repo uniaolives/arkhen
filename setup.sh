@@ -19,6 +19,8 @@ git config core.hooksPath .githooks
 echo "⚙️ Compiling tim_vm core (v3.0)..."
 gcc -O3 -march=native tim_vm/src/tim_vm.c -o tim_vm/bin/tim_vm_x86 -lm -lpthread
 chmod +x tim_vm/bin/tim_vm_x86
+gcc -O3 -march=native tim_vm/src/tim_vm.c -o tim_vm/bin/tim_vm_cosmic -lm -lpthread
+chmod +x tim_vm/bin/tim_vm_cosmic
 
 # Setup environment
 echo "🌱 Setting up environment..."

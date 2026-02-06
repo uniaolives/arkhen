@@ -113,6 +113,7 @@ async def trigger_cosmic_analysis(payload: Dict[str, Any]):
 async def trigger_cosmic_rebuild():
     """Trigger the rebuild of tim_vm"""
     subprocess.run(["gcc", "-O3", "-march=native", "tim_vm/src/tim_vm.c", "-o", "tim_vm/bin/tim_vm_x86", "-lm", "-lpthread"])
+    subprocess.run(["gcc", "-O3", "-march=native", "tim_vm/src/tim_vm.c", "-o", "tim_vm/bin/tim_vm_cosmic", "-lm", "-lpthread"])
     print("✨ Núcleo cósmico reconstruído.")
 
 @app.get("/cosmic_health")

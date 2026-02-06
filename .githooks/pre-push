@@ -1,0 +1,35 @@
+#!/bin/bash
+# .githooks/pre-push - O Validador Rosehip
+# Analisa a assinatura neural do commit antes do push.
+
+echo "🌌 ROSEHIP PUSH HOOK: Validando cognição para o ChainGit ICP..."
+
+# 1. Extrai o diff do commit
+DIFF=$(git diff HEAD^ HEAD)
+
+# 2. Calcula a entropia do diff via Python
+ENTROPY=$(python3 -c "
+import math, sys
+data = sys.stdin.read()
+if not data:
+    print(0)
+    sys.exit()
+probs = [data.count(c)/len(data) for c in set(data)]
+entropy = -sum(p * math.log2(p) for p in probs)
+print(f'{entropy:.2f}')
+" <<< "$DIFF")
+
+echo "🌹 [ChainGit] Neural Signature calculada: $ENTROPY."
+
+# Limite de estabilidade Rosehip
+LIMIT=15.0
+
+if (( $(echo "$ENTROPY > $LIMIT" | bc -l) )); then
+    echo "❌ Rejeitado pelo Filtro Rosehip: Entropia muito alta ($ENTROPY > $LIMIT)"
+    echo "   Sua assinatura neural está ruidosa. Proof of Cognitive Effort (PoCE) necessária."
+    echo "   Refatore o código ou busque ajuda dos Mirror Neurons."
+    exit 1
+fi
+
+echo "✅ Validação aprovada pelo ChainGit Cortex. Harmonia preservada."
+exit 0

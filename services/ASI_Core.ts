@@ -85,9 +85,23 @@ export class SafeCoreOrchestrator {
       cosmology.expansionFactor += 0.001 * Math.abs(cosmology.phantomW);
     }
 
+    // Calculate polarCoherence: (Plasma * Axis / 26s Pulse)
+    const plasma = state.aumDecoder.schumannSurge.plasmaFlux;
+    const axisDepth = Math.abs(state.earthPulse.polarY);
+    const pulseCoherence = state.earthPulse.coherence || 1;
+    const polarCoherence = (plasma * axisDepth) / pulseCoherence;
+
+    // Simulate Nexus 0317 Hamiltonian Coupling (gamma)
+    const nextNexus = { ...state.nexus0317 };
+    const couplingDrift = (Math.random() - 0.5) * 0.01;
+    nextNexus.couplingGamma = Math.min(1.0, Math.max(0, nextNexus.couplingGamma + couplingDrift + (globalCoherence * 0.005)));
+    nextNexus.interferenceImpedance = Math.max(0.001, nextNexus.interferenceImpedance * 0.99);
+
     return {
       ...state,
       kbq: nextKBQ,
+      polarCoherence,
+      nexus0317: nextNexus,
       eleganceFilter: { ...state.eleganceFilter, currentPercept: percept },
       cosmology,
       globalCoherence: (globalCoherence + nextKBQ.bioCoherence) / 2

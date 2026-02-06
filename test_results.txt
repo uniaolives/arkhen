@@ -1,4 +1,0 @@
-✓ Infinite loop detection: PASS
-✓ Watchdog requirement: PASS
-
-✅ All safety checks passed. Ready for real firmware.

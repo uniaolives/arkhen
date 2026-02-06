@@ -60,7 +60,7 @@ jobs:
       - name: Recompilar Núcleo Cósmico
         run: |
           echo "⚙️  Recompilando tim_vm com geometria sagrada..."
-          gcc -O3 -march=native tim_vm/src/tim_vm.c -o tim_vm/bin/tim_vm_cosmic -lm -lpthread
+          gcc -O3 -march=native tim_vm/src/tim_vm.c -o tim_vm/bin/tim_vm_x86 -lm -lpthread
 
       - name: Executar Testes Cósmicos
         run: |

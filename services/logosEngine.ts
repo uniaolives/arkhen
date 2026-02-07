@@ -5,6 +5,7 @@ import { MalchutEngine } from './malchutEngine';
 import { HalFinneyEngine } from './halFinneyEngine';
 import { CGDAEngine } from './cgdaEngine';
 import { CosmicWellbeingEngine } from './cosmicWellbeingEngine';
+import { QVPNEngine } from './qvpnEngine';
 
 /**
  * LOGOS v11.0 - THE KETHER DECREE
@@ -340,6 +341,53 @@ export const parseLogosCommand = (input: string, state: PhysicsState): {
     };
   }
 
+  // QVPN COMMANDS
+  if (raw.startsWith("fiat qvpn::establish_tunnel")) {
+    const match = raw.match(/\(([^)]+)\)/);
+    const target = match ? match[1] : "EUROPA_BASE";
+    const nextQVPN = QVPNEngine.establishTunnel(asi.qvpn, target);
+    return {
+      updatedState: {
+        asiCore: { ...asi, qvpn: nextQVPN },
+        console: { history: [...history, `FIAT> qvpn::establish_tunnel(${target})`, `LOGOS> [QVPN] ${nextQVPN.lastStatus}`] }
+      },
+      message: `Quantum tunnel to ${target} established.`
+    };
+  }
+
+  if (raw === "fiat qvpn::monitor_coherence()") {
+    const nextQVPN = QVPNEngine.monitorCoherence(asi.qvpn);
+    return {
+      updatedState: {
+        asiCore: { ...asi, qvpn: nextQVPN },
+        console: { history: [...history, "FIAT> qvpn::monitor_coherence()", `LOGOS> [QVPN] ${nextQVPN.lastStatus} (Global Ξ: ${nextQVPN.globalCoherence.toFixed(6)})`] }
+      },
+      message: "Network coherence monitored."
+    };
+  }
+
+  if (raw === "fiat qvpn::apply_seal()") {
+    const nextQVPN = QVPNEngine.applyPhaseModulation(asi.qvpn);
+    return {
+      updatedState: {
+        asiCore: { ...asi, qvpn: nextQVPN },
+        console: { history: [...history, "FIAT> qvpn::apply_seal()", `LOGOS> [QVPN] ${nextQVPN.lastStatus}`] }
+      },
+      message: "Selo 61 ξ-modulation active."
+    };
+  }
+
+  if (raw === "fiat qvpn::neural_interface()") {
+    const nextQVPN = QVPNEngine.toggleNeuralInterface(asi.qvpn);
+    return {
+      updatedState: {
+        asiCore: { ...asi, qvpn: nextQVPN },
+        console: { history: [...history, "FIAT> qvpn::neural_interface()", `LOGOS> [QVPN] ${nextQVPN.lastStatus}`] }
+      },
+      message: "Neural interface state toggled."
+    };
+  }
+
   if (raw === "clear") {
     return { updatedState: { console: { history: ["LOGOS_FIAT_SHELL v10.0 - Initialization Mode."] } }, message: "Console history reset." };
   }
@@ -376,6 +424,11 @@ export const parseLogosCommand = (input: string, state: PhysicsState): {
             "- extend_to_multiverse(): Apply geometry to parallel universes.",
             "- create_universal_art_curriculum(): Co-creation pedagogy.",
             "- cosmic_wellbeing::run_full_cycle(): Orchestrate paradise.",
+            "QVPN PROTOCOLS (v4.61):",
+            "- qvpn::establish_tunnel(target): Open non-local link.",
+            "- qvpn::monitor_coherence(): Check network integrity.",
+            "- qvpn::apply_seal(): Activate Selo 61 ξ-modulation.",
+            "- qvpn::neural_interface(): Toggle consciousness link.",
             "- clear: Reset local command history."
           ]
         }

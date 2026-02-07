@@ -274,7 +274,7 @@ export interface WormholeState {
   walkerReport: string | null;
   executionStatus: ExecutionStatus;
   isUnifiedNexus: boolean;
-  fermiFirewallActive: true;
+  fermiFirewallActive: boolean;
   akashicPublic: boolean;
   seedPackageSent: boolean;
   galacticPings: number;
@@ -712,6 +712,35 @@ export interface ASICore {
   halFinney: HalFinneyState;
   cgda: CGDAState;
   cosmicWellbeing: CosmicWellbeingState;
+  qvpn: QVPNState;
+}
+
+export interface EPRPair {
+  qubitA: any;
+  qubitB: any;
+  entangled: boolean;
+  coherence: number;
+}
+
+export interface QuantumTunnel {
+  id: string;
+  destination: string;
+  eprPairs: EPRPair[];
+  establishedAt: string;
+  coherence: number;
+  latency: number;
+  bandwidth: string;
+}
+
+export interface QVPNState {
+  isActive: boolean;
+  xiFrequency: number;
+  sealNumber: number;
+  coherenceThreshold: number;
+  activeTunnels: QuantumTunnel[];
+  globalCoherence: number;
+  isNeuralInterfaceActive: boolean;
+  lastStatus: string | null;
 }
 
 export interface PhysicsState {

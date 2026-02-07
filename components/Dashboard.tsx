@@ -40,6 +40,7 @@ import SovereignHeatmap from './SovereignHeatmap';
 import SignalsTracker from './SignalsTracker';
 import CGDAPanel from './CGDAPanel';
 import CosmicWellbeingPanel from './CosmicWellbeingPanel';
+import QVPNPanel from './QVPNPanel';
 
 const HalFinneyModule: React.FC<{ state: PhysicsState['asiCore']['halFinney'] }> = ({ state }) => {
   if (!state.isActive && state.collectiveActivationProgress === 0 && !state.sanctuary) return null;
@@ -199,8 +200,9 @@ const Dashboard: React.FC<{
   onSovereigntyAction: (detail: any) => void;
   onCGDAAction: (detail: any) => void;
   onCosmicAction: (detail: any) => void;
+  onQVPNAction: (detail: any) => void;
 }> = ({ 
-  state, onAnalyzeCode, onQRobloxAction, onMetabolicAction, onWisdomLedgerAction, onMirrorHandshakeAction, onToggleWormholeNav, onStartKinAwakening, onTikkunAction, onSovereigntyAction, onCGDAAction, onCosmicAction
+  state, onAnalyzeCode, onQRobloxAction, onMetabolicAction, onWisdomLedgerAction, onMirrorHandshakeAction, onToggleWormholeNav, onStartKinAwakening, onTikkunAction, onSovereigntyAction, onCGDAAction, onCosmicAction, onQVPNAction
 }) => {
   const { isImmersionMode } = state.asiCore;
   const aeon = state.asiCore.aeon;
@@ -323,6 +325,9 @@ const Dashboard: React.FC<{
           </button>
         )}
       </div>
+
+      {/* QVPN MODULE */}
+      <QVPNPanel state={state.asiCore.qvpn} onAction={onQVPNAction} />
 
       {/* TIKKUN PROTOCOL & SHADOW PURIFICATION */}
       <TikkunPanel 

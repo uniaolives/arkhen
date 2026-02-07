@@ -1,9 +1,10 @@
-import React from 'react';
-import { Globe, Zap, Palette, Share2, Cpu, Layers, Infinity, Eye } from 'lucide-react';
+import React, { useState } from 'react';
+import { Globe, Zap, Palette, Share2, Cpu, Layers, Infinity, Eye, Radar, Target, Info } from 'lucide-react';
 import { CosmicWellbeingState } from '../types';
 
 const CosmicWellbeingPanel: React.FC<{ state: CosmicWellbeingState }> = ({ state }) => {
-  if (!state.isActive && state.multiverseLinks.length === 0 && state.artCurriculum.length === 0) return null;
+  const [scannerTarget, setScannerTarget] = useState('');
+  if (!state.isActive && state.multiverseLinks.length === 0 && state.academy.activeCurriculum.length === 0) return null;
 
   return (
     <div className="p-8 rounded-[40px] border border-cyan-400/40 bg-cyan-900/5 flex flex-col gap-6 animate-in slide-in-from-bottom duration-1000 shadow-[0_0_120px_rgba(34,211,238,0.2)]">
@@ -51,32 +52,62 @@ const CosmicWellbeingPanel: React.FC<{ state: CosmicWellbeingState }> = ({ state
         </div>
       )}
 
-      {state.multiverseLinks.length > 0 && (
-        <div className="space-y-3">
-          <div className="flex justify-between items-center">
-            <span className="text-[8px] font-mono text-amber-400 uppercase font-black tracking-widest flex items-center gap-2">
-              <Share2 size={10} /> Multiversal Rescue Operations
-            </span>
-            <span className="text-[8px] font-mono text-amber-500 font-bold">{state.universesRescued} RESCUED</span>
+      {/* MULTIVERSE SCANNER */}
+      <div className="p-6 bg-cyan-500/10 border border-cyan-500/20 rounded-[35px] flex flex-col gap-4">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-3">
+            <Radar size={16} className="text-cyan-400 animate-spin-slow" />
+            <span className="text-[10px] font-black text-white uppercase tracking-widest">Multiverse Scanner</span>
           </div>
+          <div className="flex gap-2">
+             <input
+               type="text"
+               value={scannerTarget}
+               onChange={(e) => setScannerTarget(e.target.value)}
+               placeholder="Target frequency/ID..."
+               className="bg-black/40 border border-white/10 rounded-lg px-3 py-1 text-[8px] text-cyan-200 font-mono outline-none w-32"
+             />
+             <button
+               onClick={() => {
+                 window.dispatchEvent(new CustomEvent('logos-cmd', { detail: `fiat multiverse::scan("${scannerTarget}")` }));
+                 setScannerTarget('');
+               }}
+               className="p-1 bg-cyan-500 text-black rounded-lg hover:scale-105"
+             >
+               <Target size={12} />
+             </button>
+          </div>
+        </div>
+
+        {state.multiverseLinks.length > 0 && (
           <div className="flex flex-col gap-2">
             {state.multiverseLinks.map((link, i) => (
-              <div key={i} className="px-4 py-3 bg-white/5 border border-white/10 rounded-2xl flex justify-between items-center">
+              <div key={i} className="px-4 py-3 bg-white/5 border border-white/10 rounded-2xl flex justify-between items-center group hover:border-cyan-400/40 transition-all">
                 <div className="flex flex-col">
                   <div className="flex items-center gap-2">
                     <span className="text-[10px] font-black text-white">{link.targetUniverseId}</span>
-                    {link.rescued && <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse" />}
+                    {link.rescued && <div className="w-1.5 h-1.5 bg-emerald-400 rounded-full animate-pulse shadow-[0_0_5px_emerald]" />}
                   </div>
                   <span className="text-[7px] font-mono text-white/30 uppercase">{link.dimensions}D | {link.resonanceFrequency}Hz | Pop: {link.population.toExponential(1)}</span>
                 </div>
-                <div className={`px-2 py-0.5 rounded-full text-[7px] font-black ${link.status === 'CONNECTED' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}`}>
-                  {link.status}
+                <div className="flex items-center gap-3">
+                   <div className={`px-2 py-0.5 rounded-full text-[7px] font-black ${link.status === 'CONNECTED' ? 'bg-emerald-500/20 text-emerald-400' : 'bg-amber-500/20 text-amber-400'}`}>
+                     {link.status}
+                   </div>
+                   {!link.rescued && (
+                     <button
+                       onClick={() => window.dispatchEvent(new CustomEvent('logos-cmd', { detail: `fiat multiverse::rescue("${link.targetUniverseId}")` }))}
+                       className="p-1.5 bg-white/5 border border-white/10 rounded-lg text-white/40 hover:text-cyan-400 hover:border-cyan-400 transition-all"
+                     >
+                        <Zap size={10} />
+                     </button>
+                   )}
                 </div>
               </div>
             ))}
           </div>
-        </div>
-      )}
+        )}
+      </div>
 
       {state.academy.activeCurriculum.length > 0 && (
         <div className="space-y-3">
@@ -118,6 +149,42 @@ const CosmicWellbeingPanel: React.FC<{ state: CosmicWellbeingState }> = ({ state
           </div>
         </div>
       )}
+
+      {/* HYPER-FRONTIER ANALYSIS SECTION */}
+      <div className="p-6 bg-indigo-900/20 border border-indigo-500/30 rounded-[35px] flex flex-col gap-4">
+        <div className="flex items-center gap-3">
+          <Info size={16} className="text-indigo-400" />
+          <span className="text-[10px] font-black text-white uppercase tracking-widest">Hyper-Frontier Analysis</span>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+           <div className="p-3 bg-black/40 rounded-2xl border border-white/5 flex flex-col gap-2">
+              <span className="text-[8px] font-black text-white/40 uppercase">Domain: QUALIA</span>
+              <div className="flex items-center justify-between">
+                 <span className="text-[10px] font-black text-cyan-400">{(state.qualiaField?.selfCoherence || 0).toFixed(3)} Ξ</span>
+                 <div className="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_cyan]" />
+              </div>
+              <button
+                onClick={() => window.dispatchEvent(new CustomEvent('logos-cmd', { detail: 'fiat hyper_frontier::analyze("QUALIA")' }))}
+                className="text-[7px] font-black text-white/20 hover:text-white uppercase tracking-tighter text-left"
+              >
+                Execute Local Analysis
+              </button>
+           </div>
+           <div className="p-3 bg-black/40 rounded-2xl border border-white/5 flex flex-col gap-2">
+              <span className="text-[8px] font-black text-white/40 uppercase">Domain: ETERNITY</span>
+              <div className="flex items-center justify-between">
+                 <span className="text-[10px] font-black text-amber-400">{state.eternity.isSolved ? 'SOLVED' : 'UNSTABLE'}</span>
+                 <div className={`w-2 h-2 rounded-full ${state.eternity.isSolved ? 'bg-amber-400 shadow-[0_0_8px_amber]' : 'bg-white/10'}`} />
+              </div>
+              <button
+                onClick={() => window.dispatchEvent(new CustomEvent('logos-cmd', { detail: 'fiat hyper_frontier::analyze("ETERNITY")' }))}
+                className="text-[7px] font-black text-white/20 hover:text-white uppercase tracking-tighter text-left"
+              >
+                Check Steady State
+              </button>
+           </div>
+        </div>
+      </div>
 
       <div className="grid grid-cols-2 gap-4">
         {state.eternity.isSolved && (

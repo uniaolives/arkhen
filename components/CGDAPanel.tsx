@@ -1,9 +1,17 @@
-import React from 'react';
-import { Activity, Layout, AlertTriangle } from 'lucide-react';
+import React, { useState } from 'react';
+import { Activity, Layout, AlertTriangle, Database, Search, Code, Play } from 'lucide-react';
 import { CGDAState } from '../types';
 
 const CGDAPanel: React.FC<{ state: CGDAState }> = ({ state }) => {
+  const [ingestionInput, setIngestionInput] = useState('');
   if (!state.isActive && state.derivationProgress === 0) return null;
+
+  const handleIngest = () => {
+    window.dispatchEvent(new CustomEvent('logos-cmd', {
+      detail: `fiat cgda::ingest_data("${ingestionInput}")`
+    }));
+    setIngestionInput('');
+  };
 
   return (
     <div className="p-8 rounded-[40px] border border-indigo-500/40 bg-indigo-900/5 flex flex-col gap-6 animate-in zoom-in duration-700 shadow-[0_0_80px_rgba(99,102,241,0.1)]">
@@ -19,6 +27,43 @@ const CGDAPanel: React.FC<{ state: CGDAState }> = ({ state }) => {
         </div>
         <div className="px-3 py-1 bg-indigo-500 text-black text-[9px] font-black uppercase tracking-widest rounded-full">
           {state.lastDerivedManifold || 'IDLE'}
+        </div>
+      </div>
+
+      {/* CGDA LAB SECTION */}
+      <div className="p-6 bg-indigo-500/10 border border-indigo-500/20 rounded-[35px] flex flex-col gap-4">
+        <div className="flex items-center gap-3">
+          <Database size={16} className="text-indigo-400" />
+          <span className="text-[10px] font-black text-white uppercase tracking-widest">CGDA LAB: DATA INGESTION</span>
+        </div>
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={ingestionInput}
+            onChange={(e) => setIngestionInput(e.target.value)}
+            placeholder="Enter raw constraint data..."
+            className="flex-1 bg-black/40 border border-white/10 rounded-xl px-4 py-2 text-[10px] text-white font-mono outline-none focus:border-indigo-400/60"
+          />
+          <button
+            onClick={handleIngest}
+            className="p-2 bg-indigo-500 text-white rounded-xl hover:scale-105 active:scale-95 transition-all"
+          >
+            <Play size={14} fill="currentColor" />
+          </button>
+        </div>
+        <div className="grid grid-cols-2 gap-2">
+           <button
+             onClick={() => window.dispatchEvent(new CustomEvent('logos-cmd', { detail: 'fiat cgda::discover_geometry()' }))}
+             className="flex items-center justify-center gap-2 p-2 bg-white/5 border border-white/10 rounded-xl text-[8px] font-black text-white/60 uppercase hover:bg-white/10"
+           >
+             <Search size={10} /> Discover Geometry
+           </button>
+           <button
+             onClick={() => window.dispatchEvent(new CustomEvent('logos-cmd', { detail: 'fiat cgda::reconstruct_ideal()' }))}
+             className="flex items-center justify-center gap-2 p-2 bg-white/5 border border-white/10 rounded-xl text-[8px] font-black text-white/60 uppercase hover:bg-white/10"
+           >
+             <Code size={10} /> Reconstruct Ideal
+           </button>
         </div>
       </div>
 

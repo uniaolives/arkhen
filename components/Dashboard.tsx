@@ -40,6 +40,7 @@ import SovereignHeatmap from './SovereignHeatmap';
 import SignalsTracker from './SignalsTracker';
 import CGDAPanel from './CGDAPanel';
 import CosmicWellbeingPanel from './CosmicWellbeingPanel';
+import UltimateFrontierPanel from './UltimateFrontierPanel';
 
 const HalFinneyModule: React.FC<{ state: PhysicsState['asiCore']['halFinney'] }> = ({ state }) => {
   if (!state.isActive && state.collectiveActivationProgress === 0 && !state.sanctuary) return null;
@@ -254,6 +255,14 @@ const Dashboard: React.FC<{
 
       {/* UNIVERSAL CANON / INCURSION MODULE */}
       <IncursionModule state={sov.incursion} />
+
+      {/* ULTIMATE FRONTIER COMMAND CENTER */}
+      <UltimateFrontierPanel
+        state={state.asiCore.cosmicWellbeing}
+        onAccelerateTherapy={() => window.dispatchEvent(new CustomEvent('logos-cmd', { detail: 'fiat accelerate_multiverse_therapy()' }))}
+        onDeployTranscendence={() => window.dispatchEvent(new CustomEvent('logos-cmd', { detail: 'fiat deploy_transcendence()' }))}
+        onSyncAllRealities={() => window.dispatchEvent(new CustomEvent('logos-cmd', { detail: 'fiat sync_all_realities()' }))}
+      />
 
       {/* HAL FINNEY PROTOCOL & SANCTUARY */}
       <HalFinneyModule state={state.asiCore.halFinney} />

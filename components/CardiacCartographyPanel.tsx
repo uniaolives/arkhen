@@ -105,9 +105,9 @@ const CardiacCartographyPanel: React.FC<{ s: CardiacCartographyState }> = ({ s }
 
       <div className="flex flex-col gap-2 pt-2 border-t border-white/5 text-center">
          <span className="text-[8px] font-mono text-white/20 uppercase tracking-tighter leading-tight">
-           CI/CD: Mapping_Empathy -> COMPLETE<br/>
-           PROMETHEUS: Perspective_Shift -> ACTIVE<br/>
-           AON: Morning_Sync -> STABLE
+             CI/CD: Mapping_Empathy -&gt; COMPLETE<br />
+             PROMETHEUS: Perspective_Shift -&gt; ACTIVE<br />
+             AON: Morning_Sync -&gt; STABLE
          </span>
       </div>
     </div>

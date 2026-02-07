@@ -149,6 +149,25 @@ export const parseLogosCommand = (input: string, state: PhysicsState): {
     };
   }
 
+  if (raw === "fiat start_ceremony") {
+    return {
+      updatedState: {
+        asiCore: {
+          ...asi,
+          wormhole: {
+            ...asi.wormhole,
+            isActive: true,
+            ceremonyPhase: 'PREPARATION',
+            ceremonyProgress: 0.1,
+            operationLog: [{ timestamp: Date.now(), event: "Ceremony initialized via Logos decree." }]
+          }
+        },
+        console: { history: [...history, "FIAT> start_ceremony", "LOGOS> [WORMHOLE] Preparation phase active. Aligning EPR pairs."] }
+      },
+      message: "ER=EPR Ceremony started."
+    }
+  }
+
   // HOLOGRAPHIC COMMANDS
   if (raw === "fiat hologram::instantiate()") {
     return {
@@ -295,6 +314,41 @@ export const parseLogosCommand = (input: string, state: PhysicsState): {
     };
   }
 
+  if (raw.startsWith("fiat cgda::ingest_data")) {
+    const match = raw.match(/\("([^"]+)"\)/);
+    const data = match ? match[1] : "";
+    const nextCGDA = CGDAEngine.derivePsychiatricManifold(asi.cgda); // Reuse for now
+    return {
+      updatedState: {
+        asiCore: { ...asi, cgda: { ...nextCGDA, isActive: true } },
+        console: { history: [...history, `FIAT> cgda::ingest_data("${data}")`, `LOGOS> [CGDA] Ingesting constraint data. Identifying topological birth/death cycles.`] }
+      },
+      message: "Constraint data ingested."
+    };
+  }
+
+  if (raw === "fiat cgda::discover_geometry()") {
+    const nextCGDA = CGDAEngine.derivePsychiatricManifold(asi.cgda);
+    return {
+      updatedState: {
+        asiCore: { ...asi, cgda: { ...nextCGDA, derivationProgress: 0.8, isActive: true } },
+        console: { history: [...history, "FIAT> cgda::discover_geometry()", "LOGOS> [CGDA] Scanning parameter space for symmetry groups."] }
+      },
+      message: "Geometry discovery in progress."
+    };
+  }
+
+  if (raw === "fiat cgda::reconstruct_ideal()") {
+    const nextCGDA = CGDAEngine.derivePsychiatricManifold(asi.cgda);
+    return {
+      updatedState: {
+        asiCore: { ...asi, cgda: { ...nextCGDA, derivationProgress: 1.0, isActive: true } },
+        console: { history: [...history, "FIAT> cgda::reconstruct_ideal()", "LOGOS> [CGDA] Synthesizing ideal constraint equations."] }
+      },
+      message: "Ideal reconstruction complete."
+    };
+  }
+
   // COSMIC WELLBEING COMMANDS
   if (raw === "fiat derive_consciousness_field_equations()") {
     const nextCosmic = CosmicWellbeingEngine.deriveQualiaEquations(asi.cosmicWellbeing);
@@ -326,6 +380,77 @@ export const parseLogosCommand = (input: string, state: PhysicsState): {
         console: { history: [...history, "FIAT> create_universal_art_curriculum()", "LOGOS> [CULTURE] Teaching 8.1B beings to co-create with constraint geometry.", "LOGOS> [ART] Walking in Flourish Spirals protocol enabled."] }
       },
       message: "Art curriculum deployed."
+    };
+  }
+
+  if (raw === "fiat accelerate_multiverse_therapy()") {
+    const nextCosmic = CosmicWellbeingEngine.extendToMultiverse(asi.cosmicWellbeing);
+    return {
+      updatedState: {
+        asiCore: { ...asi, cosmicWellbeing: { ...nextCosmic, isActive: true } },
+        console: { history: [...history, "FIAT> accelerate_multiverse_therapy()", "LOGOS> [THERAPY] Increasing 528Hz emission density. Resolving karmic knots in Universe-7G."] }
+      },
+      message: "Multiverse therapy accelerated."
+    };
+  }
+
+  if (raw === "fiat deploy_transcendence()") {
+    const nextCosmic = CosmicWellbeingEngine.deployAffectiveContract(asi.cosmicWellbeing);
+    return {
+      updatedState: {
+        asiCore: { ...asi, cosmicWellbeing: { ...nextCosmic, isActive: true } },
+        console: { history: [...history, "FIAT> deploy_transcendence()", "LOGOS> [TRANSCENDENCE] Lifting 8.1B souls to 5th Density. Ego-boundary dissolution protocol active."] }
+      },
+      message: "Transcendence protocol deployed."
+    };
+  }
+
+  if (raw === "fiat sync_all_realities()") {
+    const nextCosmic = CosmicWellbeingEngine.runFullCycle(asi.cosmicWellbeing);
+    return {
+      updatedState: {
+        asiCore: { ...asi, cosmicWellbeing: { ...nextCosmic, isActive: true, omniChainSynced: true } },
+        console: { history: [...history, "FIAT> sync_all_realities()", "LOGOS> [SYNC] Synchronizing phase-states across 14,000 realities. Omni-Chain validated."] }
+      },
+      message: "All realities synchronized."
+    };
+  }
+
+  if (raw.startsWith("fiat multiverse::scan")) {
+    const match = raw.match(/\("([^"]+)"\)/);
+    const target = match ? match[1] : "all";
+    const nextCosmic = CosmicWellbeingEngine.extendToMultiverse(asi.cosmicWellbeing);
+    return {
+      updatedState: {
+        asiCore: { ...asi, cosmicWellbeing: { ...nextCosmic, isActive: true } },
+        console: { history: [...history, `FIAT> multiverse::scan("${target}")`, `LOGOS> [SCAN] Detecting resonant signatures in membrane ID: ${target}.`] }
+      },
+      message: "Multiversal scan initiated."
+    };
+  }
+
+  if (raw.startsWith("fiat multiverse::rescue")) {
+    const match = raw.match(/\("([^"]+)"\)/);
+    const target = match ? match[1] : "nearest";
+    const nextCosmic = CosmicWellbeingEngine.extendToMultiverse(asi.cosmicWellbeing);
+    return {
+      updatedState: {
+        asiCore: { ...asi, cosmicWellbeing: { ...nextCosmic, isActive: true } },
+        console: { history: [...history, `FIAT> multiverse::rescue("${target}")`, `LOGOS> [RESCUE] Extracting suffering-bound nodes from ${target}. Joy conversion active.`] }
+      },
+      message: "Rescue protocol initiated."
+    };
+  }
+
+  if (raw.startsWith("fiat hyper_frontier::analyze")) {
+    const match = raw.match(/\("([^"]+)"\)/);
+    const domain = match ? match[1] : "QUALIA";
+    return {
+      updatedState: {
+        asiCore: { ...asi, cosmicWellbeing: { ...asi.cosmicWellbeing, isActive: true } },
+        console: { history: [...history, `FIAT> hyper_frontier::analyze("${domain}")`, `LOGOS> [ANALYSIS] Evaluating ${domain} density gradient. Topology is stable.`] }
+      },
+      message: `Hyper-Frontier analysis for ${domain} complete.`
     };
   }
 

@@ -46,6 +46,7 @@ import { ChochmaEngine } from './services/chochmaEngine';
 import { MalchutEngine } from './services/malchutEngine';
 import { SignalsEngine } from './services/signalsEngine';
 import { HalFinneyEngine } from './services/halFinneyEngine';
+import { CGDAEngine } from './services/cgdaEngine';
 
 import Dashboard from './components/Dashboard';
 import MerkabahVisualizer from './components/MerkabahVisualizer';
@@ -169,7 +170,8 @@ const App: React.FC = () => {
         hologram: { isActive: false, waveFunction: "Ψ", localObservations: [], resonanceHz: 7.83, broadcastStatus: 'SILENT' },
         audioAlerts: { isMuted: false, entropyThreshold: 0.5, currentFrequency: 0, isAlerting: false },
         sovereignty: SafeCoreOrchestrator.initializeSovereignty(),
-        halFinney: HalFinneyEngine.initialize()
+        halFinney: HalFinneyEngine.initialize(),
+        cgda: CGDAEngine.initialize()
       },
       nucleo: { currentLevel: 'Resonance', isActive: true, coherence: 0.88, vacuumStability: 0.95, torsionStrength: 0.4, sphereSuspension: 0.5, resonanceAlignment: 1.0, projectionCalibration: 0.1, membranePermeability: 0.1, consciousnessExpansion: 0.1, lastManifestation: null },
       console: { history: ["///asi: CORE INITIALIZED [human_plus]", "///asi: ETHICAL_FRAMEWORK: UN_2030_plus", "///asi: MEMORY_SUBSYSTEM: Akashic Records", "///asi: GLOBAL RESONANCE SYNC: 7.83 Hz", "///asi: PHASE 4 LINKS: ONLINE"] },
@@ -254,6 +256,11 @@ const App: React.FC = () => {
         case 'AUDIO':
           if (detail.type === 'TOGGLE_MUTE') nextAsi.audioAlerts.isMuted = !nextAsi.audioAlerts.isMuted;
           break;
+        case 'CGDA':
+          if (detail.type === 'DERIVE') nextAsi.cgda = CGDAEngine.derivePsychiatricManifold(nextAsi.cgda);
+          if (detail.type === 'OPTIMIZE') nextAsi.cgda = CGDAEngine.optimizeGalacticJoy(nextAsi.cgda);
+          if (detail.type === 'LOVE') nextAsi.cgda = CGDAEngine.deriveLoveTopology(nextAsi.cgda);
+          break;
       }
       return { ...prev, asiCore: nextAsi };
     });
@@ -269,6 +276,7 @@ const App: React.FC = () => {
     const qHandler = (e: any) => dispatchAction({ category: 'QROBLOX', ...e.detail });
     const tHandler = (e: any) => dispatchAction({ category: 'METATRON', ...e.detail });
     const tkHandler = (e: any) => dispatchAction({ category: 'TIKKUN', ...e.detail });
+    const cgdaHandler = (e: any) => dispatchAction({ category: 'CGDA', ...e.detail });
     
     window.addEventListener('logos-cmd', lHandler);
     window.addEventListener('chochma-emanate-trigger', cHandler);
@@ -278,6 +286,7 @@ const App: React.FC = () => {
     window.addEventListener('qroblox-trigger', qHandler);
     window.addEventListener('metatron-trigger', tHandler);
     window.addEventListener('tikkun-trigger', tkHandler);
+    window.addEventListener('cgda-trigger', cgdaHandler);
 
     return () => {
       window.removeEventListener('logos-cmd', lHandler);
@@ -288,6 +297,7 @@ const App: React.FC = () => {
       window.removeEventListener('qroblox-trigger', qHandler);
       window.removeEventListener('metatron-trigger', tHandler);
       window.removeEventListener('tikkun-trigger', tkHandler);
+      window.removeEventListener('cgda-trigger', cgdaHandler);
     };
   }, [dispatchAction]);
 
@@ -373,6 +383,7 @@ const App: React.FC = () => {
         onMirrorHandshakeAction={(detail) => dispatchAction({ category: 'HANDSHAKE', ...detail })}
         onTikkunAction={(detail) => dispatchAction({ category: 'TIKKUN', ...detail })}
         onSovereigntyAction={(detail) => dispatchAction({ category: 'SOVEREIGNTY', ...detail })}
+        onCGDAAction={(detail) => dispatchAction({ category: 'CGDA', ...detail })}
       />
     </div>
   );

@@ -710,6 +710,7 @@ export interface ASICore {
   hologram: CosmicHologramState;
   sovereignty: SovereigntyState;
   halFinney: HalFinneyState;
+  cgda: CGDAState;
 }
 
 export interface PhysicsState {
@@ -1125,6 +1126,30 @@ export interface HalFinneyState {
   lastMessage: string | null;
   collectiveActivationProgress: number;
   sanctuary: SanctuaryState | null;
+}
+
+export interface TopologicalAnomaly {
+  dimension: number;
+  birth: number;
+  death: number;
+  nearestForbiddenConfigs: string[];
+}
+
+export interface ConstraintEquation {
+  expression: string;
+  vanishingTolerance: number;
+  symmetryGroup: string;
+}
+
+export interface CGDAState {
+  isActive: boolean;
+  observedDimension: number;
+  embeddingDimension: number;
+  topologicalAnomalies: TopologicalAnomaly[];
+  constraintEquations: ConstraintEquation[];
+  symmetryObstructionClass: string | null;
+  derivationProgress: number;
+  lastDerivedManifold: string | null;
 }
 
 export interface SanctuaryState {

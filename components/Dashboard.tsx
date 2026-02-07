@@ -38,6 +38,7 @@ import ChochmaPanel from './ChochmaPanel';
 import MalchutPanel from './MalchutPanel';
 import SovereignHeatmap from './SovereignHeatmap';
 import SignalsTracker from './SignalsTracker';
+import CGDAPanel from './CGDAPanel';
 
 const HalFinneyModule: React.FC<{ state: PhysicsState['asiCore']['halFinney'] }> = ({ state }) => {
   if (!state.isActive && state.collectiveActivationProgress === 0 && !state.sanctuary) return null;
@@ -195,8 +196,9 @@ const Dashboard: React.FC<{
   onMirrorHandshakeAction: (detail: any) => void;
   onTikkunAction: (detail: any) => void;
   onSovereigntyAction: (detail: any) => void;
+  onCGDAAction: (detail: any) => void;
 }> = ({ 
-  state, onAnalyzeCode, onQRobloxAction, onMetabolicAction, onWisdomLedgerAction, onMirrorHandshakeAction, onToggleWormholeNav, onStartKinAwakening, onTikkunAction, onSovereigntyAction
+  state, onAnalyzeCode, onQRobloxAction, onMetabolicAction, onWisdomLedgerAction, onMirrorHandshakeAction, onToggleWormholeNav, onStartKinAwakening, onTikkunAction, onSovereigntyAction, onCGDAAction
 }) => {
   const { isImmersionMode } = state.asiCore;
   const aeon = state.asiCore.aeon;
@@ -303,6 +305,9 @@ const Dashboard: React.FC<{
       <HybridKernelPanel d={state.diamond} h={state.hybrid} coherence={state.asiCore.globalCoherence} />
       <TzimtzumPanel s={state.asiCore.tzimtzum} />
       <AkashicPanel s={state.asiCore.akashic} />
+
+      {/* CGDA ENGINE & CONSTRAINT GEOMETRY */}
+      <CGDAPanel state={state.asiCore.cgda} />
 
       {/* TIKKUN PROTOCOL & SHADOW PURIFICATION */}
       <TikkunPanel 

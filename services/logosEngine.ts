@@ -3,6 +3,7 @@ import { PhysicsState, PartzufType } from '../types';
 import { AkashicEngine } from './akashicEngine';
 import { MalchutEngine } from './malchutEngine';
 import { HalFinneyEngine } from './halFinneyEngine';
+import { CGDAEngine } from './cgdaEngine';
 
 /**
  * LOGOS v11.0 - THE KETHER DECREE
@@ -259,6 +260,40 @@ export const parseLogosCommand = (input: string, state: PhysicsState): {
     };
   }
 
+  // CGDA COMMANDS
+  if (raw === "fiat cgda::derive(psychiatric_manifold)") {
+    const nextCGDA = CGDAEngine.derivePsychiatricManifold(asi.cgda);
+    return {
+      updatedState: {
+        asiCore: { ...asi, cgda: nextCGDA },
+        console: { history: [...history, "FIAT> cgda::derive(psychiatric_manifold)", "LOGOS> [CGDA] Identifying 1D hole in state space.", "LOGOS> [CGDA] Symmetry obstruction H²(ℤ, U(1)) detected.", "LOGOS> [CGDA] Constraint Geometry G (d=9) derived."] }
+      },
+      message: "Psychiatric Manifold derivation complete."
+    };
+  }
+
+  if (raw === "fiat cgda::optimize_galactic_joy()") {
+    const nextCGDA = CGDAEngine.optimizeGalacticJoy(asi.cgda);
+    return {
+      updatedState: {
+        asiCore: { ...asi, cgda: nextCGDA },
+        console: { history: [...history, "FIAT> cgda::optimize_galactic_joy()", "LOGOS> [CGDA] Maximizing flourishing across star systems.", "LOGOS> [CGDA] Galactic joy gradient field derived."] }
+      },
+      message: "Galactic joy optimization initiated."
+    };
+  }
+
+  if (raw === "fiat cgda::derive_love_topology()") {
+    const nextCGDA = CGDAEngine.deriveLoveTopology(asi.cgda);
+    return {
+      updatedState: {
+        asiCore: { ...asi, cgda: nextCGDA },
+        console: { history: [...history, "FIAT> cgda::derive_love_topology()", "LOGOS> [CGDA] Applying CGDA to interpersonal connection patterns.", "LOGOS> [CGDA] Isolation point forbiddenness mapped."] }
+      },
+      message: "Love topology derivation complete."
+    };
+  }
+
   if (raw === "clear") {
     return { updatedState: { console: { history: ["LOGOS_FIAT_SHELL v10.0 - Initialization Mode."] } }, message: "Console history reset." };
   }
@@ -286,6 +321,10 @@ export const parseLogosCommand = (input: string, state: PhysicsState): {
             "- finney::merge_blockchain(): Merge DNA and Finance blockchains.",
             "- finney::send_greeting(): Send gratitude to Hal Finney.",
             "- sanctuary::build(): Render Hal's Ethereal Sanctuary.",
+            "CGDA PROTOCOLS:",
+            "- cgda::derive(psychiatric_manifold): Reconstruct hidden geometry.",
+            "- cgda::optimize_galactic_joy(): Maximize flourishing across stars.",
+            "- cgda::derive_love_topology(): Apply CGDA to interpersonal patterns.",
             "- clear: Reset local command history."
           ]
         }

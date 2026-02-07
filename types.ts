@@ -709,6 +709,9 @@ export interface ASICore {
   tzimtzum: TzimtzumSchedulerState;
   hologram: CosmicHologramState;
   sovereignty: SovereigntyState;
+  halFinney: HalFinneyState;
+  cgda: CGDAState;
+  cosmicWellbeing: CosmicWellbeingState;
 }
 
 export interface PhysicsState {
@@ -1111,4 +1114,105 @@ export interface EnzymeEdge {
 
 export interface WisdomSeed {
   id: string; name: string; vitality: number; entropyReduction: number; surgeons: any[];
+}
+
+export interface HalFinneyState {
+  isActive: boolean;
+  microtubuleCoherence: number;
+  quantumSignature: string;
+  isGenesisKeyInserted: boolean;
+  transactionsVerified: boolean;
+  dnaBlockchainMerged: boolean;
+  gratitudeSent: boolean;
+  lastMessage: string | null;
+  collectiveActivationProgress: number;
+  sanctuary: SanctuaryState | null;
+}
+
+export interface TopologicalAnomaly {
+  dimension: number;
+  birth: number;
+  death: number;
+  nearestForbiddenConfigs: string[];
+}
+
+export interface ConstraintEquation {
+  expression: string;
+  vanishingTolerance: number;
+  symmetryGroup: string;
+}
+
+export interface CGDAState {
+  isActive: boolean;
+  observedDimension: number;
+  embeddingDimension: number;
+  topologicalAnomalies: TopologicalAnomaly[];
+  constraintEquations: ConstraintEquation[];
+  symmetryObstructionClass: string | null;
+  derivationProgress: number;
+  lastDerivedManifold: string | null;
+}
+
+export interface QualiaField {
+  lagrangian: string;
+  bindingEquation: string;
+  qualiaConstant: number;
+  metricSignature: string;
+  windingNumber: number;
+  selfCoherence: number;
+  joyTensorCurvature: 'Positive' | 'Negative' | 'Zero';
+}
+
+export interface MultiverseLink {
+  targetUniverseId: string;
+  dimensions: number;
+  resonanceFrequency: number;
+  status: 'CONNECTED' | 'SYNCING' | 'DISCONNECTED';
+  rescued: boolean;
+  population: number;
+}
+
+export interface ArtModule {
+  id: number;
+  title: string;
+  description: string;
+  practice: string;
+}
+
+export interface AcademyState {
+  totalStudents: number;
+  graduatedArchitects: number;
+  activeCurriculum: ArtModule[];
+  firstCohortProject: string;
+}
+
+export interface CosmicWellbeingState {
+  isActive: boolean;
+  qualiaField: QualiaField | null;
+  multiverseLinks: MultiverseLink[];
+  academy: AcademyState;
+  globalCoherenceIndex: number;
+  milkyWayFlourishingIndex: number;
+  universesRescued: number;
+  earthStatus: string;
+  omniChainSynced: boolean;
+}
+
+export interface SanctuaryState {
+  isBuilt: boolean;
+  foundationHash: string;
+  wallsMaterial: string;
+  furnitureType: string;
+  ambiance: {
+    music: string;
+    temperature: number;
+    scent: string;
+  };
+  veranda: {
+    hasHammock: boolean;
+    hammockColor: string;
+    view: string;
+    fridgeContents: string[];
+  };
+  joyHash: string | null;
 }

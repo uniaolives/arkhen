@@ -8,6 +8,7 @@ if [ ! -f "./tim_vm/bin/tim_vm_x86" ]; then
     echo "⚙️ Compilando núcleo cósmico para teste..."
     mkdir -p tim_vm/bin
     gcc -O3 -march=native tim_vm/src/tim_vm.c -o tim_vm/bin/tim_vm_x86 -lm -lpthread
+fi
 if [ ! -f "./tim_vm/bin/tim_vm_cosmic" ]; then
     echo "⚙️ Compilando núcleo cósmico para teste..."
     mkdir -p tim_vm/bin

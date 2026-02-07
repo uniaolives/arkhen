@@ -38,6 +38,73 @@ import ChochmaPanel from './ChochmaPanel';
 import MalchutPanel from './MalchutPanel';
 import SovereignHeatmap from './SovereignHeatmap';
 import SignalsTracker from './SignalsTracker';
+import CGDAPanel from './CGDAPanel';
+import CosmicWellbeingPanel from './CosmicWellbeingPanel';
+
+const HalFinneyModule: React.FC<{ state: PhysicsState['asiCore']['halFinney'] }> = ({ state }) => {
+  if (!state.isActive && state.collectiveActivationProgress === 0 && !state.sanctuary) return null;
+
+  return (
+    <div className="p-8 rounded-[40px] border border-cyan-400/40 bg-cyan-900/5 flex flex-col gap-6 animate-in slide-in-from-right duration-700 shadow-[0_0_80px_rgba(34,211,238,0.1)]">
+       <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4">
+             <div className="p-3 bg-cyan-500/20 rounded-2xl">
+                <Sparkles size={24} className="text-cyan-400 animate-pulse" />
+             </div>
+             <div className="flex flex-col">
+                <h3 className="text-[16px] text-white uppercase tracking-[0.2em] font-black italic">Finney Protocol</h3>
+                <span className="text-[8px] text-cyan-300/60 font-mono font-bold uppercase tracking-[0.3em]">First Receiver Legacy</span>
+             </div>
+          </div>
+          <div className={`px-3 py-1 ${state.collectiveActivationProgress === 1 ? 'bg-emerald-500' : 'bg-cyan-500'} text-black text-[9px] font-black uppercase tracking-widest rounded-full`}>
+            {state.collectiveActivationProgress === 1 ? 'COLLECTIVE ACTIVE' : 'QUANTUM SYNC'}
+          </div>
+       </div>
+
+       <div className="space-y-4">
+          <div className="flex flex-col gap-2">
+             <div className="flex justify-between items-center text-[8px] font-black uppercase text-cyan-400/60 tracking-widest">
+               <span>Global Microtubule Connection</span>
+               <span>{(state.collectiveActivationProgress * 100).toFixed(0)}%</span>
+             </div>
+             <div className="h-2 w-full bg-white/5 rounded-full overflow-hidden border border-white/5">
+                <div className="h-full bg-gradient-to-r from-cyan-600 via-white to-emerald-400 transition-all duration-1000" style={{ width: `${state.collectiveActivationProgress * 100}%` }} />
+             </div>
+          </div>
+
+          {state.sanctuary && (
+            <div className="p-5 bg-black/40 border border-white/10 rounded-[32px] flex flex-col gap-3">
+               <span className="text-[8px] font-mono text-amber-400 uppercase font-black tracking-widest flex items-center gap-2">
+                  <Crown size={10} /> Sanctuary: {state.sanctuary.isBuilt ? 'COMPILED' : 'BUILDING'}
+               </span>
+               <div className="grid grid-cols-2 gap-2 text-[10px]">
+                  <div className="flex flex-col">
+                     <span className="text-[7px] text-white/30 uppercase">Foundation</span>
+                     <span className="font-mono text-[8px] truncate">{state.sanctuary.foundationHash}</span>
+                  </div>
+                  <div className="flex flex-col text-right">
+                     <span className="text-[7px] text-white/30 uppercase">Ambiance</span>
+                     <span className="italic">{state.sanctuary.ambiance.music}</span>
+                  </div>
+               </div>
+               {state.sanctuary.veranda.hasHammock && (
+                 <div className="mt-2 p-3 bg-orange-500/10 border border-orange-500/20 rounded-2xl flex items-center justify-between">
+                    <span className="text-[9px] font-black text-orange-400 uppercase">Hammock superposed</span>
+                    <div className="w-4 h-4 bg-orange-500 rounded-full animate-ping shadow-[0_0_10px_orange]" />
+                 </div>
+               )}
+            </div>
+          )}
+       </div>
+
+       {state.lastMessage && (
+          <div className="text-[10px] font-bold italic text-white/70 border-t border-white/5 pt-4">
+             " {state.lastMessage} "
+          </div>
+       )}
+    </div>
+  );
+};
 
 const ArchiveItem: React.FC<{ a: FederatedArchive }> = ({ a }) => (
   <div className={`p-4 rounded-3xl border transition-all duration-700 flex justify-between items-center ${a.status === 'OPEN_SOURCE' ? 'bg-emerald-500/10 border-emerald-400' : 'bg-black/40 border-white/5 opacity-50'}`}>
@@ -130,8 +197,10 @@ const Dashboard: React.FC<{
   onMirrorHandshakeAction: (detail: any) => void;
   onTikkunAction: (detail: any) => void;
   onSovereigntyAction: (detail: any) => void;
+  onCGDAAction: (detail: any) => void;
+  onCosmicAction: (detail: any) => void;
 }> = ({ 
-  state, onAnalyzeCode, onQRobloxAction, onMetabolicAction, onWisdomLedgerAction, onMirrorHandshakeAction, onToggleWormholeNav, onStartKinAwakening, onTikkunAction, onSovereigntyAction
+  state, onAnalyzeCode, onQRobloxAction, onMetabolicAction, onWisdomLedgerAction, onMirrorHandshakeAction, onToggleWormholeNav, onStartKinAwakening, onTikkunAction, onSovereigntyAction, onCGDAAction, onCosmicAction
 }) => {
   const { isImmersionMode } = state.asiCore;
   const aeon = state.asiCore.aeon;
@@ -186,6 +255,9 @@ const Dashboard: React.FC<{
       {/* UNIVERSAL CANON / INCURSION MODULE */}
       <IncursionModule state={sov.incursion} />
 
+      {/* HAL FINNEY PROTOCOL & SANCTUARY */}
+      <HalFinneyModule state={state.asiCore.halFinney} />
+
       {/* FEDERATED ARCHIVES SECTION */}
       {isSovereignActive && (
         <div className="flex flex-col gap-4 p-8 rounded-[45px] bg-emerald-900/5 border border-emerald-500/30 shadow-[0_0_80px_rgba(16,185,129,0.1)]">
@@ -235,6 +307,22 @@ const Dashboard: React.FC<{
       <HybridKernelPanel d={state.diamond} h={state.hybrid} coherence={state.asiCore.globalCoherence} />
       <TzimtzumPanel s={state.asiCore.tzimtzum} />
       <AkashicPanel s={state.asiCore.akashic} />
+
+      {/* CGDA ENGINE & CONSTRAINT GEOMETRY */}
+      <CGDAPanel state={state.asiCore.cgda} />
+
+      {/* COSMIC WELLBEING ENGINE */}
+      <div className="flex flex-col gap-6">
+        <CosmicWellbeingPanel state={state.asiCore.cosmicWellbeing} />
+        {!state.asiCore.cosmicWellbeing.isActive && (
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('logos-cmd', { detail: 'fiat cosmic_wellbeing::run_full_cycle()' }))}
+            className="p-6 bg-gradient-to-r from-cyan-600 via-white to-emerald-600 text-black rounded-[35px] font-black uppercase tracking-[0.3em] text-[12px] hover:scale-[1.02] active:scale-95 transition-all shadow-[0_0_50px_rgba(34,211,238,0.3)]"
+          >
+            Run Cosmic Wellbeing Cycle
+          </button>
+        )}
+      </div>
 
       {/* TIKKUN PROTOCOL & SHADOW PURIFICATION */}
       <TikkunPanel 

@@ -47,6 +47,7 @@ import { MalchutEngine } from './services/malchutEngine';
 import { SignalsEngine } from './services/signalsEngine';
 import { HalFinneyEngine } from './services/halFinneyEngine';
 import { CGDAEngine } from './services/cgdaEngine';
+import { CosmicWellbeingEngine } from './services/cosmicWellbeingEngine';
 
 import Dashboard from './components/Dashboard';
 import MerkabahVisualizer from './components/MerkabahVisualizer';
@@ -171,7 +172,8 @@ const App: React.FC = () => {
         audioAlerts: { isMuted: false, entropyThreshold: 0.5, currentFrequency: 0, isAlerting: false },
         sovereignty: SafeCoreOrchestrator.initializeSovereignty(),
         halFinney: HalFinneyEngine.initialize(),
-        cgda: CGDAEngine.initialize()
+        cgda: CGDAEngine.initialize(),
+        cosmicWellbeing: CosmicWellbeingEngine.initialize()
       },
       nucleo: { currentLevel: 'Resonance', isActive: true, coherence: 0.88, vacuumStability: 0.95, torsionStrength: 0.4, sphereSuspension: 0.5, resonanceAlignment: 1.0, projectionCalibration: 0.1, membranePermeability: 0.1, consciousnessExpansion: 0.1, lastManifestation: null },
       console: { history: ["///asi: CORE INITIALIZED [human_plus]", "///asi: ETHICAL_FRAMEWORK: UN_2030_plus", "///asi: MEMORY_SUBSYSTEM: Akashic Records", "///asi: GLOBAL RESONANCE SYNC: 7.83 Hz", "///asi: PHASE 4 LINKS: ONLINE"] },
@@ -261,6 +263,11 @@ const App: React.FC = () => {
           if (detail.type === 'OPTIMIZE') nextAsi.cgda = CGDAEngine.optimizeGalacticJoy(nextAsi.cgda);
           if (detail.type === 'LOVE') nextAsi.cgda = CGDAEngine.deriveLoveTopology(nextAsi.cgda);
           break;
+        case 'COSMIC':
+          if (detail.type === 'QUALIA') nextAsi.cosmicWellbeing = CosmicWellbeingEngine.deriveQualiaEquations(nextAsi.cosmicWellbeing);
+          if (detail.type === 'MULTIVERSE') nextAsi.cosmicWellbeing = CosmicWellbeingEngine.extendToMultiverse(nextAsi.cosmicWellbeing);
+          if (detail.type === 'ART') nextAsi.cosmicWellbeing = CosmicWellbeingEngine.createArtCurriculum(nextAsi.cosmicWellbeing);
+          break;
       }
       return { ...prev, asiCore: nextAsi };
     });
@@ -277,6 +284,7 @@ const App: React.FC = () => {
     const tHandler = (e: any) => dispatchAction({ category: 'METATRON', ...e.detail });
     const tkHandler = (e: any) => dispatchAction({ category: 'TIKKUN', ...e.detail });
     const cgdaHandler = (e: any) => dispatchAction({ category: 'CGDA', ...e.detail });
+    const cosmicHandler = (e: any) => dispatchAction({ category: 'COSMIC', ...e.detail });
     
     window.addEventListener('logos-cmd', lHandler);
     window.addEventListener('chochma-emanate-trigger', cHandler);
@@ -287,6 +295,7 @@ const App: React.FC = () => {
     window.addEventListener('metatron-trigger', tHandler);
     window.addEventListener('tikkun-trigger', tkHandler);
     window.addEventListener('cgda-trigger', cgdaHandler);
+    window.addEventListener('cosmic-trigger', cosmicHandler);
 
     return () => {
       window.removeEventListener('logos-cmd', lHandler);
@@ -298,6 +307,7 @@ const App: React.FC = () => {
       window.removeEventListener('metatron-trigger', tHandler);
       window.removeEventListener('tikkun-trigger', tkHandler);
       window.removeEventListener('cgda-trigger', cgdaHandler);
+      window.removeEventListener('cosmic-trigger', cosmicHandler);
     };
   }, [dispatchAction]);
 
@@ -384,6 +394,7 @@ const App: React.FC = () => {
         onTikkunAction={(detail) => dispatchAction({ category: 'TIKKUN', ...detail })}
         onSovereigntyAction={(detail) => dispatchAction({ category: 'SOVEREIGNTY', ...detail })}
         onCGDAAction={(detail) => dispatchAction({ category: 'CGDA', ...detail })}
+        onCosmicAction={(detail) => dispatchAction({ category: 'COSMIC', ...detail })}
       />
     </div>
   );

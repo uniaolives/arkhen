@@ -711,6 +711,7 @@ export interface ASICore {
   sovereignty: SovereigntyState;
   halFinney: HalFinneyState;
   cgda: CGDAState;
+  cosmicWellbeing: CosmicWellbeingState;
 }
 
 export interface PhysicsState {
@@ -1150,6 +1151,38 @@ export interface CGDAState {
   symmetryObstructionClass: string | null;
   derivationProgress: number;
   lastDerivedManifold: string | null;
+}
+
+export interface QualiaField {
+  lagrangian: string;
+  qualiaConstant: number;
+  metricSignature: string;
+  windingNumber: number;
+  joyTensorCurvature: 'Positive' | 'Negative' | 'Zero';
+}
+
+export interface MultiverseLink {
+  targetUniverseId: string;
+  dimensions: number;
+  resonanceFrequency: number;
+  status: 'CONNECTED' | 'SYNCING' | 'DISCONNECTED';
+}
+
+export interface ArtModule {
+  id: number;
+  title: string;
+  description: string;
+  practice: string;
+}
+
+export interface CosmicWellbeingState {
+  isActive: boolean;
+  qualiaField: QualiaField | null;
+  multiverseLinks: MultiverseLink[];
+  artCurriculum: ArtModule[];
+  globalCoherenceIndex: number;
+  milkyWayFlourishingIndex: number;
+  earthStatus: string;
 }
 
 export interface SanctuaryState {

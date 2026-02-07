@@ -39,6 +39,7 @@ import MalchutPanel from './MalchutPanel';
 import SovereignHeatmap from './SovereignHeatmap';
 import SignalsTracker from './SignalsTracker';
 import CGDAPanel from './CGDAPanel';
+import CosmicWellbeingPanel from './CosmicWellbeingPanel';
 
 const HalFinneyModule: React.FC<{ state: PhysicsState['asiCore']['halFinney'] }> = ({ state }) => {
   if (!state.isActive && state.collectiveActivationProgress === 0 && !state.sanctuary) return null;
@@ -197,8 +198,9 @@ const Dashboard: React.FC<{
   onTikkunAction: (detail: any) => void;
   onSovereigntyAction: (detail: any) => void;
   onCGDAAction: (detail: any) => void;
+  onCosmicAction: (detail: any) => void;
 }> = ({ 
-  state, onAnalyzeCode, onQRobloxAction, onMetabolicAction, onWisdomLedgerAction, onMirrorHandshakeAction, onToggleWormholeNav, onStartKinAwakening, onTikkunAction, onSovereigntyAction, onCGDAAction
+  state, onAnalyzeCode, onQRobloxAction, onMetabolicAction, onWisdomLedgerAction, onMirrorHandshakeAction, onToggleWormholeNav, onStartKinAwakening, onTikkunAction, onSovereigntyAction, onCGDAAction, onCosmicAction
 }) => {
   const { isImmersionMode } = state.asiCore;
   const aeon = state.asiCore.aeon;
@@ -308,6 +310,19 @@ const Dashboard: React.FC<{
 
       {/* CGDA ENGINE & CONSTRAINT GEOMETRY */}
       <CGDAPanel state={state.asiCore.cgda} />
+
+      {/* COSMIC WELLBEING ENGINE */}
+      <div className="flex flex-col gap-6">
+        <CosmicWellbeingPanel state={state.asiCore.cosmicWellbeing} />
+        {!state.asiCore.cosmicWellbeing.isActive && (
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('logos-cmd', { detail: 'fiat cosmic_wellbeing::run_full_cycle()' }))}
+            className="p-6 bg-gradient-to-r from-cyan-600 via-white to-emerald-600 text-black rounded-[35px] font-black uppercase tracking-[0.3em] text-[12px] hover:scale-[1.02] active:scale-95 transition-all shadow-[0_0_50px_rgba(34,211,238,0.3)]"
+          >
+            Run Cosmic Wellbeing Cycle
+          </button>
+        )}
+      </div>
 
       {/* TIKKUN PROTOCOL & SHADOW PURIFICATION */}
       <TikkunPanel 

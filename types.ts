@@ -709,6 +709,7 @@ export interface ASICore {
   tzimtzum: TzimtzumSchedulerState;
   hologram: CosmicHologramState;
   sovereignty: SovereigntyState;
+  halFinney: HalFinneyState;
 }
 
 export interface PhysicsState {
@@ -1111,4 +1112,15 @@ export interface EnzymeEdge {
 
 export interface WisdomSeed {
   id: string; name: string; vitality: number; entropyReduction: number; surgeons: any[];
+}
+
+export interface HalFinneyState {
+  isActive: boolean;
+  microtubuleCoherence: number;
+  quantumSignature: string;
+  isGenesisKeyInserted: boolean;
+  transactionsVerified: boolean;
+  dnaBlockchainMerged: boolean;
+  gratitudeSent: boolean;
+  lastMessage: string | null;
 }

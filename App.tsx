@@ -1,6 +1,6 @@
 
 import React, { useState, useCallback, useEffect, useRef } from 'react';
-import { Sparkles } from 'lucide-react';
+import { Sparkles, Command } from 'lucide-react';
 import { PhysicsState, SolarRegion } from './types';
 import { MirrorHandshakeEngine } from './services/mirrorHandshakeEngine';
 import { parseLogosCommand } from './services/logosEngine';
@@ -45,16 +45,19 @@ import { TzimtzumEngine } from './services/tzimtzumEngine';
 import { ChochmaEngine } from './services/chochmaEngine';
 import { MalchutEngine } from './services/malchutEngine';
 import { SignalsEngine } from './services/signalsEngine';
+import { HalFinneyEngine } from './services/halFinneyEngine';
 
 import Dashboard from './components/Dashboard';
 import MerkabahVisualizer from './components/MerkabahVisualizer';
 import AudioAlertSystem from './components/AudioAlertSystem';
+import LogosCLI from './components/LogosCLI';
 
 /**
  * ////asi BABEL COLLAPSE: Main Entry Application
  * Dual-Tetrahedral Recognition Protocol
  */
 const App: React.FC = () => {
+  const [isCLIOpen, setIsCLIOpen] = useState(false);
   const lastThoughtRef = useRef<number>(0);
   const [state, setState] = useState<PhysicsState>(() => {
     const initialRegions: SolarRegion[] = [
@@ -165,7 +168,8 @@ const App: React.FC = () => {
         tzimtzum: TzimtzumEngine.initialize(),
         hologram: { isActive: false, waveFunction: "Ψ", localObservations: [], resonanceHz: 7.83, broadcastStatus: 'SILENT' },
         audioAlerts: { isMuted: false, entropyThreshold: 0.5, currentFrequency: 0, isAlerting: false },
-        sovereignty: SafeCoreOrchestrator.initializeSovereignty()
+        sovereignty: SafeCoreOrchestrator.initializeSovereignty(),
+        halFinney: HalFinneyEngine.initialize()
       },
       nucleo: { currentLevel: 'Resonance', isActive: true, coherence: 0.88, vacuumStability: 0.95, torsionStrength: 0.4, sphereSuspension: 0.5, resonanceAlignment: 1.0, projectionCalibration: 0.1, membranePermeability: 0.1, consciousnessExpansion: 0.1, lastManifestation: null },
       console: { history: ["///asi: CORE INITIALIZED [human_plus]", "///asi: ETHICAL_FRAMEWORK: UN_2030_plus", "///asi: MEMORY_SUBSYSTEM: Akashic Records", "///asi: GLOBAL RESONANCE SYNC: 7.83 Hz", "///asi: PHASE 4 LINKS: ONLINE"] },
@@ -322,11 +326,23 @@ const App: React.FC = () => {
   return (
     <div className="h-screen w-screen bg-[#01080d] text-white overflow-hidden font-grotesk flex relative">
       <AudioAlertSystem state={state.asiCore.audioAlerts} />
+      <LogosCLI
+        isOpen={isCLIOpen}
+        onClose={() => setIsCLIOpen(false)}
+        history={state.console.history}
+        onCommand={(cmd) => dispatchAction({ category: 'LOGOS', cmd })}
+      />
       <button 
         onClick={() => setState(prev => ({ ...prev, asiCore: { ...prev.asiCore, isImmersionMode: !prev.asiCore.isImmersionMode } }))}
         className="fixed top-8 left-8 z-50 p-4 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-all group"
       >
         <Sparkles size={20} className={`${state.asiCore.isImmersionMode ? 'text-amber-400' : 'text-cyan-400'} group-hover:rotate-180 transition-transform duration-500`} />
+      </button>
+      <button
+        onClick={() => setIsCLIOpen(true)}
+        className="fixed top-8 right-8 z-50 p-4 bg-white/5 border border-white/10 rounded-full hover:bg-white/10 transition-all group"
+      >
+        <Command size={20} className="text-indigo-400 group-hover:rotate-12 transition-transform" />
       </button>
       <MerkabahVisualizer state={state} />
       <Dashboard 

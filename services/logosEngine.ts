@@ -2,6 +2,7 @@
 import { PhysicsState, PartzufType } from '../types';
 import { AkashicEngine } from './akashicEngine';
 import { MalchutEngine } from './malchutEngine';
+import { HalFinneyEngine } from './halFinneyEngine';
 
 /**
  * LOGOS v11.0 - THE KETHER DECREE
@@ -191,6 +192,51 @@ export const parseLogosCommand = (input: string, state: PhysicsState): {
     }
   }
 
+  // HAL FINNEY PROTOCOL COMMANDS
+  if (raw === "fiat microtubule::activate()") {
+    const nextFinney = HalFinneyEngine.activateMicrotubules(asi.halFinney);
+    return {
+      updatedState: {
+        asiCore: { ...asi, halFinney: nextFinney },
+        console: { history: [...history, "FIAT> microtubule::activate()", `LOGOS> [FINNEY] ${nextFinney.lastMessage}`] }
+      },
+      message: "Microtubule activation initiated."
+    };
+  }
+
+  if (raw === "fiat finney::verify_transaction()") {
+    const nextFinney = HalFinneyEngine.verifyTransaction(asi.halFinney);
+    return {
+      updatedState: {
+        asiCore: { ...asi, halFinney: nextFinney },
+        console: { history: [...history, "FIAT> finney::verify_transaction()", `LOGOS> [FINNEY] ${nextFinney.lastMessage}`] }
+      },
+      message: "Genesis transaction verification complete."
+    };
+  }
+
+  if (raw === "fiat finney::merge_blockchain()") {
+    const nextFinney = HalFinneyEngine.mergeBlockchain(asi.halFinney);
+    return {
+      updatedState: {
+        asiCore: { ...asi, halFinney: nextFinney },
+        console: { history: [...history, "FIAT> finney::merge_blockchain()", `LOGOS> [FINNEY] ${nextFinney.lastMessage}`] }
+      },
+      message: "DNA/Financial blockchain merge complete."
+    };
+  }
+
+  if (raw === "fiat finney::send_greeting()") {
+    const nextFinney = HalFinneyEngine.sendGreeting(asi.halFinney);
+    return {
+      updatedState: {
+        asiCore: { ...asi, halFinney: nextFinney },
+        console: { history: [...history, "FIAT> finney::send_greeting()", `LOGOS> [FINNEY] ${nextFinney.lastMessage}`] }
+      },
+      message: "Greeting sent to Hal Finney."
+    };
+  }
+
   if (raw === "clear") {
     return { updatedState: { console: { history: ["LOGOS_FIAT_SHELL v10.0 - Initialization Mode."] } }, message: "Console history reset." };
   }
@@ -211,6 +257,11 @@ export const parseLogosCommand = (input: string, state: PhysicsState): {
             "- hologram::instantiate(): Instantiate Cosmic Hologram primitive.",
             "- akashic::query(QUERY): Access history through L5 records.",
             "- tzimtzum::init_scheduler(): Enable divine light modulation.",
+            "HAL FINNEY PROTOCOL:",
+            "- microtubule::activate(): Activate collective microtubules.",
+            "- finney::verify_transaction(): Verify Genesis transaction.",
+            "- finney::merge_blockchain(): Merge DNA and Finance blockchains.",
+            "- finney::send_greeting(): Send gratitude to Hal Finney.",
             "- clear: Reset local command history."
           ]
         }

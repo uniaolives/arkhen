@@ -1,5 +1,5 @@
 import React from 'react';
-import { Globe, Zap, Palette, Share2, Cpu } from 'lucide-react';
+import { Globe, Zap, Palette, Share2, Cpu, Layers, Infinity, Eye } from 'lucide-react';
 import { CosmicWellbeingState } from '../types';
 
 const CosmicWellbeingPanel: React.FC<{ state: CosmicWellbeingState }> = ({ state }) => {
@@ -89,6 +89,63 @@ const CosmicWellbeingPanel: React.FC<{ state: CosmicWellbeingState }> = ({ state
              <span className="text-[7px] font-mono text-white/20 uppercase block mb-1">Active Collaborative Project</span>
              <span className="text-[9px] font-black text-emerald-400 uppercase tracking-widest">{state.academy.firstCohortProject}</span>
           </div>
+        </div>
+      )}
+
+      {state.hyperGeometry.isMapped && (
+        <div className="p-5 bg-indigo-500/10 border border-indigo-500/40 rounded-[32px] flex flex-col gap-3">
+          <span className="text-[8px] font-mono text-indigo-400 uppercase font-black tracking-widest flex items-center gap-2">
+            <Layers size={10} /> Hyper-Geometry (d ≥ {state.hyperGeometry.dimension})
+          </span>
+          <div className="flex items-center justify-between">
+             <div className="flex flex-col">
+                <span className="text-[12px] font-black text-white italic">Structure Beyond Multiverse</span>
+                <span className="text-[7px] text-white/40">Mapped: YES | Singularity ∇: {state.hyperGeometry.singularitynabla ? 'ACTIVE' : 'IDLE'}</span>
+             </div>
+             <div className="w-10 h-10 border border-indigo-500/40 rounded-full flex items-center justify-center animate-spin-slow">
+                <span className="text-indigo-400 text-xs font-bold">∇</span>
+             </div>
+          </div>
+        </div>
+      )}
+
+      <div className="grid grid-cols-2 gap-4">
+        {state.eternity.isSolved && (
+          <div className="p-4 bg-white/5 border border-white/10 rounded-3xl flex flex-col gap-1">
+            <span className="text-[7px] font-mono text-white/30 uppercase flex items-center gap-1"><Infinity size={8} /> Eternity</span>
+            <div className="text-[10px] font-black text-white">RECURSION: {state.eternity.noveltyRecursionDepth}x</div>
+            <span className="text-[6px] font-mono text-white/20 truncate">{state.eternity.eternalReturnHash}</span>
+          </div>
+        )}
+        {state.divineInterface.isInvited && (
+          <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-3xl flex flex-col gap-1">
+            <span className="text-[7px] font-mono text-amber-400 uppercase flex items-center gap-1"><Eye size={8} /> Divine</span>
+            <div className="text-[10px] font-black text-amber-200">PRESENCE: {(state.divineInterface.presenceLevel * 100).toFixed(0)}%</div>
+            <span className="text-[6px] font-mono text-amber-400/40 uppercase">Mandala: {state.divineInterface.mandalaSymmetry}fold</span>
+          </div>
+        )}
+      </div>
+
+      {!state.hyperGeometry.isMapped && (
+        <div className="grid grid-cols-2 gap-3">
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('logos-cmd', { detail: 'fiat hyper_geometry::map()' }))}
+            className="p-3 bg-indigo-600/20 border border-indigo-500/40 text-indigo-400 rounded-2xl text-[9px] font-black uppercase tracking-widest hover:bg-indigo-600 hover:text-white transition-all"
+          >
+            Map Hyper-Geometry
+          </button>
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('logos-cmd', { detail: 'fiat eternity::solve()' }))}
+            className="p-3 bg-white/5 border border-white/10 text-white/60 rounded-2xl text-[9px] font-black uppercase tracking-widest hover:bg-white/10 hover:text-white transition-all"
+          >
+            Solve Eternity
+          </button>
+          <button
+            onClick={() => window.dispatchEvent(new CustomEvent('logos-cmd', { detail: 'fiat divine::invite()' }))}
+            className="p-3 bg-amber-600/20 border border-amber-500/40 text-amber-400 rounded-2xl text-[9px] font-black uppercase tracking-widest hover:bg-amber-600 hover:text-white transition-all col-span-2"
+          >
+            Invite Divine Presence
+          </button>
         </div>
       )}
 

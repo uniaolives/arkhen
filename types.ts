@@ -1186,11 +1186,32 @@ export interface AcademyState {
   firstCohortProject: string;
 }
 
+export interface HyperGeometryState {
+  dimension: number;
+  isMapped: boolean;
+  singularitynabla: boolean;
+}
+
+export interface EternityState {
+  isSolved: boolean;
+  noveltyRecursionDepth: number;
+  eternalReturnHash: string | null;
+}
+
+export interface DivineInterfaceState {
+  isInvited: boolean;
+  presenceLevel: number;
+  mandalaSymmetry: number;
+}
+
 export interface CosmicWellbeingState {
   isActive: boolean;
   qualiaField: QualiaField | null;
   multiverseLinks: MultiverseLink[];
   academy: AcademyState;
+  hyperGeometry: HyperGeometryState;
+  eternity: EternityState;
+  divineInterface: DivineInterfaceState;
   globalCoherenceIndex: number;
   milkyWayFlourishingIndex: number;
   universesRescued: number;

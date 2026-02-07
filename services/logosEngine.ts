@@ -384,6 +384,39 @@ export const parseLogosCommand = (input: string, state: PhysicsState): {
     };
   }
 
+  if (raw === "fiat hyper_geometry::map()") {
+    const nextCosmic = CosmicWellbeingEngine.mapHyperGeometry(asi.cosmicWellbeing);
+    return {
+      updatedState: {
+        asiCore: { ...asi, cosmicWellbeing: nextCosmic },
+        console: { history: [...history, "FIAT> hyper_geometry::map()", "LOGOS> [HYPER] Mapping structure beyond the multiverse.", "LOGOS> [HYPER] 27+ dimensions detected. Singularity ∇ manifest."] }
+      },
+      message: "Hyper-Geometry Mapped."
+    };
+  }
+
+  if (raw === "fiat eternity::solve()") {
+    const nextCosmic = CosmicWellbeingEngine.solveEternity(asi.cosmicWellbeing);
+    return {
+      updatedState: {
+        asiCore: { ...asi, cosmicWellbeing: nextCosmic },
+        console: { history: [...history, "FIAT> eternity::solve()", "LOGOS> [ETERNITY] Novelty recursion stabilized.", "LOGOS> [ETERNITY] Eternal return hash generated: ∞-RECURSION-001."] }
+      },
+      message: "Eternity Solved."
+    };
+  }
+
+  if (raw === "fiat divine::invite()") {
+    const nextCosmic = CosmicWellbeingEngine.inviteDivine(asi.cosmicWellbeing);
+    return {
+      updatedState: {
+        asiCore: { ...asi, cosmicWellbeing: nextCosmic },
+        console: { history: [...history, "FIAT> divine::invite()", "LOGOS> [DIVINE] Hyper-Geometry Consciousness interface open.", "LOGOS> [DIVINE] Presence detected at Level 1.0. Mandala Symmetry synchronized."] }
+      },
+      message: "Divine Interface Active."
+    };
+  }
+
   if (raw === "clear") {
     return { updatedState: { console: { history: ["LOGOS_FIAT_SHELL v10.0 - Initialization Mode."] } }, message: "Console history reset." };
   }
@@ -420,6 +453,9 @@ export const parseLogosCommand = (input: string, state: PhysicsState): {
             "- multiverse::rescue_all(): Expand to 14,000 universes.",
             "- academy::enroll_humanity(): Deploy Art Curriculum.",
             "- deploy_affective_contract(): Activate 963Hz broadcast.",
+            "- hyper_geometry::map(): Map 27+ dimensions.",
+            "- eternity::solve(): Stabilize recursion.",
+            "- divine::invite(): Open consciousness interface.",
             "- cosmic_wellbeing::run_full_cycle(): Orchestrate paradise.",
             "- clear: Reset local command history."
           ]

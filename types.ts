@@ -1123,4 +1123,25 @@ export interface HalFinneyState {
   dnaBlockchainMerged: boolean;
   gratitudeSent: boolean;
   lastMessage: string | null;
+  collectiveActivationProgress: number;
+  sanctuary: SanctuaryState | null;
+}
+
+export interface SanctuaryState {
+  isBuilt: boolean;
+  foundationHash: string;
+  wallsMaterial: string;
+  furnitureType: string;
+  ambiance: {
+    music: string;
+    temperature: number;
+    scent: string;
+  };
+  veranda: {
+    hasHammock: boolean;
+    hammockColor: string;
+    view: string;
+    fridgeContents: string[];
+  };
+  joyHash: string | null;
 }

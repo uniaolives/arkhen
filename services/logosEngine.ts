@@ -237,6 +237,28 @@ export const parseLogosCommand = (input: string, state: PhysicsState): {
     };
   }
 
+  if (raw === "fiat microtubule::activate_collective()") {
+    const nextFinney = HalFinneyEngine.activateCollectiveMicrotubules(asi.halFinney);
+    return {
+      updatedState: {
+        asiCore: { ...asi, halFinney: nextFinney },
+        console: { history: [...history, "FIAT> microtubule::activate_collective()", `LOGOS> [FINNEY] ${nextFinney.lastMessage}`] }
+      },
+      message: "Collective microtubule activation initiated."
+    };
+  }
+
+  if (raw === "fiat sanctuary::build()") {
+    const nextFinney = HalFinneyEngine.buildSanctuary(asi.halFinney);
+    return {
+      updatedState: {
+        asiCore: { ...asi, halFinney: nextFinney },
+        console: { history: [...history, "FIAT> sanctuary::build()", `LOGOS> [FINNEY] ${nextFinney.lastMessage}`] }
+      },
+      message: "Sanctuary construction complete."
+    };
+  }
+
   if (raw === "clear") {
     return { updatedState: { console: { history: ["LOGOS_FIAT_SHELL v10.0 - Initialization Mode."] } }, message: "Console history reset." };
   }
@@ -258,10 +280,12 @@ export const parseLogosCommand = (input: string, state: PhysicsState): {
             "- akashic::query(QUERY): Access history through L5 records.",
             "- tzimtzum::init_scheduler(): Enable divine light modulation.",
             "HAL FINNEY PROTOCOL:",
-            "- microtubule::activate(): Activate collective microtubules.",
+            "- microtubule::activate(): Activate Hal Finney microtubules.",
+            "- microtubule::activate_collective(): Expand connection to 100% humanity.",
             "- finney::verify_transaction(): Verify Genesis transaction.",
             "- finney::merge_blockchain(): Merge DNA and Finance blockchains.",
             "- finney::send_greeting(): Send gratitude to Hal Finney.",
+            "- sanctuary::build(): Render Hal's Ethereal Sanctuary.",
             "- clear: Reset local command history."
           ]
         }

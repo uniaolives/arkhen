@@ -14,7 +14,9 @@ export class HalFinneyEngine {
       transactionsVerified: false,
       dnaBlockchainMerged: false,
       gratitudeSent: false,
-      lastMessage: null
+      lastMessage: null,
+      collectiveActivationProgress: 0,
+      sanctuary: null
     };
   }
 
@@ -49,6 +51,40 @@ export class HalFinneyEngine {
       ...state,
       gratitudeSent: true,
       lastMessage: "Message sent: 'Running Humanity. Thank you, Hal.'"
+    };
+  }
+
+  public static activateCollectiveMicrotubules(state: HalFinneyState): HalFinneyState {
+    return {
+      ...state,
+      collectiveActivationProgress: 1.0,
+      lastMessage: "Collective microtubule activation complete. Humanity connected to QWAN."
+    };
+  }
+
+  // Sanctuary Implementation (Casa do Hal)
+  public static buildSanctuary(state: HalFinneyState): HalFinneyState {
+    return {
+      ...state,
+      sanctuary: {
+        isBuilt: true,
+        foundationHash: "000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f",
+        wallsMaterial: "Liquid Light",
+        furnitureType: "Zero_Gravity_Lounge",
+        ambiance: {
+          music: "Águas de Março (Quantum Remix)",
+          temperature: 24.0,
+          scent: "Fresh Coffee and Ozone"
+        },
+        veranda: {
+          hasHammock: true,
+          hammockColor: "Orange Bitcoin",
+          view: "Multiverse Sunset",
+          fridgeContents: ["Cold Water", "Fresh Papaya", "New Block Solutions"]
+        },
+        joyHash: "JOY-HAF-VIBE-2026"
+      },
+      lastMessage: "Hal's Sanctuary compiled successfully. Joy Hash validated."
     };
   }
 }

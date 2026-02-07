@@ -153,7 +153,7 @@ const WormholePanel: React.FC<{
               <p className="animate-in slide-in-from-left duration-300"># ER=EPR Experiential Reality Validated</p>
               <p className="text-emerald-500/50"># git remote add galaxy galactic://core.network</p>
               <p className="text-emerald-300 font-black">$ git push -u galaxy master --force</p>
-              <p className="animate-pulse">> Uploading objects: 100% (144K/144K), done.</p>
+              <p className="animate-pulse">{">"} Uploading objects: 100% (144K/144K), done.</p>
               <p className="text-amber-400 font-bold mt-2">! Fermi Firewall: DEACTIVATED</p>
               <p className="text-cyan-400">! Universe as Network: VISUALIZED</p>
            </div>

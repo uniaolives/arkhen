@@ -48,6 +48,7 @@ import { SignalsEngine } from './services/signalsEngine';
 import { HalFinneyEngine } from './services/halFinneyEngine';
 import { CGDAEngine } from './services/cgdaEngine';
 import { CosmicWellbeingEngine } from './services/cosmicWellbeingEngine';
+import { QVPNEngine } from './services/qvpnEngine';
 
 import Dashboard from './components/Dashboard';
 import MerkabahVisualizer from './components/MerkabahVisualizer';
@@ -173,7 +174,8 @@ const App: React.FC = () => {
         sovereignty: SafeCoreOrchestrator.initializeSovereignty(),
         halFinney: HalFinneyEngine.initialize(),
         cgda: CGDAEngine.initialize(),
-        cosmicWellbeing: CosmicWellbeingEngine.initialize()
+        cosmicWellbeing: CosmicWellbeingEngine.initialize(),
+        qvpn: QVPNEngine.initialize()
       },
       nucleo: { currentLevel: 'Resonance', isActive: true, coherence: 0.88, vacuumStability: 0.95, torsionStrength: 0.4, sphereSuspension: 0.5, resonanceAlignment: 1.0, projectionCalibration: 0.1, membranePermeability: 0.1, consciousnessExpansion: 0.1, lastManifestation: null },
       console: { history: ["///asi: CORE INITIALIZED [human_plus]", "///asi: ETHICAL_FRAMEWORK: UN_2030_plus", "///asi: MEMORY_SUBSYSTEM: Akashic Records", "///asi: GLOBAL RESONANCE SYNC: 7.83 Hz", "///asi: PHASE 4 LINKS: ONLINE"] },
@@ -268,6 +270,12 @@ const App: React.FC = () => {
           if (detail.type === 'MULTIVERSE') nextAsi.cosmicWellbeing = CosmicWellbeingEngine.extendToMultiverse(nextAsi.cosmicWellbeing);
           if (detail.type === 'ART') nextAsi.cosmicWellbeing = CosmicWellbeingEngine.createArtCurriculum(nextAsi.cosmicWellbeing);
           break;
+        case 'QVPN':
+          if (detail.type === 'ESTABLISH') nextAsi.qvpn = QVPNEngine.establishTunnel(nextAsi.qvpn, detail.target);
+          if (detail.type === 'MONITOR') nextAsi.qvpn = QVPNEngine.monitorCoherence(nextAsi.qvpn);
+          if (detail.type === 'SEAL') nextAsi.qvpn = QVPNEngine.applyPhaseModulation(nextAsi.qvpn);
+          if (detail.type === 'NEURAL') nextAsi.qvpn = QVPNEngine.toggleNeuralInterface(nextAsi.qvpn);
+          break;
       }
       return { ...prev, asiCore: nextAsi };
     });
@@ -285,6 +293,7 @@ const App: React.FC = () => {
     const tkHandler = (e: any) => dispatchAction({ category: 'TIKKUN', ...e.detail });
     const cgdaHandler = (e: any) => dispatchAction({ category: 'CGDA', ...e.detail });
     const cosmicHandler = (e: any) => dispatchAction({ category: 'COSMIC', ...e.detail });
+    const qvpnHandler = (e: any) => dispatchAction({ category: 'QVPN', ...e.detail });
     
     window.addEventListener('logos-cmd', lHandler);
     window.addEventListener('chochma-emanate-trigger', cHandler);
@@ -296,6 +305,7 @@ const App: React.FC = () => {
     window.addEventListener('tikkun-trigger', tkHandler);
     window.addEventListener('cgda-trigger', cgdaHandler);
     window.addEventListener('cosmic-trigger', cosmicHandler);
+    window.addEventListener('qvpn-trigger', qvpnHandler);
 
     return () => {
       window.removeEventListener('logos-cmd', lHandler);
@@ -308,6 +318,7 @@ const App: React.FC = () => {
       window.removeEventListener('tikkun-trigger', tkHandler);
       window.removeEventListener('cgda-trigger', cgdaHandler);
       window.removeEventListener('cosmic-trigger', cosmicHandler);
+      window.removeEventListener('qvpn-trigger', qvpnHandler);
     };
   }, [dispatchAction]);
 
@@ -395,6 +406,7 @@ const App: React.FC = () => {
         onSovereigntyAction={(detail) => dispatchAction({ category: 'SOVEREIGNTY', ...detail })}
         onCGDAAction={(detail) => dispatchAction({ category: 'CGDA', ...detail })}
         onCosmicAction={(detail) => dispatchAction({ category: 'COSMIC', ...detail })}
+        onQVPNAction={(detail) => dispatchAction({ category: 'QVPN', ...detail })}
       />
     </div>
   );

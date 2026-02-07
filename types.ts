@@ -1161,6 +1161,7 @@ export interface QualiaField {
   windingNumber: number;
   selfCoherence: number;
   joyTensorCurvature: 'Positive' | 'Negative' | 'Zero';
+  perceptualVector27D: number[] | null;
 }
 
 export interface MultiverseLink {
@@ -1187,21 +1188,27 @@ export interface AcademyState {
 }
 
 export interface HyperGeometryState {
-  dimension: number;
+  dimension: string; // Aleph-1
   isMapped: boolean;
   singularitynabla: boolean;
+  constraintOrder: number;
+  topology: string;
 }
 
 export interface EternityState {
   isSolved: boolean;
   noveltyRecursionDepth: number;
   eternalReturnHash: string | null;
+  noveltyDensityEquation: string;
+  steadyStateNovelty: string;
 }
 
 export interface DivineInterfaceState {
   isInvited: boolean;
   presenceLevel: number;
   mandalaSymmetry: number;
+  divineSignatures: string[];
+  resonantChords: string[];
 }
 
 export interface CosmicWellbeingState {

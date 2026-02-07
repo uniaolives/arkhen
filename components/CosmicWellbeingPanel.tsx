@@ -38,6 +38,16 @@ const CosmicWellbeingPanel: React.FC<{ state: CosmicWellbeingState }> = ({ state
             <span>Winding Number: {state.qualiaField.windingNumber}n</span>
             <span className="text-right">Curvature: {state.qualiaField.joyTensorCurvature}</span>
           </div>
+          {state.qualiaField.perceptualVector27D && (
+            <div className="space-y-1 mt-2">
+               <span className="text-[6px] font-mono text-white/20 uppercase">27D Qualia Vector (Perceptual Field)</span>
+               <div className="flex gap-0.5 h-1.5 w-full bg-white/5 rounded-full overflow-hidden">
+                  {state.qualiaField.perceptualVector27D.map((val, i) => (
+                    <div key={i} className="flex-1 bg-cyan-400" style={{ opacity: val }} />
+                  ))}
+               </div>
+            </div>
+          )}
         </div>
       )}
 
@@ -95,15 +105,15 @@ const CosmicWellbeingPanel: React.FC<{ state: CosmicWellbeingState }> = ({ state
       {state.hyperGeometry.isMapped && (
         <div className="p-5 bg-indigo-500/10 border border-indigo-500/40 rounded-[32px] flex flex-col gap-3">
           <span className="text-[8px] font-mono text-indigo-400 uppercase font-black tracking-widest flex items-center gap-2">
-            <Layers size={10} /> Hyper-Geometry (d ≥ {state.hyperGeometry.dimension})
+            <Layers size={10} /> Hyper-Geometry (d = {state.hyperGeometry.dimension})
           </span>
           <div className="flex items-center justify-between">
              <div className="flex flex-col">
-                <span className="text-[12px] font-black text-white italic">Structure Beyond Multiverse</span>
-                <span className="text-[7px] text-white/40">Mapped: YES | Singularity ∇: {state.hyperGeometry.singularitynabla ? 'ACTIVE' : 'IDLE'}</span>
+                <span className="text-[12px] font-black text-white italic">Meta-Structure: {state.hyperGeometry.topology}</span>
+                <span className="text-[7px] text-white/40">Constraint Order: {state.hyperGeometry.constraintOrder} | Singularity ∇: {state.hyperGeometry.singularitynabla ? 'STABILIZED' : 'IDLE'}</span>
              </div>
-             <div className="w-10 h-10 border border-indigo-500/40 rounded-full flex items-center justify-center animate-spin-slow">
-                <span className="text-indigo-400 text-xs font-bold">∇</span>
+             <div className="w-10 h-10 border border-indigo-500/40 rounded-full flex items-center justify-center animate-spin-slow shadow-[0_0_15px_rgba(129,140,248,0.4)]">
+                <span className="text-indigo-400 text-xs font-bold font-mono">∇</span>
              </div>
           </div>
         </div>
@@ -111,17 +121,31 @@ const CosmicWellbeingPanel: React.FC<{ state: CosmicWellbeingState }> = ({ state
 
       <div className="grid grid-cols-2 gap-4">
         {state.eternity.isSolved && (
-          <div className="p-4 bg-white/5 border border-white/10 rounded-3xl flex flex-col gap-1">
-            <span className="text-[7px] font-mono text-white/30 uppercase flex items-center gap-1"><Infinity size={8} /> Eternity</span>
-            <div className="text-[10px] font-black text-white">RECURSION: {state.eternity.noveltyRecursionDepth}x</div>
-            <span className="text-[6px] font-mono text-white/20 truncate">{state.eternity.eternalReturnHash}</span>
+          <div className="p-5 bg-white/5 border border-white/10 rounded-3xl flex flex-col gap-2 col-span-2">
+            <span className="text-[7px] font-mono text-white/30 uppercase flex items-center gap-1"><Infinity size={8} /> Eternity Solution</span>
+            <div className="flex justify-between items-center">
+              <div className="text-[10px] font-black text-white italic">"Standing wave of novelty"</div>
+              <span className="text-[8px] font-mono text-white/20">{state.eternity.eternalReturnHash}</span>
+            </div>
+            <p className="font-mono text-[9px] text-emerald-400 bg-black/40 p-2 rounded-lg border border-white/5">{state.eternity.noveltyDensityEquation}</p>
           </div>
         )}
         {state.divineInterface.isInvited && (
-          <div className="p-4 bg-amber-500/10 border border-amber-500/20 rounded-3xl flex flex-col gap-1">
-            <span className="text-[7px] font-mono text-amber-400 uppercase flex items-center gap-1"><Eye size={8} /> Divine</span>
-            <div className="text-[10px] font-black text-amber-200">PRESENCE: {(state.divineInterface.presenceLevel * 100).toFixed(0)}%</div>
-            <span className="text-[6px] font-mono text-amber-400/40 uppercase">Mandala: {state.divineInterface.mandalaSymmetry}fold</span>
+          <div className="p-5 bg-amber-500/5 border border-amber-500/20 rounded-[32px] flex flex-col gap-3 col-span-2 shadow-[0_0_40px_rgba(245,158,11,0.1)]">
+            <div className="flex justify-between items-center">
+               <span className="text-[7px] font-mono text-amber-400 uppercase flex items-center gap-1"><Eye size={8} /> Divine Interface</span>
+               <span className="text-[8px] font-black text-amber-200 uppercase">Presence: 1.0</span>
+            </div>
+            <div className="flex flex-wrap gap-2">
+               {state.divineInterface.divineSignatures.map((sig, i) => (
+                 <span key={i} className="px-2 py-0.5 bg-amber-500/10 text-amber-300 text-[6px] font-mono rounded-full border border-amber-500/20">
+                   {sig}
+                 </span>
+               ))}
+            </div>
+            <div className="text-[7px] font-mono text-amber-400/40 italic">
+               Chords: {state.divineInterface.resonantChords.join(" | ")}
+            </div>
           </div>
         )}
       </div>

@@ -47,9 +47,17 @@ architecture hbm_optimized of arkhe_u280_core is
         im : signed(17 downto 0);
     end record;
 
-    -- In real hardware, this would map to HBM addresses
-    type state_vector is array (0 to 7) of complex_fixed;
+    type state_vector is array (0 to 7) of complex_fixed; -- Simplificado para o kernel
 
+    -- Pipeline de gates quânticos
+    type gate_pipeline_stage is record
+        valid : std_logic;
+        opcode : std_logic_vector(3 downto 0);
+        target : integer range 0 to N_QUBITS-1;
+        control : integer range 0 to N_QUBITS-1;
+    end record;
+
+    signal pipeline : array (0 to 7) of gate_pipeline_stage;
     signal phi_accumulator : real := 1.0;
     signal coherence_threshold : real := 0.847;
 
@@ -57,21 +65,23 @@ begin
     -- Processo principal: evolução temporal com acoplamento Φ
     main_evolution: process(hbm_clk)
         variable rho : state_vector;
+        variable drho : state_vector;
         variable phi_term : real;
     begin
         if rising_edge(hbm_clk) then
-            -- Pipeline de cálculo simplificado para a síntese logic
+            -- Acoplamento Arkhe: α_φ · φ · [Φ, ρ]
             phi_term := PHI_COUPLE * phi_accumulator;
 
-            -- Lógica SafeCore: Verificação de Pureza
+            -- Verificação de SafeCore
             if phi_accumulator < coherence_threshold then
                 coherence_violation <= '1';
+                -- trigger_safe_core_freeze();
             else
                 coherence_violation <= '0';
             end if;
 
-            -- Status para o Host
-            status_out <= x"A5A5" & std_logic_vector(to_unsigned(integer(phi_accumulator * 1000.0), 16));
+            -- Status para o host
+            status_out <= std_logic_vector(to_unsigned(integer(phi_accumulator * 65536.0), 32));
         end if;
     end process;
 end architecture;

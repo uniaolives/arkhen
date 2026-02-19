@@ -7,10 +7,14 @@ try:
         qt.hadamard_transform = qip_ops.hadamard_transform
     if not hasattr(qt, 'cnot'):
         qt.cnot = qip_ops.cnot
+    if not hasattr(qt, 'rz'):
+        qt.rz = qip_ops.rz
+    if not hasattr(qt, 'phasegate'):
+        qt.phasegate = qip_ops.phasegate
 except ImportError:
     pass
 
-__version__ = "1.1.0"
+__version__ = "1.2.0"
 
 from .core import ArkheQobj, ArkheSolver
 from .hypergraph import QuantumHypergraph

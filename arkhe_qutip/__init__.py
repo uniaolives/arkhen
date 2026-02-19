@@ -7,9 +7,19 @@ try:
         qt.hadamard_transform = qip_ops.hadamard_transform
     if not hasattr(qt, 'cnot'):
         qt.cnot = qip_ops.cnot
+    if not hasattr(qt, 'rz'):
+        qt.rz = qip_ops.rz
+    if not hasattr(qt, 'phasegate'):
+        qt.phasegate = qip_ops.phasegate
 except ImportError:
-    # If qutip_qip is not installed, we hope the user is on an older QuTiP
-    # or doesn't need these specific gates.
     pass
 
-__version__ = "1.0.0"
+__version__ = "1.2.0"
+
+from .core import ArkheQobj, ArkheSolver
+from .hypergraph import QuantumHypergraph
+from .visualization import plot_hypergraph, plot_coherence_trajectory
+from .chain_bridge import ArkheChainBridge
+from .mining import ArkheMiner, FPGAArkheMiner, ArkheNetwork
+from .hardware import FPGAQubitEmulator, NoiseEngine
+from .network import ArkheNetworkNode, PoCNode, DistributedPoCConsensus

@@ -1,0 +1,20 @@
+[package]
+name = "arkhe-tor"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+
+[dependencies]
+tokio.workspace = true
+serde.workspace = true
+thiserror.workspace = true
+tracing.workspace = true
+arkhe-core.workspace = true
+
+# Tor client isolated in this crate so SQLite linkage does not leak
+arti-client = { version = "0.20", default-features = false, features = ["tokio", "rustls"] }
+tor-rtcompat = "0.20"
+
+[features]
+default = []
+vendored = ["arti-client/sqlite-bundled"]

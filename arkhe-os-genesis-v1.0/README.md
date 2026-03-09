@@ -31,3 +31,13 @@ O script irá:
 
 ## Documentação completa
 Veja a pasta `docs/`.
+
+## Workspace Rust (stability profile)
+- Workspace root: `arkhe-os-genesis-v1.0/Cargo.toml`
+- `sqlx` is configured with PostgreSQL-only features.
+- Tor integration is isolated in `crates/arkhe-tor` with optional `vendored` feature (`arti-client/sqlite-bundled`).
+
+Build example:
+```bash
+cargo build --release --features arkhe-tor/vendored
+```

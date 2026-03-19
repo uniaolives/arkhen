@@ -3,6 +3,7 @@ resolver = "2"
 members = [
     "src/arkhe_core",
     "crates/arkhe-tor",
+    "crates/arkhe-chain",
 ]
 
 [workspace.package]
@@ -32,3 +33,4 @@ tracing = "0.1"
 # Internal crates
 arkhe-core = { path = "src/arkhe_core" }
 arkhe-tor = { path = "crates/arkhe-tor" }
+arkhe-chain = { path = "crates/arkhe-chain" }

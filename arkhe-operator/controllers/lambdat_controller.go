@@ -7,7 +7,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
-	arkhev1alpha1 "arkhe-operator/api/v1alpha1"
+	arkhev1beta1 "arkhe-operator/api/v1beta1"
 )
 
 // LambdaTReconciler reconciles a LambdaT object.
@@ -17,7 +17,7 @@ type LambdaTReconciler struct {
 }
 
 func (r *LambdaTReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
-	lambda := &arkhev1alpha1.LambdaT{}
+	lambda := &arkhev1beta1.LambdaT{}
 	if err := r.Get(ctx, req.NamespacedName, lambda); err != nil {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
@@ -35,6 +35,6 @@ func (r *LambdaTReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 
 func (r *LambdaTReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
-		For(&arkhev1alpha1.LambdaT{}).
+		For(&arkhev1beta1.LambdaT{}).
 		Complete(r)
 }

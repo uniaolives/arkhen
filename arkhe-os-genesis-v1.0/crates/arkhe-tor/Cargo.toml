@@ -17,4 +17,4 @@ tor-rtcompat = "0.20"
 
 [features]
 default = []
-vendored = ["arti-client/sqlite-bundled"]
+vendored = ["arti-client/static-sqlite"]

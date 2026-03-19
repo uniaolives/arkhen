@@ -1,4 +1,4 @@
-package v1alpha1
+package v1beta1
 
 import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
@@ -17,10 +17,14 @@ type EraSpec struct {
 	AlphaWeight float64 `json:"alphaWeight"`
 
 	// Thermal state of the Era
-	ThermalState ThermalState `json:"thermalState"`
+	// +kubebuilder:validation:Enum=Frozen;Thawing;Active;Decohering;Shattered
+	ThermalState string `json:"thermalState"`
 
 	// Compute resources allocated for processing this Era
 	Resources CoreResourceSpec `json:"resources,omitempty"`
+
+	Annealing AnnealingSpec `json:"annealing,omitempty"`
+	MerkleRoot string `json:"merkleRoot,omitempty"`
 }
 
 // +kubebuilder:object:generate=true
@@ -29,12 +33,11 @@ type BlockRange struct {
 	End   int64 `json:"end"`
 }
 
-type ThermalState string
-
-const (
-	ThermalStateFrozen ThermalState = "Frozen"
-	ThermalStateActive ThermalState = "Active"
-)
+// +kubebuilder:object:generate=true
+type AnnealingSpec struct {
+	RampRate   float64 `json:"rampRate,omitempty"`
+	TargetTemp float64 `json:"targetTemp,omitempty"`
+}
 
 // +kubebuilder:object:generate=true
 type CoreResourceSpec struct {
@@ -45,11 +48,17 @@ type CoreResourceSpec struct {
 // +kubebuilder:object:generate=true
 // EraStatus defines the observed state of Era.
 type EraStatus struct {
-	TemperatureMilliKelvin float64            `json:"temperatureMilliKelvin"`
-	Active                 bool               `json:"active"`
-	EntropyNanoWatts       float64            `json:"entropyNanoWatts"`
-	BlocksProcessed        int64              `json:"blocksProcessed"`
-	MerkleRoot             string             `json:"merkleRoot"`
+	// +kubebuilder:validation:Enum=Frozen;Thawing;Thawed;Active;Decohering
+	Phase                  string             `json:"phase,omitempty"`
+	TemperatureMilliKelvin float64            `json:"temperatureMilliKelvin,omitempty"`
+	Active                 bool               `json:"active,omitempty"`
+	EntropyNanoWatts       float64            `json:"entropyNanoWatts,omitempty"`
+	BlocksProcessed        int64              `json:"blocksProcessed,omitempty"`
+	MerkleRoot             string             `json:"merkleRoot,omitempty"`
+	Coherence              float64            `json:"coherence,omitempty"`
+	ActivePods             int                `json:"activePods,omitempty"`
+	LastThawTime           *metav1.Time       `json:"lastThawTime,omitempty"`
+	EntropyProduced        float64            `json:"entropyProduced,omitempty"`
 	Conditions             []metav1.Condition `json:"conditions,omitempty"`
 }
 

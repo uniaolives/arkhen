@@ -4,6 +4,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+// +kubebuilder:object:generate=true
 // TzinorSpec defines the desired state of Tzinor.
 type TzinorSpec struct {
 	SourceEpoch string   `json:"sourceEpoch"`
@@ -19,6 +20,7 @@ const (
 	LockModeUnlocked LockMode = "Unlocked"
 )
 
+// +kubebuilder:object:generate=true
 // TzinorStatus defines the observed state of Tzinor.
 type TzinorStatus struct {
 	Locked       bool               `json:"locked"`

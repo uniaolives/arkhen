@@ -1,0 +1,11 @@
+apiVersion: arkhe.io/v1alpha1
+kind: LambdaT
+metadata:
+  name: oracle
+spec:
+  handler: "handlers::oracle_handler"
+  image: arkhe/lambda-t-oracle:latest
+  trigger:
+    type: "Decay"
+    lifetimePs: 0.25
+  coherenceSigma: 7.0

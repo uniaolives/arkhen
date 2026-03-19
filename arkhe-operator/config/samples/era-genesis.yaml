@@ -1,0 +1,14 @@
+apiVersion: arkhe.io/v1alpha1
+kind: Era
+metadata:
+  name: era-genesis
+spec:
+  index: 0
+  blockRange:
+    start: 0
+    end: 0
+  alphaWeight: 0.85
+  thermalState: Active
+  resources:
+    cpu: "2"
+    memory: "4Gi"

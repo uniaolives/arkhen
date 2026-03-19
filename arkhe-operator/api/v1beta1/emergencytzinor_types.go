@@ -5,6 +5,17 @@ import (
 )
 
 // +kubebuilder:object:generate=true
+// EmergencyTzinorSpec defines the desired state of EmergencyTzinor.
+type EmergencyTzinorSpec struct {
+	Frequency        float64  `json:"frequency"`
+	Modulation       string   `json:"modulation"`
+	Power            int      `json:"power"` // watts
+	CoverageRadiusKm int      `json:"coverageRadiusKm"`
+	AuthorizedNodes  []string `json:"authorizedNodes"`
+}
+
+// +kubebuilder:object:generate=true
+// EmergencyTzinorStatus defines the observed state of EmergencyTzinor.
 type EmergencyTzinorSpec struct {
 	// Frequency in Hz
 	Frequency float64 `json:"frequency"`
@@ -29,6 +40,8 @@ type EmergencyTzinorStatus struct {
 
 //+kubebuilder:object:root=true
 //+kubebuilder:subresource:status
+
+// EmergencyTzinor is the Schema for the emergencytzinors API
 //+kubebuilder:printcolumn:name="Freq",type="number",JSONPath=".spec.frequency"
 //+kubebuilder:printcolumn:name="Active",type="boolean",JSONPath=".status.active"
 
@@ -42,6 +55,7 @@ type EmergencyTzinor struct {
 
 //+kubebuilder:object:root=true
 
+// EmergencyTzinorList contains a list of EmergencyTzinor
 type EmergencyTzinorList struct {
 	metav1.TypeMeta `json:",inline"`
 	metav1.ListMeta `json:"metadata,omitempty"`

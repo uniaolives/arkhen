@@ -82,6 +82,10 @@ class GstackOrchestrator:
             return await self._handle_hal_omega_status(parsed)
         elif intent == QueryIntent.PROTEIN_QUERY:
             return await self._handle_protein_query(parsed)
+        elif intent == QueryIntent.PARTICLE_QUERY:
+            return await self._handle_particle_query(parsed)
+        elif intent == QueryIntent.CODEBASE_QUERY: # Handled CODEBASE_QUERY
+            return await self._handle_codebase_query(parsed)
         elif intent == QueryIntent.PARTICLE_QUERY: # Handled PARTICLE_QUERY
             return await self._handle_particle_query(parsed)
         else:
@@ -243,12 +247,41 @@ class GstackOrchestrator:
             return response
         return "Skill Subatomic-Reason não disponível."
 
+    async def _handle_codebase_query(self, parsed: ParsedQuery) -> str:
+        """
+        Handler para consultas sobre a base de código.
+        """
+        target = parsed.entities.get('target', '.')
+
+        skill = self.skills.get('understand_anything')
+        if skill:
+            ctx = Context({"query": target, "path": "."})
+            result = await skill.execute(ctx)
+
+            response = f"""
+🔍 **ANÁLISE DE CÓDIGO: {target}**
+
+{result['explanation']}
+
+**Camadas Arquiteturais Identificadas:**
+{", ".join(result['architecture_layers'])}
+
+**Tour Guiado Sugerido:**
+{self._format_tour(result['guided_tour'])}
+
+[Arquivos Analisados: {result['files_analyzed']}]
+"""
+            return response
+        return "Skill Understand-Anything não disponível."
+
     def _format_annotations(self, annotations: List[Dict]) -> str:
         return "\n".join([f"• {a['id']} ({a['term']}) - Confiança: {a['confidence']:.1%}" for a in annotations])
 
     def _format_decays(self, decays: List[Dict]) -> str:
         return "\n".join([f"• {d['in']} -> {d['boson']} -> {d['out']}" for d in decays])
 
+    def _format_tour(self, tour: List[Dict]) -> str:
+        return "\n".join([f"{t['step']}. {t['topic']} ({t['module']})" for t in tour])
     def _format_annotations(self, annotations: List[Dict]) -> str:
         return "\n".join([f"• {a['id']} ({a['term']}) - Confiança: {a['confidence']:.1%}" for a in annotations])
 
@@ -332,4 +365,5 @@ Posso responder sobre:
 - Status do protocolo HAL-Ω (Hal Finney)
 - Predição de função proteica (BioReason-Pro)
 - Raciocínio subatômico e partículas elementares
+- Explicação da arquitetura do código (Understand-Anything)
 """

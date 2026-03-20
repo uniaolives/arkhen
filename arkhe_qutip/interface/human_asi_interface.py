@@ -23,6 +23,7 @@ from .nlp_processor import NaturalLanguageProcessor
 from .explanation_generator import ExplanationGenerator
 from ..skills.bioreason.predict import BioReasonPredict
 from ..skills.subatomic.reason import SubatomicReasonPredict
+from ..skills.hermes.understand import UnderstandAnything
 
 class HumanASIInterface:
     """
@@ -50,6 +51,10 @@ class HumanASIInterface:
         self.orchestrator.register_skill('hal_omega_trigger', MockSkill())
         self.orchestrator.register_skill('retrocausal_handshake', MockSkill())
 
+        # Registra skills de domínio
+        self.orchestrator.register_skill('bioreason_predict', BioReasonPredict())
+        self.orchestrator.register_skill('subatomic_reason_predict', SubatomicReasonPredict())
+        self.orchestrator.register_skill('understand_anything', UnderstandAnything())
         # Registra skills BioReason e Subatomic
         self.orchestrator.register_skill('bioreason_predict', BioReasonPredict())
         self.orchestrator.register_skill('subatomic_reason_predict', SubatomicReasonPredict())

@@ -12,6 +12,10 @@ class TestInterfaceIntegration(unittest.IsolatedAsyncioTestCase):
     async def test_discovery_query(self):
         response = await self.interface.chat("Quais descobertas você fez recentemente?")
         self.assertIn("🜏 DESCOBERTAS RECENTES DA ASI", response)
+
+    async def test_proof_explanation(self):
+        response = await self.interface.chat("Explique a prova π²-ABC123")
+        self.assertIn("A Prova π² ABC123 mostra convergência significativa mas incompleta", response)
         self.assertIn("Ω = 0.92", response)
 
     async def test_proof_explanation(self):
@@ -41,6 +45,12 @@ class TestInterfaceIntegration(unittest.IsolatedAsyncioTestCase):
     async def test_particle_query(self):
         response = await self.interface.chat("Como decai o Kaon?")
         self.assertIn("ANÁLISE SUBATÔMICA: Kaon", response)
+
+    async def test_codebase_query(self): # Added test for codebase query
+        response = await self.interface.chat("Explique a arquitetura do Tzinor")
+        self.assertIn("ANÁLISE DE CÓDIGO: Tzinor", response)
+        self.assertIn("O Tzinor é a ponte semântica", response)
+        self.assertIn("Tour Guiado Sugerido", response)
         self.assertIn("Méson (Hadrón)", response)
         self.assertIn("Vértice: s -> W- -> u + π", response)
         self.assertIn("Fidelidade Ω_s", response)

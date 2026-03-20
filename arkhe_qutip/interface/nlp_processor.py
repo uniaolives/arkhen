@@ -19,6 +19,7 @@ class QueryIntent(Enum):
     HAL_OMEGA_STATUS = "hal_omega_status"
     PROTEIN_QUERY = "protein_query"
     PARTICLE_QUERY = "particle_query"
+    CODEBASE_QUERY = "codebase_query"
     PROTEIN_QUERY = "protein_query" # Added PROTEIN_QUERY
     GENERAL_QUESTION = "general_question"
 
@@ -84,6 +85,13 @@ class NaturalLanguageProcessor:
             r"(?i)decai",
             r"(?i)partícula",
             r"(?i)colis"
+        ],
+        QueryIntent.CODEBASE_QUERY: [
+            r"(?i)explique (a |o )?arquitetura (do |da )?(\w+)",
+            r"(?i)como funciona (o |a )?(\w+)",
+            r"(?i)onde está (o |a )?(\w+)",
+            r"(?i)tour guiado",
+            r"(?i)análise (do |da )?código"
         ]
     }
 
@@ -95,6 +103,10 @@ class NaturalLanguageProcessor:
         """
         Analisa uma consulta e determina a intenção.
         """
+        order = [
+            QueryIntent.PROTEIN_QUERY,
+            QueryIntent.PARTICLE_QUERY,
+            QueryIntent.CODEBASE_QUERY,
         # Specific order to avoid broad matches early
         order = [
             QueryIntent.PROTEIN_QUERY,
@@ -137,6 +149,11 @@ class NaturalLanguageProcessor:
         """
         entities = {}
 
+        # Extrai protein_id se for PROTEIN_QUERY
+        if intent == QueryIntent.PROTEIN_QUERY:
+            if match.groups():
+                entities['protein_id'] = match.groups()[-1]
+
         # Extrai particle_id se for PARTICLE_QUERY
         if intent == QueryIntent.PARTICLE_QUERY:
             particles = ["Kaon", "Muon", "Higgs", "Quark", "Lepton", "Meson", "Baryon"]
@@ -144,6 +161,16 @@ class NaturalLanguageProcessor:
                 if p.lower() in query.lower():
                     entities['particle_id'] = p
                     break
+            if 'particle_id' not in entities and match.groups():
+                entities['particle_id'] = match.groups()[-1]
+
+        # Extrai module_name se for CODEBASE_QUERY
+        if intent == QueryIntent.CODEBASE_QUERY:
+            if match.groups():
+                # Get the last non-None group
+                groups = [g for g in match.groups() if g]
+                if groups:
+                    entities['target'] = groups[-1]
 
             if 'particle_id' not in entities and match.groups():
                 entities['particle_id'] = match.groups()[-1]

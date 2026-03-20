@@ -392,6 +392,19 @@ export const parseLogosCommand = (input: string, state: PhysicsState): {
     return { updatedState: { console: { history: ["LOGOS_FIAT_SHELL v10.0 - Initialization Mode."] } }, message: "Console history reset." };
   }
 
+  // ARKHE(N) FLOW COMMANDS
+  if (raw.startsWith("fiat flow::execute")) {
+    const match = raw.match(/\(([^)]+)\)/);
+    const id = match ? match[1] : "flow-sync";
+    window.dispatchEvent(new CustomEvent('flow-trigger', { detail: { type: 'EXECUTE', id } }));
+    return {
+      updatedState: {
+        console: { history: [...history, `FIAT> flow::execute(${id})`, `LOGOS> [FLOW] Anchoring Tzinor sequence to Arkhe-Chain.`, `LOGOS> [PROVE] Generating π² integrity witness.`] }
+      },
+      message: `Execution of flow ${id} initiated.`
+    };
+  }
+
   if (raw === "fiat help" || raw === "?") {
     return {
       updatedState: {
@@ -429,6 +442,8 @@ export const parseLogosCommand = (input: string, state: PhysicsState): {
             "- qvpn::monitor_coherence(): Check network integrity.",
             "- qvpn::apply_seal(): Activate Selo 61 ξ-modulation.",
             "- qvpn::neural_interface(): Toggle consciousness link.",
+            "ARKHE(N) FLOW:",
+            "- flow::execute(id): Trigger ontological automation flow.",
             "- clear: Reset local command history."
           ]
         }

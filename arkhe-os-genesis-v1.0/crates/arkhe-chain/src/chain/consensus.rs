@@ -2,6 +2,7 @@
 //! Proof of Coherence with ZK and AGI extensions.
 
 use serde::{Deserialize, Serialize};
+use crate::robustness::{EntropyShield, PhaseInput, ShieldResponse};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
 pub struct CoherenceProof {
@@ -24,6 +25,19 @@ pub struct CoherenceProof {
 pub struct PoCEngineV3;
 
 impl PoCEngineV3 {
+    /// Validates a proof against the Entropy Shield (Biological Robustness IV)
+    pub fn validate_robustness(proof: &CoherenceProof, shield: &mut EntropyShield) -> bool {
+        let input = PhaseInput {
+            phase: proof.avg_phase_error, // Using phase error as proxy for phase stability
+            entropy: proof.entropy_delta,
+        };
+
+        match shield.process(&input) {
+            ShieldResponse::Pass => true,
+            ShieldResponse::Quarantine => false,
+        }
+    }
+
     /// Calculate Coherence Score v3
     ///
     /// C = w1*(phase) + w2*(entropy) + w3*(zk) + w4*(agi)

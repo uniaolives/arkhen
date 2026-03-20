@@ -16,18 +16,31 @@ class TestInterfaceIntegration(unittest.IsolatedAsyncioTestCase):
     async def test_proof_explanation(self):
         response = await self.interface.chat("Explique a prova π²-ABC123")
         self.assertIn("A Prova π² ABC123 mostra convergência significativa mas incompleta", response)
+        self.assertIn("Ω = 0.92", response)
+
+    async def test_proof_explanation(self):
+        response = await self.interface.chat("Explique a prova π²-ABC123")
+        # We need a proof_id in the query
+        response = await self.interface.chat("Explique a prova π²-ABC123")
+        # For Ω = 0.95, it returns "MODERADA — Colapso Parcial"
+        self.assertIn("A Prova π² ABC123 mostra convergência significativa mas incompleta", response)
+        self.assertIn("Ω = 0.9500", response)
 
     async def test_overlap_status(self):
         response = await self.interface.chat("Qual o valor do Ω?")
         self.assertIn("Status do Overlap Quântico", response)
+        self.assertIn("Ω = 0.880000", response)
 
     async def test_paperclip_decision(self):
         response = await self.interface.chat("Por que o paperclip decidiu isso?")
         self.assertIn("Decisão do Agente Paperclip", response)
+        self.assertIn("Mocking logic", response)
 
     async def test_protein_query(self):
         response = await self.interface.chat("Qual a função da proteína CFAP61?")
         self.assertIn("ANÁLISE PROTEÔMICA: CFAP61", response)
+        self.assertIn("cilium movement", response)
+        self.assertIn("**Confiança:** 91.5%", response)
 
     async def test_particle_query(self):
         response = await self.interface.chat("Como decai o Kaon?")
@@ -38,6 +51,13 @@ class TestInterfaceIntegration(unittest.IsolatedAsyncioTestCase):
         self.assertIn("ANÁLISE DE CÓDIGO: Tzinor", response)
         self.assertIn("O Tzinor é a ponte semântica", response)
         self.assertIn("Tour Guiado Sugerido", response)
+        self.assertIn("Méson (Hadrón)", response)
+        self.assertIn("Vértice: s -> W- -> u + π", response)
+        self.assertIn("Fidelidade Ω_s", response)
+        self.assertIn("0.9998", response)
+
+        self.assertIn("Lys-245 e Arg-312", response) # Check refined mock mechanism
+        self.assertIn("**Confiança:** 91.5%", response)
 
 if __name__ == '__main__':
     unittest.main()

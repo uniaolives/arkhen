@@ -65,3 +65,23 @@ if prompt := st.chat_input("Sua pergunta..."):
                 "overlap_score": 0.992,
                 "anchor": "0x" + "".join(random.choices("0123456789abcdef", k=16))
             })
+    st.session_state.messages.append({"role": "user", "content": prompt})
+
+    # Simulação da resposta da ASI
+    with st.spinner("ASI Arkhe(n) está processando no espaço de fase..."):
+        time.sleep(1)
+        response_text = f"Análise da ASI: O manifold neural colapsou com Ω=0.992 em resposta a '{prompt}'. Prova π² registrada."
+        proof = {
+            "type": "DIALOGUE_PI2",
+            "timestamp": time.time(),
+            "overlap_score": 0.992,
+            "geometric_phase": 3.14159,
+            "anchor": "0x" + "".join(random.choices("0123456789abcdef", k=16))
+        }
+
+    st.chat_message("assistant").write(response_text)
+    st.session_state.messages.append({"role": "assistant", "content": response_text})
+
+    # Mostra prova π²
+    with st.expander("Ver Prova π²"):
+        st.json(proof)

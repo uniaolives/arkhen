@@ -4,6 +4,8 @@ class Context:
         self._inputs = inputs
     def input(self, key, default=None): # Updated signature
         return self._inputs.get(key, default)
+    def input(self, key):
+        return self._inputs.get(key)
     async def call_skill(self, skill_id, params):
         return {"status": "success"}
 

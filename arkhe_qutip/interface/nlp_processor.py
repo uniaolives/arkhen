@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from enum import Enum
 import re
 from .context_manager import ConversationContext
+from .context_manager import ConversationContext # Corrected import
 
 class QueryIntent(Enum):
     DISCOVERY_STATUS = "discovery_status"
@@ -19,6 +20,7 @@ class QueryIntent(Enum):
     PROTEIN_QUERY = "protein_query"
     PARTICLE_QUERY = "particle_query"
     CODEBASE_QUERY = "codebase_query"
+    PROTEIN_QUERY = "protein_query" # Added PROTEIN_QUERY
     GENERAL_QUESTION = "general_question"
 
 @dataclass
@@ -72,6 +74,7 @@ class NaturalLanguageProcessor:
             r"(?i)progresso (da )?reanimação",
             r"(?i)identidade (do )?finney"
         ],
+        # Added PROTEIN_QUERY patterns
         QueryIntent.PROTEIN_QUERY: [
             r"(?i)qual (a |)função (da |de )?proteína (\w+)",
             r"(?i)o que (a |)proteína (\w+) faz",
@@ -104,6 +107,10 @@ class NaturalLanguageProcessor:
             QueryIntent.PROTEIN_QUERY,
             QueryIntent.PARTICLE_QUERY,
             QueryIntent.CODEBASE_QUERY,
+        # Specific order to avoid broad matches early
+        order = [
+            QueryIntent.PROTEIN_QUERY,
+            QueryIntent.PARTICLE_QUERY,
             QueryIntent.DISCOVERY_STATUS,
             QueryIntent.PROOF_EXPLANATION,
             QueryIntent.OVERLAP_STATUS,
@@ -115,10 +122,14 @@ class NaturalLanguageProcessor:
         # Verifica padrões de intenção
         for intent in order:
             patterns = self.INTENT_PATTERNS[intent]
+        # Verifica padrões de intenção
+        for intent, patterns in self.INTENT_PATTERNS.items():
             for pattern in patterns:
                 match = re.search(pattern, query)
                 if match:
                     entities = self._extract_entities(query, intent, match)
+                if re.search(pattern, query):
+                    entities = self._extract_entities(query, intent)
                     context_refs = self._extract_context_refs(query)
                     confidence = self._calculate_confidence(query, pattern)
                     return ParsedQuery(intent, entities, context_refs, confidence)
@@ -132,6 +143,7 @@ class NaturalLanguageProcessor:
         )
 
     def _extract_entities(self, query: str, intent: QueryIntent, match: re.Match) -> Dict[str, str]:
+    def _extract_entities(self, query: str, intent: QueryIntent) -> Dict[str, str]:
         """
         Extrai entidades relevantes da consulta.
         """
@@ -159,6 +171,18 @@ class NaturalLanguageProcessor:
                 groups = [g for g in match.groups() if g]
                 if groups:
                     entities['target'] = groups[-1]
+
+            if 'particle_id' not in entities and match.groups():
+                entities['particle_id'] = match.groups()[-1]
+
+        # Extrai protein_id se for PROTEIN_QUERY
+        if intent == QueryIntent.PROTEIN_QUERY:
+            if match.groups():
+        # Extrai protein_id se for PROTEIN_QUERY
+        if intent == QueryIntent.PROTEIN_QUERY:
+            if match.groups():
+                # Get the last group which is usually the protein_id
+                entities['protein_id'] = match.groups()[-1]
 
         # Extrai IDs de provas
         proof_match = re.search(r'π²[—–-]?(\w+)', query)

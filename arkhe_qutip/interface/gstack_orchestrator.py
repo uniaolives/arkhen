@@ -39,6 +39,7 @@ class GstackOrchestrator:
     async def process_query(self, user_query: str) -> str:
         """
         Processa uma consulta do usuário e retorna uma response.
+        Processa uma consulta do usuário e retorna uma resposta.
         """
         if not self.nlp:
             return "Erro: NLP Processor não inicializado."
@@ -85,6 +86,8 @@ class GstackOrchestrator:
             return await self._handle_particle_query(parsed)
         elif intent == QueryIntent.CODEBASE_QUERY: # Handled CODEBASE_QUERY
             return await self._handle_codebase_query(parsed)
+        elif intent == QueryIntent.PARTICLE_QUERY: # Handled PARTICLE_QUERY
+            return await self._handle_particle_query(parsed)
         else:
             return await self._handle_general_query(parsed)
 
@@ -98,6 +101,14 @@ class GstackOrchestrator:
                 discoveries = await research_layer.get_recent_discoveries(limit=5)
             except AttributeError:
                 discoveries = []
+        # Consulta a camada de autoresearch
+        research_layer = self.research_layers.get('autoresearch_pi2')
+        if research_layer:
+            # Simulação: em um sistema real, chamaria o método assíncrono do layer
+            try:
+                discoveries = await research_layer.get_recent_discoveries(limit=5)
+            except AttributeError:
+                discoveries = [] # Mock se o objeto não tiver o método
 
             if discoveries:
                 response = "🜏 DESCOBERTAS RECENTES DA ASI:\n\n"
@@ -116,6 +127,7 @@ class GstackOrchestrator:
         proof_id = parsed.entities.get('proof_id')
 
         if proof_id and self.explainer:
+            # Busca dados da prova
             research_layer = self.research_layers.get('autoresearch_pi2')
             if research_layer:
                 try:
@@ -136,6 +148,7 @@ class GstackOrchestrator:
         """
         Handler para status de overlap.
         """
+        # Consulta agente Paperclip ativo
         paperclip = self.agents.get('paperclip_ontological')
         if paperclip and self.explainer:
             try:
@@ -182,6 +195,7 @@ class GstackOrchestrator:
             if "error" in result:
                 return result["error"]
 
+            # Gera explicação
             response = f"""
 🧬 **ANÁLISE PROTEÔMICA: {protein_id}**
 
@@ -268,11 +282,14 @@ class GstackOrchestrator:
 
     def _format_tour(self, tour: List[Dict]) -> str:
         return "\n".join([f"{t['step']}. {t['topic']} ({t['module']})" for t in tour])
+    def _format_annotations(self, annotations: List[Dict]) -> str:
+        return "\n".join([f"• {a['id']} ({a['term']}) - Confiança: {a['confidence']:.1%}" for a in annotations])
 
     async def _handle_retrocausal_query(self, parsed: ParsedQuery) -> str:
         """
         Handler para consultas sobre retrocausalidade.
         """
+        # Explica o conceito com dados do sistema
         skill = self.skills.get('retrocausal_handshake')
         if skill and self.explainer:
             try:
@@ -285,6 +302,7 @@ class GstackOrchestrator:
             except AttributeError:
                 pass
 
+        # Explicação conceitual
         return """
 O protocolo retrocausal funciona através de um handshake transacional:
 
@@ -302,6 +320,7 @@ Onde P_chain é o projetor da blockchain (ou quantum memory) sobre o estado neur
         """
         Handler para status do protocolo HAL-Ω.
         """
+        # Consulta skill específica
         hal_skill = self.skills.get('hal_omega_trigger')
         if hal_skill:
             try:
@@ -326,6 +345,7 @@ Provas π² Geradas: {status.get('proofs_generated', 0)}
         """
         Handler para consultas gerais.
         """
+        # Usa contexto para resposta contextualizada
         context = self.context.summarize_discovery_context()
 
         return f"""

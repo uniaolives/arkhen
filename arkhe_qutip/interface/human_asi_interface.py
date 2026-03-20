@@ -55,6 +55,15 @@ class HumanASIInterface:
         self.orchestrator.register_skill('bioreason_predict', BioReasonPredict())
         self.orchestrator.register_skill('subatomic_reason_predict', SubatomicReasonPredict())
         self.orchestrator.register_skill('understand_anything', UnderstandAnything())
+        # Registra skills BioReason e Subatomic
+        self.orchestrator.register_skill('bioreason_predict', BioReasonPredict())
+        self.orchestrator.register_skill('subatomic_reason_predict', SubatomicReasonPredict())
+        # Registra a nova skill BioReason-Pro
+        self.orchestrator.register_skill('bioreason_predict', BioReasonPredict())
+
+        # Registra skills Gstack (Mocks for now or actual implementations)
+        self.orchestrator.register_skill('hal_omega_trigger', MockSkill())
+        self.orchestrator.register_skill('retrocausal_handshake', MockSkill())
 
         # Registra agentes
         self.orchestrator.register_agent('paperclip_ontological', MockAgent())

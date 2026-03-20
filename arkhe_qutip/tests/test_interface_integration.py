@@ -29,11 +29,11 @@ class TestInterfaceIntegration(unittest.IsolatedAsyncioTestCase):
         self.assertIn("Decisão do Agente Paperclip", response)
         self.assertIn("Mocking logic", response)
 
-    async def test_protein_query(self): # Added test for protein query
+    async def test_protein_query(self):
         response = await self.interface.chat("Qual a função da proteína CFAP61?")
         self.assertIn("ANÁLISE PROTEÔMICA: CFAP61", response)
         self.assertIn("cilium movement", response)
-        # Using a safer check for the combined confidence
+        self.assertIn("Lys-245 e Arg-312", response) # Check refined mock mechanism
         self.assertIn("**Confiança:** 91.5%", response)
 
 if __name__ == '__main__':

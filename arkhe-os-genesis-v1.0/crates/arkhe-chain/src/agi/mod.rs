@@ -1,3 +1,4 @@
+pub mod coordination;
 use crate::chain::types::Block;
 
 pub struct AsiEngine;

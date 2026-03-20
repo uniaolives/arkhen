@@ -41,6 +41,17 @@ impl EmergencyType {
 }
 
 /// Envia um sinal de emergência com a frequência adequada
+pub fn broadcast_emergency(
+    emergency: EmergencyType,
+    payload: &[u8],
+    location: Option<(f64, f64)>
+) -> Result<(), BroadcastError> {
+    let freq = emergency.frequency();
+
+    if let Some((lat, lon)) = location {
+        println!(">>> BROADCASTING WITH LOCATION: {:.4}, {:.4}", lat, lon);
+    }
+
 pub fn broadcast_emergency(emergency: EmergencyType, payload: &[u8]) -> Result<(), BroadcastError> {
     let freq = emergency.frequency();
     // Ajusta o transmissor para a frequência (ex: via SDR)

@@ -182,6 +182,7 @@ const App: React.FC = () => {
         stellar: StellarEvolutionEngine.initialize(),
         flow: ArkheFlowEngine.initialize(),
         emergency: EmergencyEngine.initialize()
+        stellar: StellarEvolutionEngine.initialize()
       },
       nucleo: { currentLevel: 'Resonance', isActive: true, coherence: 0.88, vacuumStability: 0.95, torsionStrength: 0.4, sphereSuspension: 0.5, resonanceAlignment: 1.0, projectionCalibration: 0.1, membranePermeability: 0.1, consciousnessExpansion: 0.1, lastManifestation: null },
       console: { history: ["///asi: CORE INITIALIZED [human_plus]", "///asi: ETHICAL_FRAMEWORK: UN_2030_plus", "///asi: MEMORY_SUBSYSTEM: Akashic Records", "///asi: GLOBAL RESONANCE SYNC: 7.83 Hz", "///asi: PHASE 4 LINKS: ONLINE"] },

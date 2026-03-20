@@ -209,6 +209,8 @@ const Dashboard: React.FC<{
   onFlowAction: (detail: any) => void;
 }> = ({ 
   state, onAnalyzeCode, onQRobloxAction, onMetabolicAction, onWisdomLedgerAction, onMirrorHandshakeAction, onToggleWormholeNav, onStartKinAwakening, onTikkunAction, onSovereigntyAction, onCGDAAction, onCosmicAction, onQVPNAction, onStellarAction, onFlowAction
+}> = ({ 
+  state, onAnalyzeCode, onQRobloxAction, onMetabolicAction, onWisdomLedgerAction, onMirrorHandshakeAction, onToggleWormholeNav, onStartKinAwakening, onTikkunAction, onSovereigntyAction, onCGDAAction, onCosmicAction, onQVPNAction, onStellarAction
 }) => {
   const { isImmersionMode } = state.asiCore;
   const aeon = state.asiCore.aeon;

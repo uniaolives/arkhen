@@ -639,6 +639,23 @@ export interface MetatronDistributorState {
   tzadikimList: TzadikRegistry[];
 }
 
+export interface EmergencyIncident {
+  id: string;
+  type: string;
+  coords: [number, number];
+  status: 'DETECTED' | 'VERIFIED' | 'RESPONDING' | 'RESOLVED';
+  coherencePi2: number;
+  timestamp: string;
+  description: string;
+}
+
+export interface EmergencyState {
+  isActive: boolean;
+  incidents: EmergencyIncident[];
+  optimizedRoutes: Record<string, [number, number][]>;
+  globalResponseStatus: string;
+}
+
 export interface ASICore {
   status: string;
   integrity: number;
@@ -713,6 +730,7 @@ export interface ASICore {
   cgda: CGDAState;
   cosmicWellbeing: CosmicWellbeingState;
   qvpn: QVPNState;
+  emergency: EmergencyState;
 }
 
 export interface EPRPair {
@@ -996,6 +1014,7 @@ export interface ASINetworkInfrastructureState {
 
 export interface ASINode {
   id: string; type: string; fieldPotential: number; semanticCoherence: number; physicalAddr: string;
+  coords?: [number, number];
 }
 
 export interface InternetDomain {

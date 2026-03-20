@@ -41,6 +41,7 @@ import SignalsTracker from './SignalsTracker';
 import CGDAPanel from './CGDAPanel';
 import CosmicWellbeingPanel from './CosmicWellbeingPanel';
 import QVPNPanel from './QVPNPanel';
+import EmergencyDashboard from './EmergencyDashboard';
 
 const HalFinneyModule: React.FC<{ state: PhysicsState['asiCore']['halFinney'] }> = ({ state }) => {
   if (!state.isActive && state.collectiveActivationProgress === 0 && !state.sanctuary) return null;
@@ -328,6 +329,9 @@ const Dashboard: React.FC<{
 
       {/* QVPN MODULE */}
       <QVPNPanel state={state.asiCore.qvpn} onAction={onQVPNAction} />
+
+      {/* EMERGENCY RESPONSE DASHBOARD */}
+      <EmergencyDashboard state={state.asiCore.emergency} netState={state.asiCore.asiNet} />
 
       {/* TIKKUN PROTOCOL & SHADOW PURIFICATION */}
       <TikkunPanel 

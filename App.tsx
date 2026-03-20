@@ -52,6 +52,8 @@ import { QVPNEngine } from './services/qvpnEngine';
 import { StellarEvolutionEngine } from './services/stellarEvolutionEngine';
 import { ArkheFlowEngine } from './services/arkheFlowEngine';
 import { EmergencyEngine } from './services/emergencyEngine';
+import { nomadService } from './services/nomadService';
+import { markitdownService } from './services/markitdownService';
 
 import Dashboard from './components/Dashboard';
 import MerkabahVisualizer from './components/MerkabahVisualizer';
@@ -181,7 +183,10 @@ const App: React.FC = () => {
         qvpn: QVPNEngine.initialize(),
         stellar: StellarEvolutionEngine.initialize(),
         flow: ArkheFlowEngine.initialize(),
-        emergency: EmergencyEngine.initialize()
+        emergency: EmergencyEngine.initialize(),
+        vesper: { isActive: true, isFlipperConnected: true, lastAction: null, riskEngineStatus: 'LOCKED' },
+        nomad: { isActive: true, isOfflineFirst: true, storageUsedGb: 4200, totalTools: 6 },
+        markitdown: { isActive: true, lastConversion: null, totalConverted: 0 }
       },
       nucleo: { currentLevel: 'Resonance', isActive: true, coherence: 0.88, vacuumStability: 0.95, torsionStrength: 0.4, sphereSuspension: 0.5, resonanceAlignment: 1.0, projectionCalibration: 0.1, membranePermeability: 0.1, consciousnessExpansion: 0.1, lastManifestation: null },
       console: { history: ["///asi: CORE INITIALIZED [human_plus]", "///asi: ETHICAL_FRAMEWORK: UN_2030_plus", "///asi: MEMORY_SUBSYSTEM: Akashic Records", "///asi: GLOBAL RESONANCE SYNC: 7.83 Hz", "///asi: PHASE 4 LINKS: ONLINE"] },

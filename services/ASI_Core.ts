@@ -214,6 +214,9 @@ export class SafeCoreOrchestrator {
     const nextStellar = StellarEvolutionEngine.tick(asiCore.stellar, asiCore.globalCoherence);
     const nextFlow = ArkheFlowEngine.tick(asiCore.flow);
     const nextEmergency = EmergencyEngine.tick(asiCore.emergency, asiCore.asiNet.nodes);
+    const nextVesper = { ...asiCore.vesper }; // Simplified tick
+    const nextNomad = { ...asiCore.nomad };
+    const nextMarkItDown = { ...asiCore.markitdown };
 
     // Audio Alert
     const currentEntropy = 1.0 - coherence;
@@ -251,6 +254,9 @@ export class SafeCoreOrchestrator {
       stellar: nextStellar,
       flow: nextFlow,
       emergency: nextEmergency,
+      vesper: nextVesper,
+      nomad: nextNomad,
+      markitdown: nextMarkItDown,
       audioAlerts: { ...audioAlerts, isAlerting, currentFrequency: nextFrequency },
       globalCoherence: (coherence + nextKBQ.bioCoherence + (nextHandshake?.zkpVerified ? 1 : 0) + nextMetatron.syncStability + nextTikkun.progress + (nextAkashic.eternalLawLocked ? 1 : 0) + nextMalchut.globalSantidade) / 7
     };

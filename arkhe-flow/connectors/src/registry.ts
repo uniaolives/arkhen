@@ -9,6 +9,8 @@ import { GstackSkillNode } from './nodes/GstackSkill.node';
 import { AutoresearchNode } from './nodes/Autoresearch.node';
 import { HalOmegaNode } from './nodes/HalOmega.node';
 import { PaperclipAgentNode } from './nodes/PaperclipAgent.node';
+import { VesperNode } from './nodes/Vesper.node';
+import { MarkItDownNode } from './nodes/MarkItDown.node';
 
 const NODE_REGISTRY = new Map<string, INodeType>();
 
@@ -27,4 +29,6 @@ export function initDefaultNodes() {
   registerNode(new AutoresearchNode());
   registerNode(new HalOmegaNode());
   registerNode(new PaperclipAgentNode());
+  registerNode(new VesperNode());
+  registerNode(new MarkItDownNode());
 }

@@ -16,6 +16,9 @@ class TestInterfaceIntegration(unittest.IsolatedAsyncioTestCase):
 
     async def test_proof_explanation(self):
         response = await self.interface.chat("Explique a prova π²-ABC123")
+        # We need a proof_id in the query
+        response = await self.interface.chat("Explique a prova π²-ABC123")
+        # For Ω = 0.95, it returns "MODERADA — Colapso Parcial"
         self.assertIn("A Prova π² ABC123 mostra convergência significativa mas incompleta", response)
         self.assertIn("Ω = 0.9500", response)
 

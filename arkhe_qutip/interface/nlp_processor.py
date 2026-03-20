@@ -8,6 +8,7 @@ from dataclasses import dataclass
 from enum import Enum
 import re
 from .context_manager import ConversationContext
+from .context_manager import ConversationContext # Corrected import
 
 class QueryIntent(Enum):
     DISCOVERY_STATUS = "discovery_status"
@@ -93,6 +94,8 @@ class NaturalLanguageProcessor:
                 match = re.search(pattern, query)
                 if match:
                     entities = self._extract_entities(query, intent, match)
+                if re.search(pattern, query):
+                    entities = self._extract_entities(query, intent)
                     context_refs = self._extract_context_refs(query)
                     confidence = self._calculate_confidence(query, pattern)
                     return ParsedQuery(intent, entities, context_refs, confidence)
@@ -106,6 +109,7 @@ class NaturalLanguageProcessor:
         )
 
     def _extract_entities(self, query: str, intent: QueryIntent, match: re.Match) -> Dict[str, str]:
+    def _extract_entities(self, query: str, intent: QueryIntent) -> Dict[str, str]:
         """
         Extrai entidades relevantes da consulta.
         """

@@ -21,6 +21,7 @@ class MockLayer:
 from .gstack_orchestrator import GstackOrchestrator
 from .nlp_processor import NaturalLanguageProcessor
 from .explanation_generator import ExplanationGenerator
+from ..skills.bioreason.predict import BioReasonPredict
 
 class HumanASIInterface:
     """
@@ -44,6 +45,13 @@ class HumanASIInterface:
         """
         Inicializa a interface.
         """
+        # Registra skills Gstack
+        self.orchestrator.register_skill('hal_omega_trigger', MockSkill())
+        self.orchestrator.register_skill('retrocausal_handshake', MockSkill())
+
+        # Registra a nova skill BioReason-Pro
+        self.orchestrator.register_skill('bioreason_predict', BioReasonPredict())
+
         # Registra skills Gstack (Mocks for now or actual implementations)
         self.orchestrator.register_skill('hal_omega_trigger', MockSkill())
         self.orchestrator.register_skill('retrocausal_handshake', MockSkill())

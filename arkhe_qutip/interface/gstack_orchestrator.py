@@ -8,6 +8,7 @@ from datetime import datetime
 import asyncio
 from .context_manager import ConversationContext, ConversationTurn
 from .nlp_processor import NaturalLanguageProcessor, ParsedQuery, QueryIntent
+from .base import Context
 
 class GstackOrchestrator:
     """
@@ -37,6 +38,7 @@ class GstackOrchestrator:
 
     async def process_query(self, user_query: str) -> str:
         """
+        Processa uma consulta do usuário e retorna uma response.
         Processa uma consulta do usuário e retorna uma resposta.
         """
         if not self.nlp:
@@ -78,6 +80,8 @@ class GstackOrchestrator:
             return await self._handle_retrocausal_query(parsed)
         elif intent == QueryIntent.HAL_OMEGA_STATUS:
             return await self._handle_hal_omega_status(parsed)
+        elif intent == QueryIntent.PROTEIN_QUERY:
+            return await self._handle_protein_query(parsed)
         else:
             return await self._handle_general_query(parsed)
 
@@ -85,6 +89,12 @@ class GstackOrchestrator:
         """
         Handler para consultas sobre status de descobertas.
         """
+        research_layer = self.research_layers.get('autoresearch_pi2')
+        if research_layer:
+            try:
+                discoveries = await research_layer.get_recent_discoveries(limit=5)
+            except AttributeError:
+                discoveries = []
         # Consulta a camada de autoresearch
         research_layer = self.research_layers.get('autoresearch_pi2')
         if research_layer:
@@ -162,6 +172,41 @@ class GstackOrchestrator:
             except AttributeError:
                 pass
         return "Nenhum agente Paperclip ativo."
+
+    async def _handle_protein_query(self, parsed: ParsedQuery) -> str:
+        """
+        Handler para consultas sobre proteínas.
+        """
+        protein_id = parsed.entities.get('protein_id')
+        if not protein_id:
+            return "Especifique o ID da proteína (ex: CFAP61, TP53)."
+
+        skill = self.skills.get('bioreason_predict')
+        if skill:
+            ctx = Context({"protein_id": protein_id})
+            result = await skill.execute(ctx)
+
+            if "error" in result:
+                return result["error"]
+
+            # Gera explicação
+            response = f"""
+🧬 **ANÁLISE PROTEÔMICA: {protein_id}**
+
+**Funções Preditas:**
+{self._format_annotations(result['predicted_functions'])}
+
+**Mecanismo:**
+{result['mechanistic_insight']}
+
+**Confiança:** {result['confidence']:.1%}
+**Traço de Raciocínio:** {result['reasoning_trace'][:200]}...
+"""
+            return response
+        return "Skill BioReason-Pro não disponível."
+
+    def _format_annotations(self, annotations: List[Dict]) -> str:
+        return "\n".join([f"• {a['id']} ({a['term']}) - Confiança: {a['confidence']:.1%}" for a in annotations])
 
     async def _handle_retrocausal_query(self, parsed: ParsedQuery) -> str:
         """
@@ -241,4 +286,5 @@ Posso responder sobre:
 - Decisões do Agente Paperclip
 - Funcionamento do protocolo retrocausal
 - Status do protocolo HAL-Ω (Hal Finney)
+- Predição de função proteica (BioReason-Pro)
 """

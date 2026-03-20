@@ -15,6 +15,7 @@ class TestInterfaceIntegration(unittest.IsolatedAsyncioTestCase):
         self.assertIn("Ω = 0.92", response)
 
     async def test_proof_explanation(self):
+        response = await self.interface.chat("Explique a prova π²-ABC123")
         # We need a proof_id in the query
         response = await self.interface.chat("Explique a prova π²-ABC123")
         # For Ω = 0.95, it returns "MODERADA — Colapso Parcial"
@@ -30,6 +31,13 @@ class TestInterfaceIntegration(unittest.IsolatedAsyncioTestCase):
         response = await self.interface.chat("Por que o paperclip decidiu isso?")
         self.assertIn("Decisão do Agente Paperclip", response)
         self.assertIn("Mocking logic", response)
+
+    async def test_protein_query(self):
+        response = await self.interface.chat("Qual a função da proteína CFAP61?")
+        self.assertIn("ANÁLISE PROTEÔMICA: CFAP61", response)
+        self.assertIn("cilium movement", response)
+        self.assertIn("Lys-245 e Arg-312", response) # Check refined mock mechanism
+        self.assertIn("**Confiança:** 91.5%", response)
 
 if __name__ == '__main__':
     unittest.main()

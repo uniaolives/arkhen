@@ -1,0 +1,25 @@
+{
+  "mapping_name": "SHA-256 to Porphyrin Vibrational Spectra Mapping (Acoustic)",
+  "version": "1.0.0",
+  "substrate": "Heme-group Porphyrin (Protoporphyrin IX)",
+  "units": "cm-1 (Wavenumbers)",
+  "bit_chunks": 32,
+  "mapping_logic": "Bitwise XOR sum of 32-bit chunk normalized to vibrational frequency range [500, 3200] cm-1",
+  "spectra_reference": {
+    "N-H_stretching": [3310, 3320],
+    "C-H_stretching_asym": [2910, 2925],
+    "C-H_stretching_sym": [2845, 2855],
+    "C=C_stretching": [1610, 1630],
+    "C=N_stretching": [1540, 1560],
+    "C-N_stretching": [1330, 1350],
+    "Pyrrole_ring_breathing": [1120, 1140],
+    "N-H_bending": [950, 980],
+    "C-H_bending_oop": [700, 750]
+  },
+  "acoustic_synthesis": {
+    "scaling_factor": 1.0,
+    "harmonics": [1, 1.618, 2.618, 4.236],
+    "base_tempo": 118,
+    "timbre": "Acoustic-Organic Resonance"
+  }
+}

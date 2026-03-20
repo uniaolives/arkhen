@@ -52,6 +52,8 @@ pub fn broadcast_emergency(
         println!(">>> BROADCASTING WITH LOCATION: {:.4}, {:.4}", lat, lon);
     }
 
+pub fn broadcast_emergency(emergency: EmergencyType, payload: &[u8]) -> Result<(), BroadcastError> {
+    let freq = emergency.frequency();
     // Ajusta o transmissor para a frequência (ex: via SDR)
     set_transmitter_frequency(freq)?;
     // Transmite o payload (ex: pacote π⁺)

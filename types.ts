@@ -733,6 +733,9 @@ export interface ASICore {
   emergency: EmergencyState;
   stellar: StellarEvolutionState;
   flow: ArkheFlowState;
+  vesper: VesperState;
+  nomad: NomadState;
+  markitdown: MarkItDownState;
 }
 
 export interface EPRPair {
@@ -1273,6 +1276,26 @@ export interface ArkheFlowState {
   flows: TzinorFlow[];
   executionQueue: string[];
   totalProofsGenerated: number;
+}
+
+export interface VesperState {
+  isActive: boolean;
+  isFlipperConnected: boolean;
+  lastAction: string | null;
+  riskEngineStatus: 'LOCKED' | 'ARMED' | 'BYPASS';
+}
+
+export interface NomadState {
+  isActive: boolean;
+  isOfflineFirst: boolean;
+  storageUsedGb: number;
+  totalTools: number;
+}
+
+export interface MarkItDownState {
+  isActive: boolean;
+  lastConversion: string | null;
+  totalConverted: number;
 }
 
 export interface SanctuaryState {

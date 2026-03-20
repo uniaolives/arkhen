@@ -9,7 +9,7 @@ const PageAgentPanel: React.FC = () => {
   const [message, setMessage] = useState('');
   const [config, setConfig] = useState({
     model: 'qwen3.5-plus',
-    apiKey: '',
+    apiKey: 'sk-placeholder',
     baseURL: 'https://dashscope.aliyuncs.com/compatible-mode/v1',
   });
   const [showSettings, setShowSettings] = useState(false);

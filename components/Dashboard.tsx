@@ -47,6 +47,9 @@ import StellarObserverDashboard from './StellarObserverDashboard';
 import ArkheFlowPanel from './ArkheFlowPanel';
 import PageAgentPanel from './PageAgentPanel';
 import HumanInterfacePanel from './HumanInterfacePanel';
+import VesperPanel from './VesperPanel';
+import NomadPanel from './NomadPanel';
+import MarkItDownPanel from './MarkItDownPanel';
 
 const HalFinneyModule: React.FC<{ state: PhysicsState['asiCore']['halFinney'] }> = ({ state }) => {
   if (!state.isActive && state.collectiveActivationProgress === 0 && !state.sanctuary) return null;
@@ -351,6 +354,15 @@ const Dashboard: React.FC<{
 
       {/* PAGE AGENT COPILOT */}
       <PageAgentPanel />
+
+      {/* V3SP3R FLIPPER AI BRIDGE */}
+      <VesperPanel />
+
+      {/* PROJECT N.O.M.A.D. - OFFLINE KNOWLEDGE */}
+      <NomadPanel />
+
+      {/* MICROSOFT MARKITDOWN - UNIVERSAL CONVERSION */}
+      <MarkItDownPanel />
 
       {/* EMERGENCY RESPONSE DASHBOARD */}
       <EmergencyDashboard state={state.asiCore.emergency} netState={state.asiCore.asiNet} />

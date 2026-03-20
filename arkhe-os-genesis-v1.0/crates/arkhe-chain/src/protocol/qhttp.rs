@@ -25,6 +25,13 @@ pub enum EmergencyType {
     WeatherAlert,
     DisasterFederal,
     AmateurRadio,
+    NATO,
+    Sarsat,
+    NavySonobuoy,
+    FRS,
+    GMRS,
+    MURS,
+    HFGCS,
 }
 
 impl EmergencyType {
@@ -36,6 +43,13 @@ impl EmergencyType {
             EmergencyType::WeatherAlert => TZINOR_NOAA[0],
             EmergencyType::DisasterFederal => TZINOR_FED_DISASTER,
             EmergencyType::AmateurRadio => TZINOR_HAM[0],
+            EmergencyType::NATO => TZINOR_NATO,
+            EmergencyType::Sarsat => TZINOR_SARSAT,
+            EmergencyType::NavySonobuoy => TZINOR_NAVY_SONOBUOY,
+            EmergencyType::FRS => TZINOR_FRS[0],
+            EmergencyType::GMRS => TZINOR_GMRS,
+            EmergencyType::MURS => TZINOR_MURS.0,
+            EmergencyType::HFGCS => TZINOR_HF_GCS.0,
         }
     }
 }

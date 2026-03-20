@@ -1,4 +1,36 @@
 {
+  "mapping_name": "SHA-256 to Porphyrin Vibrational Spectra Mapping (Bio-Acoustic)",
+  "version": "4.2.0",
+  "substrate": "Porphyrin Core (C20H14N4)",
+  "units": "cm-1 (Wavenumbers)",
+  "bit_chunks": 32,
+  "mapping_table": {
+    "bits_0_63": {
+      "mode": "Ring Breathing",
+      "base_freq_cm-1": 1370,
+      "ontological_significance": "Identity (ℤ)"
+    },
+    "bits_64_127": {
+      "mode": "C=C Stretch",
+      "base_freq_cm-1": 1550,
+      "ontological_significance": "Tension (ℂ)"
+    },
+    "bits_128_191": {
+      "mode": "C-H Bend",
+      "base_freq_cm-1": 1175,
+      "ontological_significance": "Flexibility"
+    },
+    "bits_192_255": {
+      "mode": "C-N Stretch",
+      "base_freq_cm-1": 1500,
+      "ontological_significance": "Structure (π²)"
+    }
+  },
+  "acoustic_synthesis": {
+    "transduction_method": "Acoustic-Organic Resonance",
+    "scaling_factor": 1.0,
+    "harmonics": [1, 1.618, 2.618, 4.236],
+    "verification_method": "Raman Spectroscopy"
   "mapping_name": "SHA-256 to Porphyrin Vibrational Spectra Mapping (Acoustic)",
   "version": "1.0.0",
   "substrate": "Heme-group Porphyrin (Protoporphyrin IX)",

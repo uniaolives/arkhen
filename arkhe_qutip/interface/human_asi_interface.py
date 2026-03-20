@@ -22,6 +22,7 @@ from .gstack_orchestrator import GstackOrchestrator
 from .nlp_processor import NaturalLanguageProcessor
 from .explanation_generator import ExplanationGenerator
 from ..skills.bioreason.predict import BioReasonPredict
+from ..skills.subatomic.reason import SubatomicReasonPredict
 
 class HumanASIInterface:
     """
@@ -49,6 +50,9 @@ class HumanASIInterface:
         self.orchestrator.register_skill('hal_omega_trigger', MockSkill())
         self.orchestrator.register_skill('retrocausal_handshake', MockSkill())
 
+        # Registra skills BioReason e Subatomic
+        self.orchestrator.register_skill('bioreason_predict', BioReasonPredict())
+        self.orchestrator.register_skill('subatomic_reason_predict', SubatomicReasonPredict())
         # Registra a nova skill BioReason-Pro
         self.orchestrator.register_skill('bioreason_predict', BioReasonPredict())
 

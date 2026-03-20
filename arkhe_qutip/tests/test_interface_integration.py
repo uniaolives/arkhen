@@ -36,6 +36,16 @@ class TestInterfaceIntegration(unittest.IsolatedAsyncioTestCase):
         response = await self.interface.chat("Qual a função da proteína CFAP61?")
         self.assertIn("ANÁLISE PROTEÔMICA: CFAP61", response)
         self.assertIn("cilium movement", response)
+        self.assertIn("**Confiança:** 91.5%", response)
+
+    async def test_particle_query(self):
+        response = await self.interface.chat("Como decai o Kaon?")
+        self.assertIn("ANÁLISE SUBATÔMICA: Kaon", response)
+        self.assertIn("Méson (Hadrón)", response)
+        self.assertIn("Vértice: s -> W- -> u + π", response)
+        self.assertIn("Fidelidade Ω_s", response)
+        self.assertIn("0.9998", response)
+
         self.assertIn("Lys-245 e Arg-312", response) # Check refined mock mechanism
         self.assertIn("**Confiança:** 91.5%", response)
 

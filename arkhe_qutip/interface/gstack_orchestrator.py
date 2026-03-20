@@ -82,6 +82,8 @@ class GstackOrchestrator:
             return await self._handle_hal_omega_status(parsed)
         elif intent == QueryIntent.PROTEIN_QUERY:
             return await self._handle_protein_query(parsed)
+        elif intent == QueryIntent.PARTICLE_QUERY: # Handled PARTICLE_QUERY
+            return await self._handle_particle_query(parsed)
         else:
             return await self._handle_general_query(parsed)
 
@@ -205,6 +207,48 @@ class GstackOrchestrator:
             return response
         return "Skill BioReason-Pro não disponível."
 
+    async def _handle_particle_query(self, parsed: ParsedQuery) -> str:
+        """
+        Handler para consultas sobre partículas.
+        """
+        particle_id = parsed.entities.get('particle_id')
+        if not particle_id:
+            return "Especifique a partícula (ex: Muon, Kaon, Higgs)."
+
+        skill = self.skills.get('subatomic_reason_predict')
+        if skill:
+            ctx = Context({"particle_id": particle_id})
+            result = await skill.execute(ctx)
+
+            if "error" in result:
+                return result["error"]
+
+            response = f"""
+⚛️ **ANÁLISE SUBATÔMICA: {particle_id}**
+
+**Classificação:** {result['classification']}
+**Grupo de Simetria:** {result['symmetry_group']}
+
+**Canais de Decaimento:**
+{self._format_decays(result['decay_channels'])}
+
+**Mecanismo:**
+{result['reasoning_trace'][:300]}...
+
+**Diagramas de Feynman:**
+{chr(10).join(result['feynman_paths'])}
+
+**Fidelidade Ω_s:** {result['gauge_fidelity_omega']:.4f}
+"""
+            return response
+        return "Skill Subatomic-Reason não disponível."
+
+    def _format_annotations(self, annotations: List[Dict]) -> str:
+        return "\n".join([f"• {a['id']} ({a['term']}) - Confiança: {a['confidence']:.1%}" for a in annotations])
+
+    def _format_decays(self, decays: List[Dict]) -> str:
+        return "\n".join([f"• {d['in']} -> {d['boson']} -> {d['out']}" for d in decays])
+
     def _format_annotations(self, annotations: List[Dict]) -> str:
         return "\n".join([f"• {a['id']} ({a['term']}) - Confiança: {a['confidence']:.1%}" for a in annotations])
 
@@ -287,4 +331,5 @@ Posso responder sobre:
 - Funcionamento do protocolo retrocausal
 - Status do protocolo HAL-Ω (Hal Finney)
 - Predição de função proteica (BioReason-Pro)
+- Raciocínio subatômico e partículas elementares
 """

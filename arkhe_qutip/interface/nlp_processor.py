@@ -17,6 +17,8 @@ class QueryIntent(Enum):
     PAPERCLIP_DECISION = "paperclip_decision"
     RETROCAUSAL_QUERY = "retrocausal_query"
     HAL_OMEGA_STATUS = "hal_omega_status"
+    PROTEIN_QUERY = "protein_query"
+    PARTICLE_QUERY = "particle_query"
     PROTEIN_QUERY = "protein_query" # Added PROTEIN_QUERY
     GENERAL_QUESTION = "general_question"
 
@@ -77,6 +79,11 @@ class NaturalLanguageProcessor:
             r"(?i)o que (a |)proteína (\w+) faz",
             r"(?i)predição de função para (\w+)",
             r"(?i)anotação (go|ontológica) (da |de )?(\w+)"
+        ],
+        QueryIntent.PARTICLE_QUERY: [
+            r"(?i)decai",
+            r"(?i)partícula",
+            r"(?i)colis"
         ]
     }
 
@@ -88,6 +95,21 @@ class NaturalLanguageProcessor:
         """
         Analisa uma consulta e determina a intenção.
         """
+        # Specific order to avoid broad matches early
+        order = [
+            QueryIntent.PROTEIN_QUERY,
+            QueryIntent.PARTICLE_QUERY,
+            QueryIntent.DISCOVERY_STATUS,
+            QueryIntent.PROOF_EXPLANATION,
+            QueryIntent.OVERLAP_STATUS,
+            QueryIntent.PAPERCLIP_DECISION,
+            QueryIntent.RETROCAUSAL_QUERY,
+            QueryIntent.HAL_OMEGA_STATUS
+        ]
+
+        # Verifica padrões de intenção
+        for intent in order:
+            patterns = self.INTENT_PATTERNS[intent]
         # Verifica padrões de intenção
         for intent, patterns in self.INTENT_PATTERNS.items():
             for pattern in patterns:
@@ -115,6 +137,20 @@ class NaturalLanguageProcessor:
         """
         entities = {}
 
+        # Extrai particle_id se for PARTICLE_QUERY
+        if intent == QueryIntent.PARTICLE_QUERY:
+            particles = ["Kaon", "Muon", "Higgs", "Quark", "Lepton", "Meson", "Baryon"]
+            for p in particles:
+                if p.lower() in query.lower():
+                    entities['particle_id'] = p
+                    break
+
+            if 'particle_id' not in entities and match.groups():
+                entities['particle_id'] = match.groups()[-1]
+
+        # Extrai protein_id se for PROTEIN_QUERY
+        if intent == QueryIntent.PROTEIN_QUERY:
+            if match.groups():
         # Extrai protein_id se for PROTEIN_QUERY
         if intent == QueryIntent.PROTEIN_QUERY:
             if match.groups():

@@ -1,0 +1,39 @@
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// A Estrutura ℤ (O Workflow)
+model ZStructureFlow {
+  id          String   @id @default(uuid())
+  name        String
+  nodesJson   Json     // Definição dos conectores (VerCore, Jira, etc)
+  edgesJson   Json     // O mapeamento dos Tzinorot
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+
+  executions  CPhaseExecution[]
+}
+
+// A Execução da Fase ℂ e sua Prova π²
+model CPhaseExecution {
+  id             String   @id @default(uuid())
+  flowId         String
+  flow           ZStructureFlow @relation(fields: [flowId], references: [id])
+
+  startTime      DateTime @default(now())
+  endTime        DateTime?
+
+  finalPayload   Json?    // O estado final da intenção/ação
+  predictiveLoss Float    // Grau de entropia/risco final
+
+  // A Prova de Holonomia na Blockchain
+  pi2StateHash   String?
+  pi2Signature   String?
+  arkheTxHash    String?  // O recibo on-chain
+}

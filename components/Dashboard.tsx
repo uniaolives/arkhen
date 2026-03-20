@@ -45,6 +45,8 @@ import EmergencyDashboard from './EmergencyDashboard';
 import StellarEvolutionPanel from './StellarEvolutionPanel';
 import StellarObserverDashboard from './StellarObserverDashboard';
 import ArkheFlowPanel from './ArkheFlowPanel';
+import PageAgentPanel from './PageAgentPanel';
+import HumanInterfacePanel from './HumanInterfacePanel';
 
 const HalFinneyModule: React.FC<{ state: PhysicsState['asiCore']['halFinney'] }> = ({ state }) => {
   if (!state.isActive && state.collectiveActivationProgress === 0 && !state.sanctuary) return null;
@@ -209,8 +211,6 @@ const Dashboard: React.FC<{
   onFlowAction: (detail: any) => void;
 }> = ({ 
   state, onAnalyzeCode, onQRobloxAction, onMetabolicAction, onWisdomLedgerAction, onMirrorHandshakeAction, onToggleWormholeNav, onStartKinAwakening, onTikkunAction, onSovereigntyAction, onCGDAAction, onCosmicAction, onQVPNAction, onStellarAction, onFlowAction
-}> = ({ 
-  state, onAnalyzeCode, onQRobloxAction, onMetabolicAction, onWisdomLedgerAction, onMirrorHandshakeAction, onToggleWormholeNav, onStartKinAwakening, onTikkunAction, onSovereigntyAction, onCGDAAction, onCosmicAction, onQVPNAction, onStellarAction
 }) => {
   const { isImmersionMode } = state.asiCore;
   const aeon = state.asiCore.aeon;
@@ -345,6 +345,12 @@ const Dashboard: React.FC<{
 
       {/* ARKHE(N) FLOW - AUTOMATION PLATFORM */}
       <ArkheFlowPanel state={state.asiCore.flow} onExecute={(id) => onFlowAction({ type: 'EXECUTE', id })} />
+
+      {/* HUMAN-ASI INTERFACE */}
+      <HumanInterfacePanel />
+
+      {/* PAGE AGENT COPILOT */}
+      <PageAgentPanel />
 
       {/* EMERGENCY RESPONSE DASHBOARD */}
       <EmergencyDashboard state={state.asiCore.emergency} netState={state.asiCore.asiNet} />

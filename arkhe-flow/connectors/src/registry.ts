@@ -3,8 +3,10 @@
 // Registro central de conectores.
 
 import { INodeType } from './types';
-// Note: We'll assume these exist as provided in the pattern
-// import { WebhookNode, HttpNode, ArkheSignNode } from './nodes';
+import { ArkheSignNode } from './nodes/arkhe_sign';
+import { PageAgentNode } from './nodes/PageAgent.node';
+import { GstackSkillNode } from './nodes/GstackSkill.node';
+import { AutoresearchNode } from './nodes/Autoresearch.node';
 
 const NODE_REGISTRY = new Map<string, INodeType>();
 
@@ -17,7 +19,8 @@ export function getNode(name: string): INodeType | undefined {
 }
 
 export function initDefaultNodes() {
-  // registerNode(new WebhookNode());
-  // registerNode(new HttpNode());
-  // registerNode(new ArkheSignNode());
+  registerNode(new ArkheSignNode());
+  registerNode(new PageAgentNode());
+  registerNode(new GstackSkillNode());
+  registerNode(new AutoresearchNode());
 }

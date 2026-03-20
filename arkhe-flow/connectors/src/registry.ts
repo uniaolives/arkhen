@@ -7,6 +7,8 @@ import { ArkheSignNode } from './nodes/arkhe_sign';
 import { PageAgentNode } from './nodes/PageAgent.node';
 import { GstackSkillNode } from './nodes/GstackSkill.node';
 import { AutoresearchNode } from './nodes/Autoresearch.node';
+import { HalOmegaNode } from './nodes/HalOmega.node';
+import { PaperclipAgentNode } from './nodes/PaperclipAgent.node';
 
 const NODE_REGISTRY = new Map<string, INodeType>();
 
@@ -23,4 +25,6 @@ export function initDefaultNodes() {
   registerNode(new PageAgentNode());
   registerNode(new GstackSkillNode());
   registerNode(new AutoresearchNode());
+  registerNode(new HalOmegaNode());
+  registerNode(new PaperclipAgentNode());
 }

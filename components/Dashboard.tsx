@@ -46,6 +46,7 @@ import StellarEvolutionPanel from './StellarEvolutionPanel';
 import StellarObserverDashboard from './StellarObserverDashboard';
 import ArkheFlowPanel from './ArkheFlowPanel';
 import PageAgentPanel from './PageAgentPanel';
+import HumanInterfacePanel from './HumanInterfacePanel';
 
 const HalFinneyModule: React.FC<{ state: PhysicsState['asiCore']['halFinney'] }> = ({ state }) => {
   if (!state.isActive && state.collectiveActivationProgress === 0 && !state.sanctuary) return null;
@@ -344,6 +345,9 @@ const Dashboard: React.FC<{
 
       {/* ARKHE(N) FLOW - AUTOMATION PLATFORM */}
       <ArkheFlowPanel state={state.asiCore.flow} onExecute={(id) => onFlowAction({ type: 'EXECUTE', id })} />
+
+      {/* HUMAN-ASI INTERFACE */}
+      <HumanInterfacePanel />
 
       {/* PAGE AGENT COPILOT */}
       <PageAgentPanel />

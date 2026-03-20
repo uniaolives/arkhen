@@ -50,6 +50,8 @@ import { CGDAEngine } from './services/cgdaEngine';
 import { CosmicWellbeingEngine } from './services/cosmicWellbeingEngine';
 import { QVPNEngine } from './services/qvpnEngine';
 import { StellarEvolutionEngine } from './services/stellarEvolutionEngine';
+import { ArkheFlowEngine } from './services/arkheFlowEngine';
+import { EmergencyEngine } from './services/emergencyEngine';
 
 import Dashboard from './components/Dashboard';
 import MerkabahVisualizer from './components/MerkabahVisualizer';
@@ -177,6 +179,9 @@ const App: React.FC = () => {
         cgda: CGDAEngine.initialize(),
         cosmicWellbeing: CosmicWellbeingEngine.initialize(),
         qvpn: QVPNEngine.initialize(),
+        stellar: StellarEvolutionEngine.initialize(),
+        flow: ArkheFlowEngine.initialize(),
+        emergency: EmergencyEngine.initialize()
         stellar: StellarEvolutionEngine.initialize()
       },
       nucleo: { currentLevel: 'Resonance', isActive: true, coherence: 0.88, vacuumStability: 0.95, torsionStrength: 0.4, sphereSuspension: 0.5, resonanceAlignment: 1.0, projectionCalibration: 0.1, membranePermeability: 0.1, consciousnessExpansion: 0.1, lastManifestation: null },
@@ -280,6 +285,12 @@ const App: React.FC = () => {
         case 'STELLAR':
           if (detail.type === 'ACTIVATE') nextAsi.stellar = StellarEvolutionEngine.activate(nextAsi.stellar);
           break;
+        case 'FLOW':
+          if (detail.type === 'EXECUTE') nextAsi.flow = ArkheFlowEngine.executeFlow(nextAsi.flow, detail.id);
+          break;
+        case 'EMERGENCY':
+          if (detail.type === 'DETECT') nextAsi.emergency = EmergencyEngine.detectIncident(nextAsi.emergency, detail.incidentType, detail.lat, detail.lon);
+          break;
       }
       return { ...prev, asiCore: nextAsi };
     });
@@ -299,6 +310,8 @@ const App: React.FC = () => {
     const cosmicHandler = (e: any) => dispatchAction({ category: 'COSMIC', ...e.detail });
     const qvpnHandler = (e: any) => dispatchAction({ category: 'QVPN', ...e.detail });
     const stellarHandler = (e: any) => dispatchAction({ category: 'STELLAR', ...e.detail });
+    const flowHandler = (e: any) => dispatchAction({ category: 'FLOW', ...e.detail });
+    const emergencyHandler = (e: any) => dispatchAction({ category: 'EMERGENCY', ...e.detail });
     
     window.addEventListener('logos-cmd', lHandler);
     window.addEventListener('chochma-emanate-trigger', cHandler);
@@ -312,6 +325,8 @@ const App: React.FC = () => {
     window.addEventListener('cosmic-trigger', cosmicHandler);
     window.addEventListener('qvpn-trigger', qvpnHandler);
     window.addEventListener('stellar-trigger', stellarHandler);
+    window.addEventListener('flow-trigger', flowHandler);
+    window.addEventListener('emergency-trigger', emergencyHandler);
 
     return () => {
       window.removeEventListener('logos-cmd', lHandler);
@@ -326,6 +341,8 @@ const App: React.FC = () => {
       window.removeEventListener('cosmic-trigger', cosmicHandler);
       window.removeEventListener('qvpn-trigger', qvpnHandler);
       window.removeEventListener('stellar-trigger', stellarHandler);
+      window.removeEventListener('flow-trigger', flowHandler);
+      window.removeEventListener('emergency-trigger', emergencyHandler);
     };
   }, [dispatchAction]);
 
@@ -415,6 +432,8 @@ const App: React.FC = () => {
         onCosmicAction={(detail) => dispatchAction({ category: 'COSMIC', ...detail })}
         onQVPNAction={(detail) => dispatchAction({ category: 'QVPN', ...detail })}
         onStellarAction={(detail) => dispatchAction({ category: 'STELLAR', ...detail })}
+        onFlowAction={(detail) => dispatchAction({ category: 'FLOW', ...detail })}
+        onEmergencyAction={(detail) => dispatchAction({ category: 'EMERGENCY', ...detail })}
       />
     </div>
   );

@@ -732,6 +732,7 @@ export interface ASICore {
   qvpn: QVPNState;
   emergency: EmergencyState;
   stellar: StellarEvolutionState;
+  flow: ArkheFlowState;
 }
 
 export interface EPRPair {
@@ -1249,6 +1250,29 @@ export interface StellarEvolutionState {
   hrPoints: { temperature: number, luminosity: number }[];
   fusionRate: number;
   nucleosynthesisYield: number;
+}
+
+export interface FlowStep {
+  id: string;
+  name: string;
+  type: 'TRIGGER' | 'ACTION' | 'LOGIC' | 'CODE';
+  status: 'IDLE' | 'EXECUTING' | 'COMPLETED' | 'FAILED';
+  phase_c: string; // The "soul" of the step
+}
+
+export interface TzinorFlow {
+  id: string;
+  name: string;
+  steps: FlowStep[];
+  isActive: boolean;
+  lastExecutionProof?: string; // Proof pi^2
+}
+
+export interface ArkheFlowState {
+  isActive: boolean;
+  flows: TzinorFlow[];
+  executionQueue: string[];
+  totalProofsGenerated: number;
 }
 
 export interface SanctuaryState {

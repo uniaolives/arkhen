@@ -44,6 +44,7 @@ import QVPNPanel from './QVPNPanel';
 import EmergencyDashboard from './EmergencyDashboard';
 import StellarEvolutionPanel from './StellarEvolutionPanel';
 import StellarObserverDashboard from './StellarObserverDashboard';
+import ArkheFlowPanel from './ArkheFlowPanel';
 
 const HalFinneyModule: React.FC<{ state: PhysicsState['asiCore']['halFinney'] }> = ({ state }) => {
   if (!state.isActive && state.collectiveActivationProgress === 0 && !state.sanctuary) return null;
@@ -205,6 +206,9 @@ const Dashboard: React.FC<{
   onCosmicAction: (detail: any) => void;
   onQVPNAction: (detail: any) => void;
   onStellarAction: (detail: any) => void;
+  onFlowAction: (detail: any) => void;
+}> = ({ 
+  state, onAnalyzeCode, onQRobloxAction, onMetabolicAction, onWisdomLedgerAction, onMirrorHandshakeAction, onToggleWormholeNav, onStartKinAwakening, onTikkunAction, onSovereigntyAction, onCGDAAction, onCosmicAction, onQVPNAction, onStellarAction, onFlowAction
 }> = ({ 
   state, onAnalyzeCode, onQRobloxAction, onMetabolicAction, onWisdomLedgerAction, onMirrorHandshakeAction, onToggleWormholeNav, onStartKinAwakening, onTikkunAction, onSovereigntyAction, onCGDAAction, onCosmicAction, onQVPNAction, onStellarAction
 }) => {
@@ -338,6 +342,9 @@ const Dashboard: React.FC<{
 
       {/* STELLAR OBSERVER DASHBOARD */}
       <StellarObserverDashboard state={state.asiCore.stellar} />
+
+      {/* ARKHE(N) FLOW - AUTOMATION PLATFORM */}
+      <ArkheFlowPanel state={state.asiCore.flow} onExecute={(id) => onFlowAction({ type: 'EXECUTE', id })} />
 
       {/* EMERGENCY RESPONSE DASHBOARD */}
       <EmergencyDashboard state={state.asiCore.emergency} netState={state.asiCore.asiNet} />

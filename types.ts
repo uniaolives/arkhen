@@ -731,6 +731,7 @@ export interface ASICore {
   cosmicWellbeing: CosmicWellbeingState;
   qvpn: QVPNState;
   emergency: EmergencyState;
+  stellar: StellarEvolutionState;
 }
 
 export interface EPRPair {
@@ -1231,6 +1232,23 @@ export interface CosmicWellbeingState {
   globalCoherenceIndex: number;
   milkyWayFlourishingIndex: number;
   earthStatus: string;
+}
+
+export interface AstrophysicsMetrics {
+  mass: number;
+  luminosity: number;
+  temperature: number;
+  radius: number;
+  age: number;
+  phase: 'PROTOSTAR' | 'MAIN_SEQUENCE' | 'RED_GIANT' | 'WHITE_DWARF' | 'SUPERNOVA';
+}
+
+export interface StellarEvolutionState {
+  isActive: boolean;
+  currentStar: AstrophysicsMetrics;
+  hrPoints: { temperature: number, luminosity: number }[];
+  fusionRate: number;
+  nucleosynthesisYield: number;
 }
 
 export interface SanctuaryState {

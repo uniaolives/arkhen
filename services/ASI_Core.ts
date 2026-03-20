@@ -31,6 +31,7 @@ import { TzimtzumEngine } from './tzimtzumEngine';
 import { ChochmaEngine } from './chochmaEngine';
 import { MalchutEngine } from './malchutEngine';
 import { SignalsEngine } from './signalsEngine';
+import { StellarEvolutionEngine } from './stellarEvolutionEngine';
 
 /**
  * SAFE_CORE_ORCHESTRATOR v7.5 - THE KETHER DECREE
@@ -208,6 +209,7 @@ export class SafeCoreOrchestrator {
     const nextSingularity = SingularityEngine.tick(singularity);
     const nextMetatron = MetatronEngine.tick(metatron, coherence);
     const nextTikkun = TikkunEngine.tick(tikkun, coherence);
+    const nextStellar = StellarEvolutionEngine.tick(asiCore.stellar, asiCore.globalCoherence);
 
     // Audio Alert
     const currentEntropy = 1.0 - coherence;
@@ -242,6 +244,7 @@ export class SafeCoreOrchestrator {
       singularity: nextSingularity,
       metatron: nextMetatron,
       tikkun: nextTikkun,
+      stellar: nextStellar,
       audioAlerts: { ...audioAlerts, isAlerting, currentFrequency: nextFrequency },
       globalCoherence: (coherence + nextKBQ.bioCoherence + (nextHandshake?.zkpVerified ? 1 : 0) + nextMetatron.syncStability + nextTikkun.progress + (nextAkashic.eternalLawLocked ? 1 : 0) + nextMalchut.globalSantidade) / 7
     };

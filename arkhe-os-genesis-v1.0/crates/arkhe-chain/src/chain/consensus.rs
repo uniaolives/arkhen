@@ -2,6 +2,7 @@
 //! Proof of Coherence with ZK and AGI extensions.
 
 use serde::{Deserialize, Serialize};
+use crate::chain::astrophysics::StellarMetrics;
 use crate::robustness::{EntropyShield, PhaseInput, ShieldResponse};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -17,6 +18,10 @@ pub struct CoherenceProof {
     pub agi_accuracy: f64,
     /// PQC Key Freshness: Age of Kyber keys in blocks
     pub pqc_key_age: u64,
+
+    /// --- NEW v4.0 METRICS ---
+    /// Stellar Metrics: Integration of celestial thermodynamics into Proof of Coherence.
+    pub stellar_metrics: Option<StellarMetrics>,
 
     pub signature: Vec<u8>,
     pub node_pubkey: Vec<u8>,
@@ -51,12 +56,23 @@ impl PoCEngineV3 {
         // Reward nodes with high AGI prediction accuracy
         let agi_score = proof.agi_accuracy;
 
-        // Weights
-        let w1 = 0.25;
-        let w2 = 0.25;
-        let w3 = 0.25;
-        let w4 = 0.25;
+        // NEW v4.0: Stellar nucleosynthesis yield as a weight multiplier
+        let stellar_yield = if let Some(metrics) = &proof.stellar_metrics {
+            metrics.calculate_yield(1.0 - proof.avg_phase_error.min(1.0))
+        } else {
+            0.0
+        };
 
-        w1 * phase_score + w2 * entropy_score + w3 * zk_score + w4 * agi_score
+        // Weights
+        let w1 = 0.20;
+        let w2 = 0.20;
+        let w3 = 0.20;
+        let w4 = 0.20;
+        let w5 = 0.20;
+
+        let base_score = w1 * phase_score + w2 * entropy_score + w3 * zk_score + w4 * agi_score;
+        let stellar_contribution = w5 * (stellar_yield / 100.0).min(1.0);
+
+        base_score + stellar_contribution
     }
 }

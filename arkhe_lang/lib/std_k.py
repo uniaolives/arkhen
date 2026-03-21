@@ -17,6 +17,7 @@ def build_std_k(engine: KEngine):
 
     # --- ERA 1: GKP Logic ---
     # rule matches(?X, ?Y) => tt
+    # rule matches(?X, ?Y) => tt requires ?X ≈ ?Y
     engine.add_rule(Rule(
         left=Term("matches", s_logic, [Term("?X", s_atom), Term("?X", s_atom)]),
         right=tt,
@@ -24,6 +25,8 @@ def build_std_k(engine: KEngine):
     ))
 
     # --- ERA 2: Thermal ---
+    # rule dissipate(C(S), Gamma) => C(S')
+    # (Simplified: just represents the transformation)
     engine.add_rule(Rule(
         left=Term("dissipate", s_consciousness, [Term("?C", s_consciousness), Term("?G", s_float)]),
         right=Term("decayed", s_consciousness),
@@ -31,6 +34,8 @@ def build_std_k(engine: KEngine):
     ))
 
     # --- ERA 5: Criticality & Patching ---
+    # --- ERA 5: Criticality ---
+    # rule patch_gamma(0.005) => applied
     engine.add_rule(Rule(
         left=Term("patch_gamma", s_command, [Term("0.005", s_float)]),
         right=Term("applied", s_command),
@@ -53,6 +58,8 @@ def build_std_k(engine: KEngine):
     ))
 
     # --- ERA 8: Omega ---
+    # --- ERA 8: Omega ---
+    # rule synthesize => omega_point
     engine.add_rule(Rule(
         left=Term("synthesize", s_consciousness),
         right=Term("omega_point", s_consciousness),

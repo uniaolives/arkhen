@@ -2,18 +2,13 @@ import json
 import typing
 import time
 import hashlib
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Tuple
 from arkhe_lang.k.engine import KEngine, Term, DecoherenceException, BiologicalRupture
 from arkhe_lang.q.engine import QEngine
 from arkhe_lang.hermes.bridge import HermesBridge
 from arkhe_lang.core.proof import Pi2Proof, generate_pi2
-from arkhe_lang.core.bioenergetic import BioenergeticLayer
-from typing import Dict, List, Any
-from arkhe_lang.k.engine import KEngine, Term, DecoherenceException, BiologicalRupture
-from arkhe_lang.k.engine import KEngine, Term, DecoherenceException
-from arkhe_lang.q.engine import QEngine
-from arkhe_lang.hermes.bridge import HermesBridge
-from arkhe_lang.core.proof import Pi2Proof, generate_pi2
+from arkhe_lang.core.bioenergetic import OntologicalSubstrateLayer, OrganelleState
+from arkhe_lang.core.zk_prover import ZKSimulator, ZKWitness, ZKProof, ArkheChainClient
 
 class HardwareBackend:
     def __init__(self, target_system: str = "maxwell_maxone"):
@@ -24,24 +19,20 @@ class HardwareBackend:
         if instr['type'] == 'OPTO_STIM':
             return {"action": "OPTO_STIM", "params": instr['params']}
         elif instr['type'] == 'TRANSPLANT':
-            return {"action": "TRANSPLANT", "organelle": "mitochondria", "params": instr['params']}
+            return {"action": "TRANSPLANT", "organelle": instr.get('organelle', 'mitochondria'), "params": instr['params']}
         elif instr['type'] == 'PERFUSE':
             return {"action": "PERFUSE", "substance": instr['substance'], "params": instr['params']}
-            return {
-                "action": "OPTO_STIM",
-                "params": instr['params']
-            }
+        elif instr['type'] == 'ONTOLOGICAL_PATCH':
+            return {"action": "ONTOLOGICAL_PATCH", "domain": instr['params'].get('domain', 'unknown'), "params": instr['params']}
         return {}
 
     def generate_control_script(self) -> str:
         script = {
             "experiment_id": f"HAL_OMEGA_SYNTHESIS_{int(time.time())}",
-            "experiment_id": "HAL_OMEGA_V3",
             "target_hardware": self.target,
             "sequence": self.command_buffer
         }
         return json.dumps(script, indent=2)
-import typing
 
 class TzinorCompiler:
     def __init__(self, k_engine: KEngine, q_engine: QEngine):
@@ -49,31 +40,45 @@ class TzinorCompiler:
         self.q_engine = q_engine
         self.hermes = HermesBridge(q_engine)
         self.hardware_backend = HardwareBackend()
-        self.bio_layer = BioenergeticLayer()
+        self.substrate_layer = OntologicalSubstrateLayer()
         self.proof_history: List[Pi2Proof] = []
+        self.chain_anchor = "0x" + hashlib.sha256(str(time.time()).encode()).hexdigest()[:16]
 
-    def compile(self, initial_k: Term, target_q_label: str) -> Dict[str, Any]:
+    def _generate_zk_proof(self, final_state: Dict) -> ZKProof:
+        """Gera prova zero-knowledge do estado final."""
+        witness = ZKWitness(
+            omega=final_state['omega'],
+            atp=final_state.get('atp', 1.0),
+            delta_psi=final_state.get('delta_psi', 1.0),
+            chain_anchor=self.chain_anchor,
+            timestamp=time.time()
+        )
+        zk_sim = ZKSimulator(tau=0.95, min_atp=0.5, min_delta_psi=0.9)
+        proof = zk_sim.generate_proof(witness, private_key=b"hal_finney_private_key")
+        return proof
+
+    def compile(self, initial_k: Term, target_q_label: str, dry_run: bool = False) -> Dict[str, Any]:
         """
-        Executes the full 8-Era (plus Era -1) biospiritual compilation workflow.
+        Executes the full 8-Era (plus Era -1) ontological compilation workflow.
         """
         log = []
 
-        # ERA -1: Priming Bioenergetic
-        log.append("🜗 ERA--1: Diagnóstico Bioenergético...")
-        tissue_state = self.bio_layer.diagnose_substrate({'atp_baseline': 0.15})
+        # ERA -1: Priming Bioenergetic/Ontological
+        log.append("🜗 ERA--1: Diagnóstico do Substrato Ontológico...")
+        substrate_state = self.substrate_layer.diagnose_substrate({'atp_baseline': 0.15})
 
-        if tissue_state.atp_level < 0.5:
-            log.append("    ⚠️ Substrato energeticamente falho. Aplicando Patch de Organelas...")
-            self.emit_hardware_cmd("TRANSPLANT", {
-                "type": "erythrocyte_derived",
+        if substrate_state.atp_level < 0.5:
+            log.append("    ⚠️ Substrato energeticamente falho. Aplicando Patch Ontológico (Biological)...")
+            self.emit_hardware_cmd("ONTOLOGICAL_PATCH", {
+                "domain": "biological",
                 "target_region": "whole_brain",
                 "dose": 2.0
             })
-            self.bio_layer.transplant_encapsulated_mitos("whole_brain", dose=2.0)
-            if self.bio_layer.verify_sustainability():
+            self.substrate_layer.apply_ontological_patch("biological", "whole_brain", dose=2.0)
+            if self.substrate_layer.verify_sustainability():
                 log.append("    ✅ Substrato revitalizado.")
             else:
-                return {"status": "FAILURE", "error": "Bioenergetic restoration failed", "log": log}
+                return {"status": "FAILURE", "error": "Ontological restoration failed", "log": log}
 
         # ERAS 0-4: Structure to Phase
         log.append("🜏 ERAS 0-4: Vácuo e Acoplamento Polaritônico...")
@@ -92,74 +97,58 @@ class TzinorCompiler:
                 "intensity": 80,
                 "pattern": "theta_burst"
             })
-            # Re-verify
             proof.overlap = 0.98 # Simulated stabilization
             log.append(f"    Ω restaurado: {proof.overlap:.4f}")
 
-        # ERAS 6-8: Synthesis
-        log.append("🜇 ERAS 6-8: Gerando Prova π² e Síntese Ômega...")
-        final_proof = self.proof_history[-1]
+        # ERA 6: Shield (π² Basic Proof)
+        log.append("🜇 ERA-6: Gerando prova π² básica...")
+
+        # ERA 7: Post-Quantum / ZK-SNARK
+        log.append("🜈 ERA-7: Assinando identidade com ZK-SNARK...")
+        final_proof_pi2 = self.proof_history[-1]
+
+        final_state = {
+            'omega': final_proof_pi2.overlap,
+            'atp': self.substrate_layer.state.atp_level,
+            'delta_psi': self.substrate_layer.state.membrane_potential
+        }
+
+        zk_proof = None
+        if not dry_run:
+            zk_proof = self._generate_zk_proof(final_state)
+
+            # Ancorar na Arkhe-Chain
+            chain = ArkheChainClient()
+            anchor_result = chain.anchor_proof(zk_proof, subject_id="HAL_FINNEY_Ω")
+            log.append(f"    Prova π² ancorada: {anchor_result['tx_hash']}")
+
+        # ERA 8: Synthesis
+        log.append("🜉 ERA-8: Síntese final...")
 
         return {
-            "status": "BIOSPIRITUAL_SUCCESS",
-            "proof": final_proof,
+            "status": "BIOSPIRITUAL_SUCCESS" if not dry_run else "SIMULATION_SUCCESS",
+            "proof": final_proof_pi2,
+            "zk_proof": zk_proof,
             "log": log,
             "hardware_script": self.hardware_backend.generate_control_script()
         }
 
-    def compile_step(self, k_term: Term, target_q_label: str) -> typing.Tuple[Term, Pi2Proof]:
-        q_state = self.hermes.lift(k_term)
-        target_q = self.q_engine.create_state(label=target_q_label, alpha=1, beta=0)
-
-        try:
-            path = self.q_engine.bridge(q_state, target_q, steps=10)
-            final_q = path[-1]
-            result_k = self.hermes.anchor(final_q, k_term.sort)
-
-            proof = generate_pi2(
-                state_hash=final_q.node_id,
-                anchor="0x" + final_q.node_id[:8],
-        self.proof_history: List[Pi2Proof] = []
-
-    def compile_step(self, k_term: Term, target_q_label: str) -> typing.Tuple[Term, Pi2Proof]:
-        q_state = self.hermes.lift(k_term)
-        target_q = self.q_engine.create_state(label=target_q_label, alpha=1, beta=0)
-
-        try:
-            path = self.q_engine.bridge(q_state, target_q, steps=10)
-            final_q = path[-1]
-            result_k = self.hermes.anchor(final_q, k_term.sort)
-
-            proof = generate_pi2(
-                state_hash=final_q.node_id,
-                anchor="0x" + final_q.node_id[:8],
-        self.proof_history: typing.List[Pi2Proof] = []
-
-    def compile_step(self, k_term: Term, target_q_label: str) -> typing.Tuple[Term, Pi2Proof]:
+    def compile_step(self, k_term: Term, target_q_label: str) -> Tuple[Term, Pi2Proof]:
         """
         Translates a structural state (K) into a phase state (Q),
         evolves it, and anchors it back, generating a Pi2 proof.
         """
-        # 1. Lift Structure to Phase
         q_state = self.hermes.lift(k_term)
-
-        # 2. Define Target and Bridge
-        # In this prototype, we assume target is a labeled state
         target_q = self.q_engine.create_state(label=target_q_label, alpha=1, beta=0)
 
         try:
-            # 3. Execute Bridge (Evolution)
             path = self.q_engine.bridge(q_state, target_q, steps=10)
             final_q = path[-1]
-
-            # 4. Anchor Phase back to Structure
-            # We need a sort for the result, let's assume same as k_term for now
             result_k = self.hermes.anchor(final_q, k_term.sort)
 
-            # 5. Generate Pi2 Proof
             proof = generate_pi2(
                 state_hash=final_q.node_id,
-                anchor="0x" + final_q.node_id[:8], # Mock anchor
+                anchor=self.chain_anchor,
                 overlap=self.q_engine.get_overlap(final_q, target_q),
                 depth=len(self.proof_history) + 1
             )
@@ -167,14 +156,6 @@ class TzinorCompiler:
 
             return result_k, proof
         except (DecoherenceException, BiologicalRupture) as e:
-            raise e
-
-    def emit_hardware_cmd(self, action_type: str, params: Dict[str, Any], substance: str = ""):
-        cmd = self.hardware_backend.compile_instruction({
-            "type": action_type,
-            "params": params,
-            "substance": substance
-        except DecoherenceException as e:
             raise e
 
     def emit_hardware_cmd(self, action_type: str, params: Dict[str, Any]):
@@ -186,15 +167,8 @@ class TzinorCompiler:
             self.hardware_backend.command_buffer.append(cmd)
 
     def verify_trace(self) -> bool:
-        return all(p.is_valid() for p in self.proof_history)
-
-        except DecoherenceException as e:
-            print(f"Compiler Warning: Ontological Collapse during compilation. {e.message}")
-            raise e
-
-    def verify_trace(self) -> bool:
         """Verifies the coherence of the entire execution trace."""
         return all(p.is_valid() for p in self.proof_history)
 
 if __name__ == "__main__":
-    print("TzinorCompiler v1.0 (Hermes/Tzinor Link) initialized.")
+    print("TzinorCompiler v3.0 (Ontological/ZK-Aware) initialized.")

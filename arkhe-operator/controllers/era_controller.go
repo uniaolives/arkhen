@@ -16,6 +16,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
+	arkhev1alpha1 "arkhe-operator/api/v1alpha1"
 	arkhev1beta1 "arkhe-operator/api/v1beta1"
 )
 
@@ -32,11 +33,13 @@ type EraReconciler struct {
 func (r *EraReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
+	era := &arkhev1alpha1.Era{}
 	era := &arkhev1beta1.Era{}
 	if err := r.Get(ctx, req.NamespacedName, era); err != nil {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
+	if era.Spec.ThermalState == arkhev1alpha1.ThermalStateFrozen {
 	if era.Spec.ThermalState == "Frozen" {
 		logger.Info("Era is Frozen. Ensuring no processing pods are running.")
 		deployment := &appsv1.Deployment{}
@@ -140,6 +143,7 @@ func (r *EraReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 
 func (r *EraReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
+		For(&arkhev1alpha1.Era{}).
 		For(&arkhev1beta1.Era{}).
 		Owns(&appsv1.Deployment{}).
 		Complete(r)

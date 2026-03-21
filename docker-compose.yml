@@ -29,3 +29,7 @@ services:
     ports:
       - "50052:50051"
     command: python -m tzinor.deploy.grpc.qhttp_server
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    command: npm start

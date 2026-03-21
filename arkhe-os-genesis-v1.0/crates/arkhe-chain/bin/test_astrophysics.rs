@@ -1,4 +1,3 @@
-
 use arkhe_chain::chain::astrophysics::{StellarMetrics, StellarPhase};
 use arkhe_chain::chain::consensus::{CoherenceProof, PoCEngineV3};
 
@@ -10,6 +9,10 @@ fn main() {
         radius: 1.0,
         age: 4_600_000_000,
         phase: StellarPhase::MainSequence,
+        stellar_yield: 0.8,
+        plasma_density: 1.2,
+        molecular_complexity: 0.5,
+        isotopic_ratio: 1.0,
     };
 
     let proof = CoherenceProof {

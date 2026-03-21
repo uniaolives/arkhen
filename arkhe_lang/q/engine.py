@@ -13,9 +13,6 @@ class QEngine:
 
     def create_state(self, label: str, alpha: float = 1.0, beta: float = 0.0) -> ArkheQobj:
         """Create a quantum state |ψ⟩ = α|0⟩ + β|1⟩."""
-
-    def create_state(self, label: str, alpha: float = 1.0, beta: float = 0.0) -> ArkheQobj:
-        """Create a quantum state |ψ⟩ = α|0⟩ + β|1⟩."""
         # Normalize
         norm = np.sqrt(abs(alpha)**2 + abs(beta)**2)
         qobj = (alpha/norm) * qt.basis(2, 0) + (beta/norm) * qt.basis(2, 1)
@@ -29,9 +26,6 @@ class QEngine:
         self.omega = result.final_state.coherence
         if self.omega < self.coherence_threshold:
             raise DecoherenceException(f"Phase collapse detected: Ω={self.omega:.4f}", omega=self.omega)
-        return result.final_state
-
-    def bridge(self, source: ArkheQobj, target: ArkheQobj, steps: int = 100) -> List[ArkheQobj]:
         return result.final_state
 
     def bridge(self, source: ArkheQobj, target: ArkheQobj, steps: int = 100) -> List[ArkheQobj]:
@@ -62,13 +56,6 @@ class QEngine:
                  raise DecoherenceException(f"Bridge decoherence: Ω={self.omega:.4f}", omega=self.omega)
 
             path.append(current_state)
-            # Linear interpolation in density matrix space (simplified bridge)
-            interp_rho = (1 - t) * source_vec + t * target_vec
-            # Ensure it's a valid density matrix (Hermitian, Tr=1)
-            interp_rho = (interp_rho + interp_rho.dag()) / 2.0
-            interp_rho = interp_rho / interp_rho.tr()
-
-            path.append(ArkheQobj(interp_rho, node_id=f"Bridge_t{t:.2f}"))
 
         return path
 
@@ -85,6 +72,7 @@ class QEngine:
         return 0 if np.random.random() < p0 else 1
 
     def get_overlap(self, state_a: ArkheQobj, state_b: ArkheQobj) -> float:
+        """Calculate fidelity between two states."""
         return qt.fidelity(state_a.qobj, state_b.qobj)
 
     def patch_gamma(self, g: float) -> qt.Qobj:
@@ -95,9 +83,3 @@ class QEngine:
 
 if __name__ == "__main__":
     print("QEngine v2.0 (Phase Monitoring) loaded.")
-        """Calculate fidelity between two states."""
-        return qt.fidelity(state_a.qobj, state_b.qobj)
-
-if __name__ == "__main__":
-    engine = QEngine()
-    print("QEngine prototype loaded.")

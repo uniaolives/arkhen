@@ -17,12 +17,17 @@ mod astrophysics {
         pub radius: f64,
         pub age: u64,
         pub phase: StellarPhase,
+        pub stellar_yield: f64,
+        pub plasma_density: f64,
+        pub molecular_complexity: f64,
+        pub isotopic_ratio: f64,
     }
 
     impl StellarMetrics {
         pub fn calculate_yield(&self, coherence: f64) -> f64 {
             let base_fusion = self.mass.powf(3.5) * (self.temperature / 5000.0);
-            base_fusion * coherence * 0.01
+            let substrate_factor = self.stellar_yield * self.molecular_complexity;
+            base_fusion * coherence * substrate_factor * 0.01
         }
     }
 }
@@ -78,6 +83,10 @@ fn main() {
         radius: 1.0,
         age: 4_600_000_000,
         phase: StellarPhase::MainSequence,
+        stellar_yield: 0.8,
+        plasma_density: 1.2,
+        molecular_complexity: 0.5,
+        isotopic_ratio: 1.0,
     };
 
     let proof = CoherenceProof {

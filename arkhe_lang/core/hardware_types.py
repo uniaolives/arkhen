@@ -3,14 +3,19 @@ from dataclasses import dataclass, field
 from typing import List, Tuple, Dict, Any
 
 class HardwarePrimitive(Enum):
-    """Primitivas de controle do substrato biológico."""
+    """Primitivas de controle do substrato (biológico, químico, físico, astrofísico)."""
     OPTO_STIMULATE = "opto_stim"      # Estímulo de luz (ChR2)
     OPTO_INHIBIT = "opto_inhibit"      # Inibição por luz (NpHR)
     ELEC_RECORD = "elec_record"        # Gravação de potencial de campo
     ELEC_STIMULATE = "elec_stim"       # Estímulo elétrico invasivo
-    PERFUSE = "perfuse"                # Controle de meio/drogas
+    PERFUSE = "perfuse"                # Controle de meio/drogas/organelas
     TEMP_CONTROL = "temp_control"      # Controle térmico
     TRANSPLANT = "transplant"          # Mitochondrial/Organelle transplantation
+
+    # Generic domain-specific primitives
+    CHEMICAL_SYNTH = "chemical_synth"   # Síntese química in-situ
+    PHYSICAL_TUNING = "physical_tuning" # Ajuste de parâmetros físicos (ex: magnético)
+    ASTRO_MONITOR = "astro_monitor"     # Monitoramento astrofísico/astroquímico
 
 @dataclass
 class Electrode:
@@ -31,11 +36,12 @@ class LightSource:
 
 @dataclass
 class Organelle:
-    """Representação de uma organela (ex: Mitocôndria)."""
-    type: str  # e.g., "mitochondria"
-    origin: str # e.g., "erythrocyte_derived"
-    potential: float # e.g., membrane potential (ΔΨ)
-    count: int
+    """Representação de uma organela ou componente de substrato."""
+    domain: str # e.g., "biological", "chemical", "physical", "astrophysical"
+    type: str  # e.g., "mitochondria", "quantum_dot", "catalyst"
+    origin: str # e.g., "erythrocyte_derived", "synthetic"
+    potential: float = 0.0 # e.g., membrane potential (ΔΨ)
+    count: int = 1
 
 @dataclass
 class PerfusionPump:

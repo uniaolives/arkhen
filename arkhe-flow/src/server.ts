@@ -16,6 +16,7 @@ const server = Fastify({ logger: true });
 // Register cookies for challenge/session storage
 server.register(cookie, {
   secret: process.env.COOKIE_SECRET || 'arkhe-default-dev-only-secret', // Use environment variable
+  secret: 'arkhe-secret-ontological-key', // In prod, use process.env.COOKIE_SECRET
   parseOptions: {}
 });
 

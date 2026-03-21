@@ -6,6 +6,8 @@ from tzinor.deploy.hashtree.persistence import HashtreePersistence
 import numpy as np
 import logging
 import os
+import numpy as np
+import logging
 
 class ArkheResonanceCallback(TrainerCallback):
     """
@@ -21,6 +23,9 @@ class ArkheResonanceCallback(TrainerCallback):
         self.last_phase = 0.0
         self.last_damping = 1.0
         self.last_sigma = 0.0
+        self.logger = logging.getLogger("arkhen.trainer")
+        self.last_phase = 0.0
+        self.last_damping = 1.0
 
     def on_step_end(self, args, state: TrainerState, control: TrainerControl, **kwargs):
         """
@@ -92,6 +97,9 @@ class ArkheResonanceCallback(TrainerCallback):
             nhash = self.persistence.save_checkpoint(checkpoint_path, metadata)
             if nhash:
                 self.logger.info(f"Checkpoint anchored to Hashtree: {nhash}")
+
+                "step": state.global_step
+            })
 
     def on_train_end(self, args, state, control, **kwargs):
         self.logger.info(f"Training Complete. Final Cluster Coherence: {self.last_phase:.4f} rad")

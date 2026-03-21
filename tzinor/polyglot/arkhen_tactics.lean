@@ -9,6 +9,11 @@ import Arkhen.Core
 -- ═══════════════════════════════════════════════════════════════════════
 
 /-- Tática para provar ressonância automaticamente -/
+import Mathlib
+import «arkhen»
+
+namespace Arkhen
+
 syntax "resonate" : tactic
 
 macro_rules
@@ -19,6 +24,11 @@ macro_rules
   )
 
 /-- Tática para validação de substrato -/
+    simp [ComplexCoherence.IsResonant]
+    try norm_num
+    try linarith [Real.pi_pos]
+  )
+
 syntax "validate_substrate" term : tactic
 
 macro_rules
@@ -30,3 +40,10 @@ macro_rules
     };
     exact h_valid
   )
+    have h_valid : Coherent.validate $s := by
+      simp [Coherent.validate, Coherent.coherence]
+      try norm_num
+    exact h_valid
+  )
+
+end Arkhen

@@ -7,6 +7,7 @@ import (
 	ctrl "sigs.k8s.io/controller-runtime"
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
+	arkhev1alpha1 "arkhe-operator/api/v1alpha1"
 	arkhev1beta1 "arkhe-operator/api/v1beta1"
 )
 
@@ -17,6 +18,7 @@ type EntropyShieldReconciler struct {
 }
 
 func (r *EntropyShieldReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
+	shield := &arkhev1alpha1.EntropyShield{}
 	shield := &arkhev1beta1.EntropyShield{}
 	if err := r.Get(ctx, req.NamespacedName, shield); err != nil {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
@@ -33,6 +35,7 @@ func (r *EntropyShieldReconciler) Reconcile(ctx context.Context, req ctrl.Reques
 
 func (r *EntropyShieldReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
+		For(&arkhev1alpha1.EntropyShield{}).
 		For(&arkhev1beta1.EntropyShield{}).
 		Complete(r)
 }

@@ -79,3 +79,11 @@ coherenceBio m = Pure $ MkΩ
   (min 2.0 (max 0.0 (((atp m / (ros m + 0.000001)) * (mtDNA m) *
     (tanh (cristae m / 100.0))) / 3.0)))
   ((pi/2) * (1.0 - exp (-(abs (deltaPsi m)) / 180.0)))
+module Arkhen
+record ComplexCoherence where
+  constructor MkΩ
+  amplitude : Double
+  phase : Double
+
+IsResonant : ComplexCoherence -> Bool
+IsResonant c = abs (phase c - pi/2) < 0.1

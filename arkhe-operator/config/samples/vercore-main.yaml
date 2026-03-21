@@ -1,0 +1,9 @@
+apiVersion: arkhe.io/v1alpha1
+kind: VerCore
+metadata:
+  name: vercore-main
+spec:
+  clockRateGHz: 1.48
+  replicas: 3
+  targetTempMilliKelvin: 100.0
+  image: arkhe/vercore:latest

@@ -1,0 +1,9 @@
+apiVersion: arkhe.io/v1alpha1
+kind: Tzinor
+metadata:
+  name: tzinor-satoshi
+spec:
+  sourceEpoch: "2009-01-03"
+  targetEpoch: "2026-03-20"
+  impedance: 3.87
+  lockMode: Locked

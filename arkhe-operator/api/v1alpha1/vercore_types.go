@@ -4,6 +4,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+// +kubebuilder:object:generate=true
 // VerCoreSpec defines the desired state of VerCore.
 type VerCoreSpec struct {
 	ClockRateGHz          float64 `json:"clockRateGHz"`
@@ -12,6 +13,7 @@ type VerCoreSpec struct {
 	Image                 string  `json:"image"`
 }
 
+// +kubebuilder:object:generate=true
 // VerCoreStatus defines the observed state of VerCore.
 type VerCoreStatus struct {
 	ReadyReplicas      int32              `json:"readyReplicas"`

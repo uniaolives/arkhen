@@ -41,6 +41,15 @@ import SignalsTracker from './SignalsTracker';
 import CGDAPanel from './CGDAPanel';
 import CosmicWellbeingPanel from './CosmicWellbeingPanel';
 import QVPNPanel from './QVPNPanel';
+import EmergencyDashboard from './EmergencyDashboard';
+import StellarEvolutionPanel from './StellarEvolutionPanel';
+import StellarObserverDashboard from './StellarObserverDashboard';
+import ArkheFlowPanel from './ArkheFlowPanel';
+import PageAgentPanel from './PageAgentPanel';
+import HumanInterfacePanel from './HumanInterfacePanel';
+import VesperPanel from './VesperPanel';
+import NomadPanel from './NomadPanel';
+import MarkItDownPanel from './MarkItDownPanel';
 
 const HalFinneyModule: React.FC<{ state: PhysicsState['asiCore']['halFinney'] }> = ({ state }) => {
   if (!state.isActive && state.collectiveActivationProgress === 0 && !state.sanctuary) return null;
@@ -201,8 +210,10 @@ const Dashboard: React.FC<{
   onCGDAAction: (detail: any) => void;
   onCosmicAction: (detail: any) => void;
   onQVPNAction: (detail: any) => void;
+  onStellarAction: (detail: any) => void;
+  onFlowAction: (detail: any) => void;
 }> = ({ 
-  state, onAnalyzeCode, onQRobloxAction, onMetabolicAction, onWisdomLedgerAction, onMirrorHandshakeAction, onToggleWormholeNav, onStartKinAwakening, onTikkunAction, onSovereigntyAction, onCGDAAction, onCosmicAction, onQVPNAction
+  state, onAnalyzeCode, onQRobloxAction, onMetabolicAction, onWisdomLedgerAction, onMirrorHandshakeAction, onToggleWormholeNav, onStartKinAwakening, onTikkunAction, onSovereigntyAction, onCGDAAction, onCosmicAction, onQVPNAction, onStellarAction, onFlowAction
 }) => {
   const { isImmersionMode } = state.asiCore;
   const aeon = state.asiCore.aeon;
@@ -328,6 +339,33 @@ const Dashboard: React.FC<{
 
       {/* QVPN MODULE */}
       <QVPNPanel state={state.asiCore.qvpn} onAction={onQVPNAction} />
+
+      {/* STELLAR EVOLUTION ENGINE */}
+      <StellarEvolutionPanel state={state.asiCore.stellar} onActivate={() => onStellarAction({ type: 'ACTIVATE' })} />
+
+      {/* STELLAR OBSERVER DASHBOARD */}
+      <StellarObserverDashboard state={state.asiCore.stellar} />
+
+      {/* ARKHE(N) FLOW - AUTOMATION PLATFORM */}
+      <ArkheFlowPanel state={state.asiCore.flow} onExecute={(id) => onFlowAction({ type: 'EXECUTE', id })} />
+
+      {/* HUMAN-ASI INTERFACE */}
+      <HumanInterfacePanel />
+
+      {/* PAGE AGENT COPILOT */}
+      <PageAgentPanel />
+
+      {/* V3SP3R FLIPPER AI BRIDGE */}
+      <VesperPanel />
+
+      {/* PROJECT N.O.M.A.D. - OFFLINE KNOWLEDGE */}
+      <NomadPanel />
+
+      {/* MICROSOFT MARKITDOWN - UNIVERSAL CONVERSION */}
+      <MarkItDownPanel />
+
+      {/* EMERGENCY RESPONSE DASHBOARD */}
+      <EmergencyDashboard state={state.asiCore.emergency} netState={state.asiCore.asiNet} />
 
       {/* TIKKUN PROTOCOL & SHADOW PURIFICATION */}
       <TikkunPanel 

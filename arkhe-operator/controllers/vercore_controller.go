@@ -11,6 +11,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 
 	arkhev1alpha1 "arkhe-operator/api/v1alpha1"
+	arkhev1beta1 "arkhe-operator/api/v1beta1"
 )
 
 // VerCoreReconciler reconciles a VerCore object.
@@ -21,6 +22,7 @@ type VerCoreReconciler struct {
 
 func (r *VerCoreReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	vercore := &arkhev1alpha1.VerCore{}
+	vercore := &arkhev1beta1.VerCore{}
 	if err := r.Get(ctx, req.NamespacedName, vercore); err != nil {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
@@ -41,5 +43,6 @@ func (r *VerCoreReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ct
 func (r *VerCoreReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&arkhev1alpha1.VerCore{}).
+		For(&arkhev1beta1.VerCore{}).
 		Complete(r)
 }

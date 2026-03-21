@@ -3,6 +3,7 @@ package controllers
 import (
 	"context"
 	"fmt"
+	"math"
 
 	corev1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
@@ -14,6 +15,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	arkhev1alpha1 "arkhe-operator/api/v1alpha1"
+	arkhev1beta1 "arkhe-operator/api/v1beta1"
 )
 
 // TzinorReconciler reconciles a Tzinor object.
@@ -30,6 +32,7 @@ func (r *TzinorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 	logger := log.FromContext(ctx)
 
 	tzinor := &arkhev1alpha1.Tzinor{}
+	tzinor := &arkhev1beta1.Tzinor{}
 	if err := r.Get(ctx, req.NamespacedName, tzinor); err != nil {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
@@ -78,6 +81,15 @@ func (r *TzinorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 		tzinor.Status.Locked = false
 		tzinor.Status.PhaseError = 0.0
 		tzinor.Status.LatencyPicos = 0.0
+	// Logic for v1beta1 fields
+	z := tzinor.Spec.Impedance
+	if math.Abs(z-3.87) > 0.5 {
+		tzinor.Status.Phase = "Drifting"
+	} else if tzinor.Status.Phase == "" || tzinor.Status.Phase == "Pending" {
+		tzinor.Status.Phase = "Locked"
+		tzinor.Status.Locked = true
+		tzinor.Status.PhaseError = 0.003
+		tzinor.Status.LatencyPicos = 0.25
 	}
 
 	if err := r.Status().Update(ctx, tzinor); err != nil {
@@ -90,6 +102,7 @@ func (r *TzinorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 func (r *TzinorReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&arkhev1alpha1.Tzinor{}).
+		For(&arkhev1beta1.Tzinor{}).
 		Owns(&corev1.Service{}).
 		Complete(r)
 }

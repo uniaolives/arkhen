@@ -17,6 +17,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
 	arkhev1alpha1 "arkhe-operator/api/v1alpha1"
+	arkhev1beta1 "arkhe-operator/api/v1beta1"
 )
 
 // EraReconciler reconciles a Era object.
@@ -33,11 +34,13 @@ func (r *EraReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 	logger := log.FromContext(ctx)
 
 	era := &arkhev1alpha1.Era{}
+	era := &arkhev1beta1.Era{}
 	if err := r.Get(ctx, req.NamespacedName, era); err != nil {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
 	}
 
 	if era.Spec.ThermalState == arkhev1alpha1.ThermalStateFrozen {
+	if era.Spec.ThermalState == "Frozen" {
 		logger.Info("Era is Frozen. Ensuring no processing pods are running.")
 		deployment := &appsv1.Deployment{}
 		err := r.Get(ctx, types.NamespacedName{Name: era.Name, Namespace: era.Namespace}, deployment)
@@ -49,6 +52,7 @@ func (r *EraReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 
 		era.Status.Active = false
 		era.Status.TemperatureMilliKelvin = 10.0
+		era.Status.Phase = "Frozen"
 		if err := r.Status().Update(ctx, era); err != nil {
 			return ctrl.Result{}, err
 		}
@@ -129,6 +133,7 @@ func (r *EraReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 
 	era.Status.Active = true
 	era.Status.TemperatureMilliKelvin = 100.2
+	era.Status.Phase = "Active"
 	if err := r.Status().Update(ctx, era); err != nil {
 		return ctrl.Result{}, err
 	}
@@ -139,6 +144,7 @@ func (r *EraReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.R
 func (r *EraReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
 		For(&arkhev1alpha1.Era{}).
+		For(&arkhev1beta1.Era{}).
 		Owns(&appsv1.Deployment{}).
 		Complete(r)
 }

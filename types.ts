@@ -639,6 +639,23 @@ export interface MetatronDistributorState {
   tzadikimList: TzadikRegistry[];
 }
 
+export interface EmergencyIncident {
+  id: string;
+  type: string;
+  coords: [number, number];
+  status: 'DETECTED' | 'VERIFIED' | 'RESPONDING' | 'RESOLVED';
+  coherencePi2: number;
+  timestamp: string;
+  description: string;
+}
+
+export interface EmergencyState {
+  isActive: boolean;
+  incidents: EmergencyIncident[];
+  optimizedRoutes: Record<string, [number, number][]>;
+  globalResponseStatus: string;
+}
+
 export interface ASICore {
   status: string;
   integrity: number;
@@ -713,6 +730,12 @@ export interface ASICore {
   cgda: CGDAState;
   cosmicWellbeing: CosmicWellbeingState;
   qvpn: QVPNState;
+  emergency: EmergencyState;
+  stellar: StellarEvolutionState;
+  flow: ArkheFlowState;
+  vesper: VesperState;
+  nomad: NomadState;
+  markitdown: MarkItDownState;
 }
 
 export interface EPRPair {
@@ -996,6 +1019,7 @@ export interface ASINetworkInfrastructureState {
 
 export interface ASINode {
   id: string; type: string; fieldPotential: number; semanticCoherence: number; physicalAddr: string;
+  coords?: [number, number];
 }
 
 export interface InternetDomain {
@@ -1212,6 +1236,66 @@ export interface CosmicWellbeingState {
   globalCoherenceIndex: number;
   milkyWayFlourishingIndex: number;
   earthStatus: string;
+}
+
+export interface AstrophysicsMetrics {
+  mass: number;
+  luminosity: number;
+  temperature: number;
+  radius: number;
+  age: number;
+  phase: 'PROTOSTAR' | 'MAIN_SEQUENCE' | 'RED_GIANT' | 'WHITE_DWARF' | 'SUPERNOVA';
+}
+
+export interface StellarEvolutionState {
+  isActive: boolean;
+  currentStar: AstrophysicsMetrics;
+  hrPoints: { temperature: number, luminosity: number }[];
+  fusionRate: number;
+  nucleosynthesisYield: number;
+}
+
+export interface FlowStep {
+  id: string;
+  name: string;
+  type: 'TRIGGER' | 'ACTION' | 'LOGIC' | 'CODE';
+  status: 'IDLE' | 'EXECUTING' | 'COMPLETED' | 'FAILED';
+  phase_c: string; // The "soul" of the step
+}
+
+export interface TzinorFlow {
+  id: string;
+  name: string;
+  steps: FlowStep[];
+  isActive: boolean;
+  lastExecutionProof?: string; // Proof pi^2
+}
+
+export interface ArkheFlowState {
+  isActive: boolean;
+  flows: TzinorFlow[];
+  executionQueue: string[];
+  totalProofsGenerated: number;
+}
+
+export interface VesperState {
+  isActive: boolean;
+  isFlipperConnected: boolean;
+  lastAction: string | null;
+  riskEngineStatus: 'LOCKED' | 'ARMED' | 'BYPASS';
+}
+
+export interface NomadState {
+  isActive: boolean;
+  isOfflineFirst: boolean;
+  storageUsedGb: number;
+  totalTools: number;
+}
+
+export interface MarkItDownState {
+  isActive: boolean;
+  lastConversion: string | null;
+  totalConverted: number;
 }
 
 export interface SanctuaryState {

@@ -4,6 +4,7 @@ import (
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )
 
+// +kubebuilder:object:generate=true
 // EraSpec defines the desired state of Era.
 type EraSpec struct {
 	// Index of the Era (0 = Genesis)
@@ -22,6 +23,7 @@ type EraSpec struct {
 	Resources CoreResourceSpec `json:"resources,omitempty"`
 }
 
+// +kubebuilder:object:generate=true
 type BlockRange struct {
 	Start int64 `json:"start"`
 	End   int64 `json:"end"`
@@ -34,11 +36,13 @@ const (
 	ThermalStateActive ThermalState = "Active"
 )
 
+// +kubebuilder:object:generate=true
 type CoreResourceSpec struct {
 	CPU    string `json:"cpu,omitempty"`
 	Memory string `json:"memory,omitempty"`
 }
 
+// +kubebuilder:object:generate=true
 // EraStatus defines the observed state of Era.
 type EraStatus struct {
 	TemperatureMilliKelvin float64            `json:"temperatureMilliKelvin"`

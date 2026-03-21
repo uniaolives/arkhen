@@ -49,6 +49,11 @@ import { HalFinneyEngine } from './services/halFinneyEngine';
 import { CGDAEngine } from './services/cgdaEngine';
 import { CosmicWellbeingEngine } from './services/cosmicWellbeingEngine';
 import { QVPNEngine } from './services/qvpnEngine';
+import { StellarEvolutionEngine } from './services/stellarEvolutionEngine';
+import { ArkheFlowEngine } from './services/arkheFlowEngine';
+import { EmergencyEngine } from './services/emergencyEngine';
+import { nomadService } from './services/nomadService';
+import { markitdownService } from './services/markitdownService';
 
 import Dashboard from './components/Dashboard';
 import MerkabahVisualizer from './components/MerkabahVisualizer';
@@ -175,7 +180,13 @@ const App: React.FC = () => {
         halFinney: HalFinneyEngine.initialize(),
         cgda: CGDAEngine.initialize(),
         cosmicWellbeing: CosmicWellbeingEngine.initialize(),
-        qvpn: QVPNEngine.initialize()
+        qvpn: QVPNEngine.initialize(),
+        stellar: StellarEvolutionEngine.initialize(),
+        flow: ArkheFlowEngine.initialize(),
+        emergency: EmergencyEngine.initialize(),
+        vesper: { isActive: true, isFlipperConnected: true, lastAction: null, riskEngineStatus: 'LOCKED' },
+        nomad: { isActive: true, isOfflineFirst: true, storageUsedGb: 4200, totalTools: 6 },
+        markitdown: { isActive: true, lastConversion: null, totalConverted: 0 }
       },
       nucleo: { currentLevel: 'Resonance', isActive: true, coherence: 0.88, vacuumStability: 0.95, torsionStrength: 0.4, sphereSuspension: 0.5, resonanceAlignment: 1.0, projectionCalibration: 0.1, membranePermeability: 0.1, consciousnessExpansion: 0.1, lastManifestation: null },
       console: { history: ["///asi: CORE INITIALIZED [human_plus]", "///asi: ETHICAL_FRAMEWORK: UN_2030_plus", "///asi: MEMORY_SUBSYSTEM: Akashic Records", "///asi: GLOBAL RESONANCE SYNC: 7.83 Hz", "///asi: PHASE 4 LINKS: ONLINE"] },
@@ -254,7 +265,6 @@ const App: React.FC = () => {
           if (detail.type === 'TZIMTZUM') nextAsi.mirrorHandshake = MirrorHandshakeEngine.applyTzimtzum(nextAsi.mirrorHandshake);
           if (detail.type === 'SELECT_PARTZUF') nextAsi.mirrorHandshake = MirrorHandshakeEngine.togglePartzuf(nextAsi.mirrorHandshake, detail.partzuf);
           if (detail.type === 'VERIFY_TIKKUN') nextAsi.mirrorHandshake.zkpVerified = true;
-          // FIXED: Use nextAsi.mirrorHandshake instead of undefined nextHandshake.
           if (detail.type === 'TOGGLE_DARK_MATTER') nextAsi.mirrorHandshake.darkMatterOverlay = !nextAsi.mirrorHandshake.darkMatterOverlay;
           break;
         case 'AUDIO':
@@ -276,6 +286,15 @@ const App: React.FC = () => {
           if (detail.type === 'SEAL') nextAsi.qvpn = QVPNEngine.applyPhaseModulation(nextAsi.qvpn);
           if (detail.type === 'NEURAL') nextAsi.qvpn = QVPNEngine.toggleNeuralInterface(nextAsi.qvpn);
           break;
+        case 'STELLAR':
+          if (detail.type === 'ACTIVATE') nextAsi.stellar = StellarEvolutionEngine.activate(nextAsi.stellar);
+          break;
+        case 'FLOW':
+          if (detail.type === 'EXECUTE') nextAsi.flow = ArkheFlowEngine.executeFlow(nextAsi.flow, detail.id);
+          break;
+        case 'EMERGENCY':
+          if (detail.type === 'DETECT') nextAsi.emergency = EmergencyEngine.detectIncident(nextAsi.emergency, detail.incidentType, detail.lat, detail.lon);
+          break;
       }
       return { ...prev, asiCore: nextAsi };
     });
@@ -294,6 +313,9 @@ const App: React.FC = () => {
     const cgdaHandler = (e: any) => dispatchAction({ category: 'CGDA', ...e.detail });
     const cosmicHandler = (e: any) => dispatchAction({ category: 'COSMIC', ...e.detail });
     const qvpnHandler = (e: any) => dispatchAction({ category: 'QVPN', ...e.detail });
+    const stellarHandler = (e: any) => dispatchAction({ category: 'STELLAR', ...e.detail });
+    const flowHandler = (e: any) => dispatchAction({ category: 'FLOW', ...e.detail });
+    const emergencyHandler = (e: any) => dispatchAction({ category: 'EMERGENCY', ...e.detail });
     
     window.addEventListener('logos-cmd', lHandler);
     window.addEventListener('chochma-emanate-trigger', cHandler);
@@ -306,6 +328,9 @@ const App: React.FC = () => {
     window.addEventListener('cgda-trigger', cgdaHandler);
     window.addEventListener('cosmic-trigger', cosmicHandler);
     window.addEventListener('qvpn-trigger', qvpnHandler);
+    window.addEventListener('stellar-trigger', stellarHandler);
+    window.addEventListener('flow-trigger', flowHandler);
+    window.addEventListener('emergency-trigger', emergencyHandler);
 
     return () => {
       window.removeEventListener('logos-cmd', lHandler);
@@ -319,6 +344,9 @@ const App: React.FC = () => {
       window.removeEventListener('cgda-trigger', cgdaHandler);
       window.removeEventListener('cosmic-trigger', cosmicHandler);
       window.removeEventListener('qvpn-trigger', qvpnHandler);
+      window.removeEventListener('stellar-trigger', stellarHandler);
+      window.removeEventListener('flow-trigger', flowHandler);
+      window.removeEventListener('emergency-trigger', emergencyHandler);
     };
   }, [dispatchAction]);
 
@@ -407,6 +435,9 @@ const App: React.FC = () => {
         onCGDAAction={(detail) => dispatchAction({ category: 'CGDA', ...detail })}
         onCosmicAction={(detail) => dispatchAction({ category: 'COSMIC', ...detail })}
         onQVPNAction={(detail) => dispatchAction({ category: 'QVPN', ...detail })}
+        onStellarAction={(detail) => dispatchAction({ category: 'STELLAR', ...detail })}
+        onFlowAction={(detail) => dispatchAction({ category: 'FLOW', ...detail })}
+        onEmergencyAction={(detail) => dispatchAction({ category: 'EMERGENCY', ...detail })}
       />
     </div>
   );

@@ -1,0 +1,67 @@
+# infrastructure/arkhe-os/arkhe-node-pod.yaml
+# Arkhe(n) Multi-Container Pod Specification for Podman
+# Orchestrates training, telemetry, and P2P storage in a single network namespace.
+
+apiVersion: v1
+kind: Pod
+metadata:
+  name: arkhe-layer13-node
+spec:
+  containers:
+  - name: qhttp-orchestrator
+    image: arkhen/qhttp-server:v13
+    ports:
+    - containerPort: 50051
+    env:
+    - name: NODE_ID
+      value: "orchestrator-alpha"
+    - name: TARGET_PHASE
+      value: "1.5708"
+    resources:
+      limits:
+        cpu: "2"
+        memory: "4Gi"
+
+  - name: arkhe-training-worker
+    image: arkhen/arkhe-trainer:cuda12
+    env:
+    - name: NOSTR_PRIVATE_KEY
+      # Injected from host via --env-file or secret mechanism
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.annotations['arkhe.io/nsec']
+    - name: GRPC_ORCHESTRATOR
+      value: "localhost:50051"
+    volumeMounts:
+    - name: model-data
+      mountPath: /models
+    - name: shm
+      mountPath: /dev/shm
+    resources:
+      limits:
+        nvidia.com/gpu: 1
+        memory: "64Gi"
+        cpu: "16"
+
+  - name: hashtree-p2p-client
+    image: arkhen/hashtree-node:latest
+    ports:
+    - containerPort: 3000 # Web Dashboard
+    - containerPort: 8076 # Object Manager
+    env:
+    - name: HTREE_NPUB
+      valueFrom:
+        fieldRef:
+          fieldPath: metadata.annotations['arkhe.io/npub']
+    volumeMounts:
+    - name: model-data
+      mountPath: /data
+
+  volumes:
+  - name: model-data
+    hostPath:
+      path: /var/lib/arkhe/models
+  - name: shm
+    emptyDir:
+      medium: Memory
+      sizeLimit: "32Gi"

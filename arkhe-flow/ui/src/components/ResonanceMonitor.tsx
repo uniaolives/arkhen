@@ -116,7 +116,7 @@ export const ResonanceMonitor: React.FC = () => {
       </div>
 
       <div className="mt-6 pt-6 border-t border-slate-800 text-xs text-slate-500 flex justify-between font-mono">
-        <span>Active Nodes: {metrics.active_nodes}</span>
+        <span>Active Nodes: {metrics.activeNodes}</span>
         <span>Protocol: qhttp://v2.0</span>
       </div>
     </div>

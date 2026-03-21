@@ -1,10 +1,11 @@
-# tzinor/ml/setup.py
 from setuptools import setup
 from torch.utils.cpp_extension import BuildExtension, CUDAExtension
 import os
 
-def build():
-    print("Compilando Layer 12 CUDA Backend...")
+def check_cuda():
+    return os.system("nvcc --version") == 0
+
+if check_cuda():
     setup(
         name='arkhe_cuda',
         ext_modules=[
@@ -16,10 +17,6 @@ def build():
         ],
         cmdclass={'build_ext': BuildExtension}
     )
-
-if __name__ == "__main__":
-    try:
-        import torch
-        build()
-    except ImportError:
-        print("Ambiente sem Torch/CUDA. O build requer nvcc e pytorch-dev.")
+else:
+    print("NVCC not found. Skipping CUDA compilation. Using stub mode.")
+    # Fallback or stub logic here

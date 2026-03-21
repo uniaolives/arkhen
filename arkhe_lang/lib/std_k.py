@@ -16,6 +16,7 @@ def build_std_k(engine: KEngine):
     undecided = Term("undecided", s_logic)
 
     # --- ERA 1: GKP Logic ---
+    # rule matches(?X, ?Y) => tt
     # rule matches(?X, ?Y) => tt requires ?X ≈ ?Y
     engine.add_rule(Rule(
         left=Term("matches", s_logic, [Term("?X", s_atom), Term("?X", s_atom)]),
@@ -32,6 +33,7 @@ def build_std_k(engine: KEngine):
         name="thermal_dissipation"
     ))
 
+    # --- ERA 5: Criticality & Patching ---
     # --- ERA 5: Criticality ---
     # rule patch_gamma(0.005) => applied
     engine.add_rule(Rule(
@@ -46,6 +48,16 @@ def build_std_k(engine: KEngine):
         name="omega_optimization"
     ))
 
+    # --- EXCEPTION RECOVERY RULE ---
+    # rule recovery => tt
+    engine.add_rule(Rule(
+        left=Term("recovery_trigger", s_logic),
+        right=tt,
+        name="recovery",
+        priority=1000
+    ))
+
+    # --- ERA 8: Omega ---
     # --- ERA 8: Omega ---
     # rule synthesize => omega_point
     engine.add_rule(Rule(

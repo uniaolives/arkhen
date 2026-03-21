@@ -1,6 +1,14 @@
 import typing
 from dataclasses import dataclass, field
 
+class DecoherenceException(Exception):
+    """Exception raised when ontological coherence falls below the threshold."""
+    def __init__(self, message: str, omega: float, term: typing.Optional['Term'] = None):
+        self.message = message
+        self.omega = omega
+        self.term = term
+        super().__init__(self.message)
+
 @dataclass
 class Sort:
     name: str
@@ -46,6 +54,13 @@ class KEngine:
     def __init__(self):
         self.sorts: typing.Dict[str, Sort] = {}
         self.rules: typing.List[Rule] = []
+        self.config: typing.Dict[str, typing.Any] = {
+            "omega": 1.0,
+            "threshold": 0.85
+        }
+
+    def declare_sort(self, name: str, subsorts: typing.List[str] = []) -> Sort:
+        sort = Sort(name=name, subsorts=[self.sorts[s] for s in subsorts if s in self.sorts])
 
     def declare_sort(self, name: str, subsorts: typing.List[str] = []) -> Sort:
         sort = Sort(name=name, subsorts=[self.sorts[s] for s in subsorts])
@@ -98,6 +113,10 @@ class KEngine:
         return Term(pattern.symbol, pattern.sort, new_children, pattern.attributes)
 
     def rewrite_step(self, term: Term) -> typing.Optional[Term]:
+        # Ontological Integrity Check
+        if self.config.get("omega", 1.0) < self.config.get("threshold", 0.0):
+            raise DecoherenceException(f"Decoherence detected: Ω={self.config['omega']}", omega=self.config['omega'], term=term)
+
         # Try matching rules at the root
         for rule in self.rules:
             substitution = {}
@@ -118,6 +137,24 @@ class KEngine:
     def rewrite(self, term: Term, max_steps: int = 100) -> Term:
         current = term
         for _ in range(max_steps):
+            try:
+                next_term = self.rewrite_step(current)
+                if not next_term or next_term == current:
+                    break
+                current = next_term
+            except DecoherenceException as e:
+                # Basic exception recovery: find a rule named 'recovery'
+                recovery_rule = next((r for r in self.rules if r.name == "recovery"), None)
+                if recovery_rule:
+                    print(f"Applying ontological recovery for decoherence at Ω={e.omega}")
+                    self.config["omega"] = 1.0 # Reset for prototype
+                    current = recovery_rule.right
+                else:
+                    raise e
+        return current
+
+if __name__ == "__main__":
+    print("KEngine v2.0 (with Decoherence Handling) loaded.")
             next_term = self.rewrite_step(current)
             if not next_term or next_term == current:
                 break

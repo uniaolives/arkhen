@@ -33,6 +33,7 @@ def train_with_resonance():
         args=training_args,
         train_dataset=tokenized_datasets,
         callbacks=[ArkhenResonanceCallback(model_name=model_name)]
+        callbacks=[ArkhenResonanceCallback()]
     )
 
     print("Iniciando treinamento gravitacional Arkhe(N)...")

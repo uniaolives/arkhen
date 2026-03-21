@@ -24,6 +24,11 @@ Definition IsResonant (c : ComplexCoherence) : Prop :=
 (* CLASSE DE COERÊNCIA CONSTRUTIVA *)
 (* ═══════════════════════════════════════════════════════════════════ *)
 
+Require Import Coq.Reals.Reals.
+
+Module Arkhen.
+Record ComplexCoherence : Type := mkCoherence { amplitude : R; phase : R }.
+Definition IsResonant (c : ComplexCoherence) : Prop := Rabs (phase c - PI / 2) < 0.1.
 Class Coherent (A : Type) := {
   coherence : A -> ComplexCoherence;
   validate : A -> Prop;
@@ -80,5 +85,6 @@ Definition extract_compiler {A B : Type}
 
 Extraction Language Haskell.
 (* Extraction "TzinorCompiler" extract_compiler. *)
+Extraction "TzinorCompiler" extract_compiler.
 
 End Arkhen.

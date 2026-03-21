@@ -8,6 +8,7 @@ import (
 	clientgoscheme "k8s.io/client-go/kubernetes/scheme"
 	ctrl "sigs.k8s.io/controller-runtime"
 
+	arkhev1alpha1 "arkhe-operator/api/v1alpha1"
 	arkhev1beta1 "arkhe-operator/api/v1beta1"
 	"arkhe-operator/controllers"
 )
@@ -15,6 +16,7 @@ import (
 func main() {
 	scheme := runtime.NewScheme()
 	utilruntime.Must(clientgoscheme.AddToScheme(scheme))
+	utilruntime.Must(arkhev1alpha1.AddToScheme(scheme))
 	utilruntime.Must(arkhev1beta1.AddToScheme(scheme))
 
 	mgr, err := ctrl.NewManager(ctrl.GetConfigOrDie(), ctrl.Options{Scheme: scheme})

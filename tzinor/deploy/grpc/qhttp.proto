@@ -1,0 +1,40 @@
+// tzinor/deploy/grpc/qhttp.proto
+syntax = "proto3";
+
+package qhttp.v13;
+
+service QHttpTelemetry {
+    // Bi-directional stream for cluster-wide resonance telemetry
+    rpc StreamResonance(stream TelemetryRequest) returns (stream TelemetryResponse);
+
+    // Status query for global cluster resonance state
+    rpc GetClusterStatus(StatusRequest) returns (ClusterStatusResponse);
+}
+
+message TelemetryRequest {
+    string node_id = 1;
+    float phase_theta = 2;
+    float coherence_omega = 3;
+    float damping_factor = 4;
+    float sigma_entropy = 5;
+    uint64 tokens_processed = 6;
+    string model_type = 7;
+}
+
+message TelemetryResponse {
+    bool resonance_achieved = 1;
+    float logit_bias_adjustment = 2;
+    float temperature_scaling = 3;
+    string command = 4; // "STABILIZE", "DIVERGE", "RESONATE"
+}
+
+message StatusRequest {
+    string cluster_id = 1;
+}
+
+message ClusterStatusResponse {
+    float global_theta = 1;
+    float global_omega = 2;
+    int32 active_nodes = 3;
+    string state = 4; // "COLD", "WARM", "RESONANT"
+}

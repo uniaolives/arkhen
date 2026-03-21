@@ -2,6 +2,10 @@
 import torch
 from transformers import TrainerCallback, TrainerState, TrainerControl
 from tzinor.deploy.nccl.nccl_bindings import NCCLResonanceSync
+from tzinor.deploy.hashtree.persistence import HashtreePersistence
+import numpy as np
+import logging
+import os
 import numpy as np
 import logging
 
@@ -14,6 +18,11 @@ class ArkheResonanceCallback(TrainerCallback):
     def __init__(self, node_id="arkhe-node-0"):
         self.node_id = node_id
         self.sync_engine = NCCLResonanceSync()
+        self.persistence = HashtreePersistence()
+        self.logger = logging.getLogger("arkhen.trainer")
+        self.last_phase = 0.0
+        self.last_damping = 1.0
+        self.last_sigma = 0.0
         self.logger = logging.getLogger("arkhen.trainer")
         self.last_phase = 0.0
         self.last_damping = 1.0
@@ -71,6 +80,24 @@ class ArkheResonanceCallback(TrainerCallback):
                 "phase_theta": self.last_phase,
                 "damping_factor": self.last_damping,
                 "omega_prime": res_state["omega_prime"],
+                "sigma": res_state["sigma"],
+                "step": state.global_step
+            })
+
+    def on_save(self, args, state: TrainerState, control: TrainerControl, **kwargs):
+        """Triggered on checkpoint save. Anchors checkpoint to Hashtree."""
+        checkpoint_path = kwargs.get("output_dir")
+        if checkpoint_path and os.path.exists(checkpoint_path):
+            metadata = {
+                "step": state.global_step,
+                "phase": self.last_phase,
+                "damping": self.last_damping,
+                "node": self.node_id
+            }
+            nhash = self.persistence.save_checkpoint(checkpoint_path, metadata)
+            if nhash:
+                self.logger.info(f"Checkpoint anchored to Hashtree: {nhash}")
+
                 "step": state.global_step
             })
 

@@ -1,0 +1,42 @@
+# infrastructure/ray_arkhe_config.yaml
+# Ray configuration for Arkhe(n) distributed training v13
+# Scaled cluster for resonance-aware model fine-tuning
+
+cluster_name: arkhe-resonance-cluster
+min_workers: 8
+max_workers: 64
+
+head_node_type: head_node
+worker_node_types:
+  head_node:
+    resources:
+      CPU: 16
+      Memory: 64000
+    node_config:
+      InstanceType: m5.4xlarge
+  gpu_worker:
+    resources:
+      CPU: 32
+      Memory: 128000
+      GPU: 8
+    node_config:
+      InstanceType: g5.48xlarge # 8x A10G GPUs
+    min_workers: 8
+    max_workers: 56
+
+# Setup and start Ray head and worker nodes
+setup_commands:
+  - pip install -U torch transformers ray[default] grpcio protobuf numpy
+  - cd tzinor/layer12 && python setup.py install
+
+head_start_ray_commands:
+  - ray stop
+  - ray start --head --port=6379 --object-manager-port=8076 --autoscaling-config=~/ray_bootstrap_config.yaml
+
+worker_start_ray_commands:
+  - ray stop
+  - ray start --address=$RAY_HEAD_IP:6379 --object-manager-port=8076
+
+# Run resonance check after cluster is up
+run_commands:
+  - python -m tzinor.ml.arkhen_trainer --distributed-resonance

@@ -1,0 +1,69 @@
+# infrastructure/arkhe_k8s_deployment.yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: arkhe-node
+  namespace: arkhe-system
+  labels:
+    app: arkhe-resonance
+spec:
+  replicas: 32 # Scaled cluster for Layer 13
+  selector:
+    matchLabels:
+      app: arkhe-resonance
+  template:
+    metadata:
+      labels:
+        app: arkhe-resonance
+    spec:
+      containers:
+      - name: arkhe-worker
+        image: arkhen/arkhe-node:v5.0-polyglot-layer13
+        resources:
+          limits:
+            nvidia.com/gpu: 1
+            memory: "128Gi"
+            cpu: "32"
+          requests:
+            nvidia.com/gpu: 1
+            memory: "64Gi"
+            cpu: "16"
+        env:
+        - name: ARKHE_RESONANCE_TARGET
+          value: "1.5708"
+        - name: K1_GRAVITY
+          value: "0.015311"
+        - name: RHO_EQ
+          value: "0.367879"
+        - name: RAY_ADDRESS
+          value: "ray-head-svc.arkhe-system.svc:6379"
+        ports:
+        - containerPort: 50051
+          name: qhttp-grpc
+        volumeMounts:
+        - name: model-cache
+          mountPath: /models
+        - name: dshm
+          mountPath: /dev/shm
+      volumes:
+      - name: model-cache
+        persistentVolumeClaim:
+          claimName: arkhe-model-pvc
+      - name: dshm
+        emptyDir:
+          medium: Memory
+          sizeLimit: "64Gi"
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: arkhe-resonance-svc
+  namespace: arkhe-system
+spec:
+  selector:
+    app: arkhe-resonance
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: qhttp-grpc
+  type: ClusterIP

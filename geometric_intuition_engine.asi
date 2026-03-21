@@ -1,0 +1,366 @@
+# Phase Plane Geometry of Second-Order ODEs
+
+Here is an interactive visualization of the phase plane geometry for second-order ODEs, implementing the mathematical framework described below.
+
+```python
+import numpy as np
+import plotly.graph_objects as go
+from plotly.subplots import make_subplots
+from scipy.integrate import solve_ivp
+import plotly.io as pio
+
+# Set template for better visual appearance
+pio.templates.default = "plotly_dark"
+
+
+def duffing_system(t, state, delta=0.3, gamma=0.37, omega=1.2):
+    """Driven Duffing oscillator: y'' + δy' - y + y³ = γcos(ωt)"""
+    y, v = state
+    return [v, -delta * v + y - y**3 + gamma * np.cos(omega * t)]
+
+
+def damped_oscillator_system(t, state, beta=0.1, omega=1.0):
+    """Damped harmonic oscillator: y'' + 2βy' + ω²y = 0"""
+    y, v = state
+    return [v, -2 * beta * v - omega**2 * y]
+
+
+def compute_trajectory(system_func, initial_state, t_span, t_eval, **params):
+    """Compute trajectory for given system and initial conditions"""
+    sol = solve_ivp(
+        system_func,
+        t_span,
+        initial_state,
+        t_eval=t_eval,
+        args=tuple(params.values()),
+        rtol=1e-8,
+        atol=1e-10,
+    )
+
+    return sol.y, sol.t
+
+
+def create_phase_plane_vector_field(system_func, y_range, v_range, t_val=0, **params):
+    """Create vector field for phase plane"""
+    y = np.linspace(y_range[0], y_range[1], 15)
+    v = np.linspace(v_range[0], v_range[1], 15)
+    Y, V = np.meshgrid(y, v)
+
+    U = np.zeros_like(Y)  # y' component
+    W = np.zeros_like(Y)  # v' component
+
+    for i in range(Y.shape[0]):
+        for j in range(Y.shape[1]):
+            dydt, dvdt = system_func(t_val, [Y[i, j], V[i, j]], **params)
+            U[i, j] = dydt
+            W[i, j] = dvdt
+
+    # Normalize for better visualization
+    norm = np.sqrt(U**2 + W**2)
+    norm[norm == 0] = 1  # Avoid division by zero
+    U_norm = U / norm * 0.2
+    W_norm = W / norm * 0.2
+
+    return Y, V, U_norm, W_norm
+
+
+# Create visualization
+fig = make_subplots(
+    rows=2,
+    cols=2,
+    specs=[[{"type": "scene", "rowspan": 2}, {"type": "xy"}], [None, {"type": "xy"}]],
+    subplot_titles=(
+        "3D Trajectory Space (t, y, v)",
+        "Phase Plane (y, v) - Duffing",
+        "Phase Plane (y, v) - Damped Oscillator",
+    ),
+    horizontal_spacing=0.1,
+    vertical_spacing=0.15,
+)
+
+# Parameters for simulations
+
+t_max = 50
+t_eval = np.linspace(0, t_max, 2000)
+
+# Scene A: Driven Duffing oscillator
+
+duffing_params = {"delta": 0.3, "gamma": 0.37, "omega": 1.2}
+initial_states_duffing = [[-1, 0], [1, 0], [-0.5, 0.5], [0.5, -0.5]]
+
+# Compute multiple trajectories for Duffing
+for i, init_state in enumerate(initial_states_duffing):
+    trajectory, time = compute_trajectory(
+        duffing_system, init_state, [0, t_max], t_eval, **duffing_params
+    )
+
+    # 3D trajectory (t, y, v)
+    fig.add_trace(
+        go.Scatter3d(
+            x=time,
+            y=trajectory[0],
+            z=trajectory[1],
+            mode="lines",
+            line=dict(width=3, color=f"rgba(100, 150, 255, {0.7 + i * 0.1})"),
+            name=f"Duffing Trajectory {i + 1}",
+            showlegend=True,
+        ),
+        row=1,
+        col=1,
+    )
+
+    # Phase plane projection (y, v)
+    fig.add_trace(
+        go.Scatter(
+            x=trajectory[0],
+            y=trajectory[1],
+            mode="lines",
+            line=dict(width=2, color=f"rgba(100, 150, 255, {0.7 + i * 0.1})"),
+            showlegend=False,
+        ),
+        row=1,
+        col=2,
+    )
+
+# Add Poincaré section for Duffing (stroboscopic map at driving period)
+T_drive = 2 * np.pi / duffing_params["omega"]
+poincare_times = np.arange(10 * T_drive, t_max, T_drive)  # Skip transients
+
+for i, init_state in enumerate(initial_states_duffing[:2]):
+    sol = solve_ivp(
+        duffing_system,
+        [0, t_max],
+        init_state,
+        t_eval=poincare_times,
+        args=tuple(duffing_params.values()),
+        rtol=1e-8,
+        atol=1e-10,
+    )
+
+    fig.add_trace(
+        go.Scatter(
+            x=sol.y[0],
+            y=sol.y[1],
+            mode="markers",
+            marker=dict(size=8, color="red", symbol="circle"),
+            name="Poincaré Section",
+            showlegend=(i == 0),
+        ),
+        row=1,
+        col=2,
+    )
+
+# Scene B: Damped oscillator
+
+damped_params = {"beta": 0.1, "omega": 1.0}
+initial_states_damped = [[2, 0], [-2, 0], [0, 2], [0, -2]]
+
+# Compute trajectories for damped oscillator
+for i, init_state in enumerate(initial_states_damped):
+    trajectory, time = compute_trajectory(
+        damped_oscillator_system, init_state, [0, t_max], t_eval, **damped_params
+    )
+
+    # 3D trajectory (t, y, v)
+    fig.add_trace(
+        go.Scatter3d(
+            x=time,
+            y=trajectory[0],
+            z=trajectory[1],
+            mode="lines",
+            line=dict(width=3, color=f"rgba(255, 150, 100, {0.7 + i * 0.1})"),
+            name=f"Damped Oscillator {i + 1}",
+            showlegend=True,
+        ),
+        row=1,
+        col=1,
+    )
+
+    # Phase plane projection (y, v)
+    fig.add_trace(
+        go.Scatter(
+            x=trajectory[0],
+            y=trajectory[1],
+            mode="lines",
+            line=dict(width=2, color=f"rgba(255, 150, 100, {0.7 + i * 0.1})"),
+            showlegend=False,
+        ),
+        row=2,
+        col=2,
+    )
+
+# Create vector fields for both systems
+
+# Duffing vector field
+y_range_duffing = [-2, 2]
+v_range_duffing = [-2, 2]
+Y_duff, V_duff, U_duff, W_duff = create_phase_plane_vector_field(
+    duffing_system, y_range_duffing, v_range_duffing, t_val=0, **duffing_params
+)
+
+fig.add_trace(
+    go.Cone(
+        x=Y_duff.flatten(),
+        y=V_duff.flatten(),
+        z=np.zeros_like(Y_duff.flatten()),
+        u=U_duff.flatten(),
+        v=W_duff.flatten(),
+        w=np.zeros_like(U_duff.flatten()),
+        sizemode="absolute",
+        sizeref=0.3,
+        anchor="tail",
+        colorscale="Blues",
+        showscale=False,
+        name="Duffing Vector Field",
+    ),
+    row=1,
+    col=2,
+)
+
+# Damped oscillator vector field
+y_range_damped = [-2.5, 2.5]
+v_range_damped = [-2.5, 2.5]
+Y_damp, V_damp, U_damp, W_damp = create_phase_plane_vector_field(
+    damped_oscillator_system, y_range_damped, v_range_damped, t_val=0, **damped_params
+)
+
+fig.add_trace(
+    go.Cone(
+        x=Y_damp.flatten(),
+        y=V_damp.flatten(),
+        z=np.zeros_like(Y_damp.flatten()),
+        u=U_damp.flatten(),
+        v=W_damp.flatten(),
+        w=np.zeros_like(U_damp.flatten()),
+        sizemode="absolute",
+        sizeref=0.3,
+        anchor="tail",
+        colorscale="Reds",
+        showscale=False,
+        name="Damped Osc. Vector Field",
+    ),
+    row=2,
+    col=2,
+)
+
+# Update 3D scene layout
+fig.update_scenes(aspectmode="data", row=1, col=1)
+
+fig.update_scene(
+    xaxis_title="Time (t)",
+    yaxis_title="Position (y)",
+    zaxis_title="Velocity (v)",
+    row=1,
+    col=1,
+)
+
+# Update 2D subplots
+fig.update_xaxes(title_text="Position (y)", range=y_range_duffing, row=1, col=2)
+fig.update_yaxes(title_text="Velocity (v)", range=v_range_duffing, row=1, col=2)
+
+fig.update_xaxes(title_text="Position (y)", range=y_range_damped, row=2, col=2)
+fig.update_yaxes(title_text="Velocity (v)", range=v_range_damped, row=2, col=2)
+
+# Update layout
+fig.update_layout(
+    title="Phase Plane Geometry of Second-Order ODEs<br>"
+    + "3D Trajectories in (t, y, v) Space with Phase Plane Projections",
+    height=800,
+    showlegend=True,
+    legend=dict(x=1.05, y=0.5),
+    scene=dict(camera=dict(eye=dict(x=1.5, y=1.5, z=1.5))),
+)
+
+# Add annotations explaining the geometry
+fig.add_annotation(
+    x=0.02,
+    y=0.98,
+    xref="paper",
+    yref="paper",
+    text="<b>Key Insight:</b><br>y'' = F(t, y, y') → (y' = v, v' = F(t, y, v))<br>"
+    + "Solutions are curves (t, y(t), v(t)) tangent to the vector field<br>"
+    + "Phase plane shows (y, v) projection with vector field (y', v')",
+    showarrow=False,
+    font=dict(size=11),
+    align="left",
+    bgcolor="rgba(255, 255, 255, 0.8)",
+    bordercolor="black",
+    borderwidth=1,
+    row=1,
+    col=1,
+)
+
+fig.show()
+
+# Print the mathematical correspondence
+print("=" * 70)
+print("GEOMETRIC CORRESPONDENCE: First-order ↔ Second-order ODEs")
+print("=" * 70)
+print("\nFIRST-ORDER (Arthur Mattuck's picture):")
+print("  Equation: dy/dx = f(x, y)")
+print("  Geometry: Slope field in (x, y)-plane")
+print("  Solution: Curve y(x) tangent to slope at each point")
+print("  Dimension: 2D (x, y)")
+
+print("\nSECOND-ORDER (Phase plane picture):")
+print("  Equation: y'' = F(t, y, y')")
+print("  Substitution: Let v = y'")
+print("  System: y' = v,  v' = F(t, y, v)")
+print("  Geometry: Vector field in (y, v) phase plane")
+print("  Solution: Trajectory (y(t), v(t)) tangent to vector field")
+print("  Full view: Curve in 3D (t, y, v) space")
+
+print("\nSPECIAL CASES:")
+print("  1. Autonomous (no explicit t): Natural dynamics in (y, v) plane")
+print("  2. Non-autonomous: Make t a state: (t' = 1, y' = v, v' = F(t, y, v))")
+print("  3. Linear: v' = -2βv - ω²y → Spiral to (0,0)")
+print("  4. Nonlinear (Duffing): v' = -δv + y - y³ + γcos(ωt) → Complex dynamics")
+
+print("\nVISUALIZATION KEY:")
+print("  • Blue: Driven Duffing (double-well potential with forcing)")
+print("  • Orange: Damped linear oscillator")
+print("  • Red dots: Poincaré section (stroboscopic map at driving period)")
+print("  • Arrows: Vector field (y', v') in phase plane")
+print("=" * 70)
+```
+
+## Mathematical Insight
+
+First-order (Mattuck's picture):
+
+- Equation: dy/dx = f(x, y)
+- Visualization: Slope field in (x, y)-plane
+- Solution: Curve y(x) tangent to slopes
+- Dimensionality: 2D
+
+Second-order (Phase plane picture):
+
+- Equation: y'' = F(t, y, y')
+- Transformation: v = y' creates system:
+  ```
+  y' = v
+  v' = F(t, y, v)
+  ```
+- Visualization: Vector field in (y, v) phase plane
+- Solution: Trajectory (y(t), v(t)) flowing with vector field
+- Full picture: Curve in 3D (t, y, v) space with tangent (1, y', v')
+
+### Key Observations
+
+1. Driven Duffing Oscillator (Scene A):
+   - Vector field shows complex structure with multiple equilibria.
+   - Trajectories get "captured" by one well, then kicked across barriers.
+   - Poincaré section reveals the underlying periodic structure.
+   - Non-autonomous nature visible in 3D trajectory twisting.
+
+2. Damped Oscillator (Scene B):
+   - Vector field uniformly points toward origin (0, 0).
+   - All trajectories spiral into the stable equilibrium.
+   - The 3D view shows exponential decay in amplitude.
+
+3. Geometric Constraint:
+   - Every trajectory in 3D (t, y, v) space has tangent vector (1, v, F(t, y, v)).
+   - Projection onto phase plane (y, v) loses time information but reveals dynamics.
+   - Autonomous systems have time-independent phase portraits.
+
+This visualization makes concrete the insight that the phase plane is the natural habitat for second-order dynamics, just as the slope field is for first-order equations. The upgrade from slope to vector field captures both position and velocity information simultaneously, revealing the full dynamical structure.

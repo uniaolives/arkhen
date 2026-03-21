@@ -15,6 +15,20 @@ services:
     image: node:20-slim
     volumes:
       - ./arkhe-flow:/app
+    working_dir: /app/ui
+    ports:
+      - "3000:3000"
+      - "50051:50051" # gRPC Telemetry
+    command: npm start
+
+  qhttp-orchestrator:
+    image: python:3.12-slim
+    volumes:
+      - .:/app
+    working_dir: /app
+    ports:
+      - "50052:50051"
+    command: python -m tzinor.deploy.grpc.qhttp_server
     working_dir: /app
     ports:
       - "3000:3000"

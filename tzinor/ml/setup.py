@@ -3,6 +3,10 @@ from setuptools import setup
 from torch.utils.cpp_extension import BuildExtension, CUDAExtension
 import os
 
+def check_cuda():
+    return os.system("nvcc --version") == 0
+
+if check_cuda():
 def build():
     print("Compilando Layer 12 CUDA Backend...")
     setup(
@@ -16,6 +20,9 @@ def build():
         ],
         cmdclass={'build_ext': BuildExtension}
     )
+else:
+    print("NVCC not found. Skipping CUDA compilation. Using stub mode.")
+    # Fallback or stub logic here
 
 if __name__ == "__main__":
     try:

@@ -49,6 +49,12 @@ type Proof struct {
 // PROTOCOLO DE CONSENSO
 // ═══════════════════════════════════════════════════════════════════════
 
+	ID        string           `json:"id"`
+	StateHash string           `json:"state_hash"`
+	Coherence ComplexCoherence `json:"coherence"`
+	Timestamp int64            `json:"timestamp"`
+}
+
 type TzinorNode struct {
 	ID          string
 	KnownProofs map[string]Proof
@@ -83,6 +89,10 @@ func (n *TzinorNode) ReceiveProof(p Proof) {
 
 // Compile simula a busca por coerência
 func (n *TzinorNode) Compile(ctx context.Context, initialstate []byte) (*Proof, error) {
+	return &TzinorNode{ID: id, KnownProofs: make(map[string]Proof)}
+}
+
+func (n *TzinorNode) Compile(ctx context.Context, initialState []byte) (*Proof, error) {
 	select {
 	case <-ctx.Done():
 		return nil, ctx.Err()
@@ -113,5 +123,10 @@ func main() {
 	proof, _ := node1.Compile(ctx, []byte("initial_bio_state"))
 	if proof != nil {
 		fmt.Printf("Compilação concluída. Prova ID: %s\n", proof.ID)
+		if !coh.IsResonant() {
+			return nil, fmt.Errorf("no resonance")
+		}
+		h := sha256.Sum256(initialState)
+		return &Proof{ID: fmt.Sprintf("%x", h[:8]), StateHash: fmt.Sprintf("%x", h), Coherence: coh, Timestamp: time.Now().Unix()}, nil
 	}
 }

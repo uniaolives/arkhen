@@ -65,10 +65,14 @@ class KEngine:
             "omega": 1.0,
             "threshold": 0.85,
             "atp": 1.0
+            "threshold": 0.85
         }
 
     def declare_sort(self, name: str, subsorts: typing.List[str] = []) -> Sort:
         sort = Sort(name=name, subsorts=[self.sorts[s] for s in subsorts if s in self.sorts])
+
+    def declare_sort(self, name: str, subsorts: typing.List[str] = []) -> Sort:
+        sort = Sort(name=name, subsorts=[self.sorts[s] for s in subsorts])
         self.sorts[name] = sort
         return sort
 
@@ -77,16 +81,19 @@ class KEngine:
         self.rules.sort(key=lambda r: r.priority, reverse=True)
 
     def match(self, pattern: Term, term: Term, substitution: typing.Dict[str, Term]) -> bool:
+        # Simple variable matching: symbols starting with '?'
         if pattern.symbol.startswith("?"):
             var_name = pattern.symbol[1:]
             if var_name in substitution:
                 return substitution[var_name] == term
+            # Basic sort check for variables if needed could go here
             substitution[var_name] = term
             return True
 
         if pattern.symbol != term.symbol:
             return False
 
+        # Sort check (allowing subsorts)
         if not self._is_subsort(term.sort, pattern.sort):
             return False
 
@@ -121,12 +128,18 @@ class KEngine:
         if self.config.get("atp", 1.0) < 0.1:
             raise BiologicalRupture(tissue_id="bexorg_01", cause="Mitochondrial Failure")
 
+        # Ontological Integrity Check
+        if self.config.get("omega", 1.0) < self.config.get("threshold", 0.0):
+            raise DecoherenceException(f"Decoherence detected: Ω={self.config['omega']}", omega=self.config['omega'], term=term)
+
+        # Try matching rules at the root
         for rule in self.rules:
             substitution = {}
             if self.match(rule.left, term, substitution):
                 if rule.condition(substitution):
                     return self.apply_substitution(rule.right, substitution)
 
+        # Recurse into children
         for i, child in enumerate(term.children):
             new_child = self.rewrite_step(child)
             if new_child:
@@ -160,3 +173,30 @@ class KEngine:
 
 if __name__ == "__main__":
     print("KEngine v3.0 (Mitochondrial Aware) loaded.")
+                # Basic exception recovery: find a rule named 'recovery'
+                recovery_rule = next((r for r in self.rules if r.name == "recovery"), None)
+                if recovery_rule:
+                    print(f"Applying ontological recovery for decoherence at Ω={e.omega}")
+                    self.config["omega"] = 1.0 # Reset for prototype
+                    current = recovery_rule.right
+                else:
+                    raise e
+        return current
+
+if __name__ == "__main__":
+    print("KEngine v2.0 (with Decoherence Handling) loaded.")
+            next_term = self.rewrite_step(current)
+            if not next_term or next_term == current:
+                break
+            current = next_term
+        return current
+
+if __name__ == "__main__":
+    # Basic test
+    engine = KEngine()
+    s_int = engine.declare_sort("Int")
+    s_bool = engine.declare_sort("Bool")
+
+    # rule inc(?X:Int) => ?X + 1 (simplified)
+    # This is a very basic prototype
+    print("KEngine prototype loaded.")

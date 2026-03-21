@@ -14,6 +14,7 @@ import (
 	"sigs.k8s.io/controller-runtime/pkg/client"
 	"sigs.k8s.io/controller-runtime/pkg/log"
 
+	arkhev1alpha1 "arkhe-operator/api/v1alpha1"
 	arkhev1beta1 "arkhe-operator/api/v1beta1"
 )
 
@@ -30,6 +31,7 @@ type TzinorReconciler struct {
 func (r *TzinorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctrl.Result, error) {
 	logger := log.FromContext(ctx)
 
+	tzinor := &arkhev1alpha1.Tzinor{}
 	tzinor := &arkhev1beta1.Tzinor{}
 	if err := r.Get(ctx, req.NamespacedName, tzinor); err != nil {
 		return ctrl.Result{}, client.IgnoreNotFound(err)
@@ -71,6 +73,14 @@ func (r *TzinorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 		return ctrl.Result{}, err
 	}
 
+	if tzinor.Spec.LockMode == arkhev1alpha1.LockModeLocked {
+		tzinor.Status.Locked = true
+		tzinor.Status.PhaseError = 0.003
+		tzinor.Status.LatencyPicos = 0.25
+	} else {
+		tzinor.Status.Locked = false
+		tzinor.Status.PhaseError = 0.0
+		tzinor.Status.LatencyPicos = 0.0
 	// Logic for v1beta1 fields
 	z := tzinor.Spec.Impedance
 	if math.Abs(z-3.87) > 0.5 {
@@ -91,6 +101,7 @@ func (r *TzinorReconciler) Reconcile(ctx context.Context, req ctrl.Request) (ctr
 
 func (r *TzinorReconciler) SetupWithManager(mgr ctrl.Manager) error {
 	return ctrl.NewControllerManagedBy(mgr).
+		For(&arkhev1alpha1.Tzinor{}).
 		For(&arkhev1beta1.Tzinor{}).
 		Owns(&corev1.Service{}).
 		Complete(r)

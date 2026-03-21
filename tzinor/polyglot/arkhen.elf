@@ -1,0 +1,52 @@
+% tzinor/polyglot/arkhen.elf
+% TWELF — Metalogical Framework, LF (Logical Framework)
+
+% ═══════════════════════════════════════════════════════════════════
+% SINTAXE DE TIPOS DEPENDENTES (LF)
+% ═══════════════════════════════════════════════════════════════════
+
+coherence : type.
+amplitude : coherence -> real -> type.
+phase : coherence -> real -> type.
+
+resonant : coherence -> type.
+%mode resonant +C.
+
+% ═══════════════════════════════════════════════════════════════════
+% REGRAS DE INFERÊNCIA
+% ═══════════════════════════════════════════════════════════════════
+
+resonant-rule : resonant C
+                <- amplitude C A
+                <- phase C P
+                <- less (abs (minus P (div pi 2))) 0.1.
+
+% ═══════════════════════════════════════════════════════════════════
+% SUBSTRATOS COMO FAMÍLIAS DE TIPOS
+% ═══════════════════════════════════════════════════════════════════
+
+substrate : type.
+quantum : substrate.
+atomic : substrate.
+biological : substrate.
+neural : substrate.
+planetary : substrate.
+stellar : substrate.
+galactic : substrate.
+cosmic : substrate.
+
+phase-of : substrate -> type.
+
+% ═══════════════════════════════════════════════════════════════════
+% SISTEMA DE PROVAS
+% ═══════════════════════════════════════════════════════════════════
+
+proof : coherence -> type.
+zk-proof : proof C -> type.
+
+valid : proof C -> type.
+%mode valid +P.
+
+valid-rule : valid P
+             <- resonant C
+             <- proof C P.

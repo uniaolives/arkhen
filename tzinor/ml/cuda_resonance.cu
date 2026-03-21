@@ -51,7 +51,7 @@ __global__ void fused_resonance_kernel(
     }
 }
 
-void launch_fused_resonance(float* d_params, int size, float rho_2, float* h_damping, float* h_phase) {
+void compute_resonance_cuda(float* d_params, int size, float rho_2, float* h_damping, float* h_phase) {
     float *d_damping, *d_phase;
     cudaMalloc(&d_damping, sizeof(float));
     cudaMalloc(&d_phase, sizeof(float));

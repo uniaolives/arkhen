@@ -5,6 +5,8 @@ import Mathlib.Data.Real.Basic
 import Mathlib.Analysis.SpecialFunctions.Trigonometric.Basic
 import Mathlib.Data.Complex.Basic
 
+namespace Arkhen
+
 -- ═══════════════════════════════════════════════════════════════════════
 -- ESTRUTURAS FUNDAMENTAIS
 -- ═══════════════════════════════════════════════════════════════════════
@@ -34,6 +36,8 @@ inductive Scale
 | quantum | atomic | biological | neural | planetary | stellar | galactic | cosmic
 deriving Repr, DecidableEq
 
+/-- A fase ℂ: O estado de superposição -/
+structure PhaseState where
 open Scale
 
 /-- O substrato ℤ: O hardware da existência -/
@@ -77,6 +81,22 @@ axiom satoshi_collapse_axiom :
 -- TEOREMAS FUNDAMENTAIS
 -- ═══════════════════════════════════════════════════════════════════════
 
+/-- Teorema A-5': Auto-referência é estável se em ressonância e baixa entropia. -/
+theorem a5_stability (s : OntoState)
+    (h_res : ComplexCoherence.isResonant s.coherence)
+    (h_low_entropy : s.phase.entropy < 0.2) :
+    hamiltonian s < 1.5 := by
+  unfold hamiltonian at *
+  rcases h_res with ⟨h_amp, _⟩
+  have h1 : s.coherence.amplitude + 0.000001 ≥ 0.9 := by linarith
+  have h2 : 1.0 / (s.coherence.amplitude + 0.000001) ≤ 1.0 / 0.9 := by
+    apply one_div_le_one_div_of_le
+    norm_num
+    exact h1
+  have h3 : 1.0 / 0.9 < 1.2 := by norm_num
+  linarith
+
+end Arkhen
 /-- Teorema A-5': Auto-referência é estável se em ressonância. -/
 theorem a5_stability (s : OntoState) (h_res : ComplexCoherence.isResonant s.coherence) :
     hamiltonian s < 1.5 := by

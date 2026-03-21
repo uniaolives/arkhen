@@ -32,6 +32,7 @@ def train_with_resonance():
         model=model,
         args=training_args,
         train_dataset=tokenized_datasets,
+        callbacks=[ArkhenResonanceCallback(model_name=model_name)]
         callbacks=[ArkhenResonanceCallback()]
     )
 

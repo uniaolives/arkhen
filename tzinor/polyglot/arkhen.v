@@ -4,6 +4,7 @@
 Require Import Coq.Reals.Reals.
 Require Import Coq.Lists.List.
 Require Import Coq.Logic.Classical.
+Require Import Coq.extraction.Extraction.
 
 Module Arkhen.
 
@@ -83,6 +84,7 @@ Definition extract_compiler {A B : Type}
   (compile : A -> option B) : A -> option B := compile.
 
 Extraction Language Haskell.
+(* Extraction "TzinorCompiler" extract_compiler. *)
 Extraction "TzinorCompiler" extract_compiler.
 
 End Arkhen.

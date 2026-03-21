@@ -1,6 +1,7 @@
 import json
 import typing
 from typing import Dict, List, Any
+from arkhe_lang.k.engine import KEngine, Term, DecoherenceException, BiologicalRupture
 from arkhe_lang.k.engine import KEngine, Term, DecoherenceException
 from arkhe_lang.q.engine import QEngine
 from arkhe_lang.hermes.bridge import HermesBridge
@@ -13,6 +14,11 @@ class HardwareBackend:
 
     def compile_instruction(self, instr: Dict[str, Any]) -> Dict[str, Any]:
         if instr['type'] == 'OPTO_STIM':
+            return {"action": "OPTO_STIM", "params": instr['params']}
+        elif instr['type'] == 'TRANSPLANT':
+            return {"action": "TRANSPLANT", "organelle": "mitochondria", "params": instr['params']}
+        elif instr['type'] == 'PERFUSE':
+            return {"action": "PERFUSE", "substance": instr['substance'], "params": instr['params']}
             return {
                 "action": "OPTO_STIM",
                 "params": instr['params']
@@ -21,6 +27,7 @@ class HardwareBackend:
 
     def generate_control_script(self) -> str:
         script = {
+            "experiment_id": "HAL_OMEGA_V3",
             "target_hardware": self.target,
             "sequence": self.command_buffer
         }
@@ -80,6 +87,14 @@ class TzinorCompiler:
             self.proof_history.append(proof)
 
             return result_k, proof
+        except (DecoherenceException, BiologicalRupture) as e:
+            raise e
+
+    def emit_hardware_cmd(self, action_type: str, params: Dict[str, Any], substance: str = ""):
+        cmd = self.hardware_backend.compile_instruction({
+            "type": action_type,
+            "params": params,
+            "substance": substance
         except DecoherenceException as e:
             raise e
 

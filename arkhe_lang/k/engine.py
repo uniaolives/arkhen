@@ -9,6 +9,13 @@ class DecoherenceException(Exception):
         self.term = term
         super().__init__(self.message)
 
+class BiologicalRupture(Exception):
+    """Exception raised when the biological substrate fails."""
+    def __init__(self, tissue_id: str, cause: str):
+        self.tissue_id = tissue_id
+        self.cause = cause
+        super().__init__(f"[BIO_RUPTURE] Tissue {tissue_id}: {cause}")
+
 @dataclass
 class Sort:
     name: str
@@ -56,6 +63,8 @@ class KEngine:
         self.rules: typing.List[Rule] = []
         self.config: typing.Dict[str, typing.Any] = {
             "omega": 1.0,
+            "threshold": 0.85,
+            "atp": 1.0
             "threshold": 0.85
         }
 
@@ -113,6 +122,12 @@ class KEngine:
         return Term(pattern.symbol, pattern.sort, new_children, pattern.attributes)
 
     def rewrite_step(self, term: Term) -> typing.Optional[Term]:
+        if self.config.get("omega", 1.0) < self.config.get("threshold", 0.0):
+            raise DecoherenceException(f"Decoherence detected: Ω={self.config['omega']}", omega=self.config['omega'], term=term)
+
+        if self.config.get("atp", 1.0) < 0.1:
+            raise BiologicalRupture(tissue_id="bexorg_01", cause="Mitochondrial Failure")
+
         # Ontological Integrity Check
         if self.config.get("omega", 1.0) < self.config.get("threshold", 0.0):
             raise DecoherenceException(f"Decoherence detected: Ω={self.config['omega']}", omega=self.config['omega'], term=term)
@@ -143,6 +158,21 @@ class KEngine:
                     break
                 current = next_term
             except DecoherenceException as e:
+                recovery_rule = next((r for r in self.rules if r.name == "recovery"), None)
+                if recovery_rule:
+                    print(f"Applying ontological recovery for decoherence at Ω={e.omega}")
+                    self.config["omega"] = 1.0
+                    current = recovery_rule.right
+                else:
+                    raise e
+            except BiologicalRupture as e:
+                print(f"CRITICAL BIO-ERROR: {e.cause}. Dispatching organelle rescue...")
+                self.config["atp"] = 0.9 # Rescue reset
+                current = Term("rescue_in_progress", current.sort)
+        return current
+
+if __name__ == "__main__":
+    print("KEngine v3.0 (Mitochondrial Aware) loaded.")
                 # Basic exception recovery: find a rule named 'recovery'
                 recovery_rule = next((r for r in self.rules if r.name == "recovery"), None)
                 if recovery_rule:

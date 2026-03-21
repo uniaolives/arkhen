@@ -10,6 +10,7 @@ class HardwarePrimitive(Enum):
     ELEC_STIMULATE = "elec_stim"       # Estímulo elétrico invasivo
     PERFUSE = "perfuse"                # Controle de meio/drogas
     TEMP_CONTROL = "temp_control"      # Controle térmico
+    TRANSPLANT = "transplant"          # Mitochondrial/Organelle transplantation
 
 @dataclass
 class Electrode:
@@ -27,3 +28,19 @@ class LightSource:
     pulse_width: float   # ms
     target_region: str   # Identificador da região neural
     frequency: float = 0.0 # Hz
+
+@dataclass
+class Organelle:
+    """Representação de uma organela (ex: Mitocôndria)."""
+    type: str  # e.g., "mitochondria"
+    origin: str # e.g., "erythrocyte_derived"
+    potential: float # e.g., membrane potential (ΔΨ)
+    count: int
+
+@dataclass
+class PerfusionPump:
+    """Sistema de perfusão para entrega de substâncias/organelas."""
+    id: str
+    rate: float # ml/min
+    substance: str
+    concentration: float # uM

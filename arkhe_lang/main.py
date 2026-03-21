@@ -6,6 +6,7 @@ def main():
     parser = argparse.ArgumentParser(description="Arkhe(n) Language CLI (K+Q)")
     parser.add_argument("mode", choices=["hal-omega", "test", "verify"], help="Execution mode")
     parser.add_argument("--proof", type=str, help="Path to proof file to verify")
+    parser.add_argument("mode", choices=["hal-omega", "test"], help="Execution mode")
 
     args = parser.parse_args()
 

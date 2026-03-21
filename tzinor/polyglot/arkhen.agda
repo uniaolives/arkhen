@@ -74,3 +74,13 @@ Phase Planetary  = ClimateParams
 Phase Stellar    = Float          -- Taxa de fusão
 Phase Galactic   = Vec Float 100  -- Massas de buracos negros
 Phase Cosmic     = Vec Bool 1024  -- Fronteira holográfica
+module Arkhen where
+open import Data.Nat
+open import Data.Float
+
+data Scale : Set where
+  Quantum Atomic Biological Neural Planetary Stellar Galactic Cosmic : Scale
+
+record ComplexCoherence : Set where
+  constructor mkΩ
+  field amplitude : Float; phase : Float

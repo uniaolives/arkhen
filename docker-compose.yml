@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  arkhen-core:
+    image: python:3.12-slim
+    volumes:
+      - .:/app
+    working_dir: /app
+    environment:
+      - BITCOIN_GENESIS=000000000019d6689c085ae165831e934ff763ae46a2a6c172b3f1b60a8ce26f
+      - TARGET_OMEGA=0.95
+    command: ./bootloader.sh
+
+  hermes-gateway:
+    image: node:20-slim
+    volumes:
+      - ./arkhe-flow:/app
+    working_dir: /app
+    ports:
+      - "3000:3000"
+    command: npm start

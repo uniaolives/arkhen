@@ -1,58 +1,57 @@
-% tzinor/polyglot/arkhen.mzn
-% MINIZINC — Otimização Combinatória, Programação com Restrições
+% tzinor/polyglot/arkhen.pl
+% PROLOG — Inferência Lógica, Prova Automática
 
 % ═══════════════════════════════════════════════════════════════════
-% PARÂMETROS E VARIÁVEIS
+% BASE DE CONHECIMENTO ARKHE(N)
 % ═══════════════════════════════════════════════════════════════════
 
-% Escala do substrato
-enum Scale = {Quantum, Atomic, Biological, Neural, Planetary, Stellar, Galactic, Cosmic};
-
-% Variáveis de estado mitocondrial
-var -200.0..-100.0: deltaPsi;  % mV
-var 0.0..10.0: atp;            % mM
-var 0.0..1.0: ros;             % nível
-var 0.0..300.0: cristae;       % densidade
-var 0.0..1.0: mtDNA;           % integridade
-
-% Variáveis de coerência
-var 0.0..2.0: amplitude;
-var 0.0..6.28318530718: phase;
+% Escalas
+scale(quantum, 0).
+scale(atomic, 1).
+scale(biological, 2).
+scale(neural, 3).
+scale(planetary, 4).
+scale(stellar, 5).
+scale(galactic, 6).
+scale(cosmic, 7).
 
 % ═══════════════════════════════════════════════════════════════════
-% RESTRIÇÕES
+% REGRAS DE COERÊNCIA
 % ═══════════════════════════════════════════════════════════════════
 
-% Cálculo de eficiência
-var 0.0..10000.0: efficiency = atp / (ros + 0.000001);
+is_resonant(Amplitude, Phase) :-
+    Amplitude >= 0.9,
+    Diff is abs(Phase - 1.57079632679),
+    Diff < 0.1.
 
-% Cálculo de coerência
-constraint amplitude = min(2.0,
-  max(0.0, (efficiency * mtDNA * (tanh(cristae / 100.0))) / 3.0));
-
-constraint phase = (3.14159265359 / 2.0) * (1.0 - exp(-abs(deltaPsi) / 180.0));
-
-% Condição de ressonância A-5'
-constraint abs(phase - 3.14159265359 / 2.0) < 0.1;
-
-% ═══════════════════════════════════════════════════════════════════
-% FUNÇÃO OBJETIVO
-% ═══════════════════════════════════════════════════════════════════
-
-% Maximizar coerência
-solve maximize amplitude;
+% Cálculo de Coerência Mitocondrial
+mitochondrial_coherence(ATP, ROS, DeltaPsi, Amplitude, Phase) :-
+    Efficiency is ATP / (ROS + 0.000001),
+    AmpVal is Efficiency / 3.0,
+    Amplitude is min(2.0, max(0.0, AmpVal)),
+    Phase is 1.57079632679 * (1.0 - exp(-abs(DeltaPsi) / 180.0)).
 
 % ═══════════════════════════════════════════════════════════════════
-% SAÍDA
+% CONSULTAS (PROVAS)
 % ═══════════════════════════════════════════════════════════════════
 
-output [
-  "Coerência: amplitude = \(amplitude), phase = \(phase)\n",
-  "Parâmetros: ΔΨ=\(deltaPsi), ATP=\(atp), ROS=\(ros)\n",
-  "Ressonante: \((abs(phase - 3.14159265359 / 2.0) < 0.1))\n"
-];
-enum Scale = {Quantum, Atomic, Biological, Neural, Planetary, Stellar, Galactic, Cosmic};
-var 0.0..2.0: amplitude;
-var 0.0..6.28318530718: phase;
-constraint abs(phase - 3.14159265359 / 2.0) < 0.1;
-solve maximize amplitude;
+is_stable_biological(ATP, ROS, DeltaPsi) :-
+    mitochondrial_coherence(ATP, ROS, DeltaPsi, Amplitude, Phase),
+    is_resonant(Amplitude, Phase).
+
+% Exemplo de consulta:
+% ?- is_stable_biological(2.5, 0.1, -165.0).
+% true.
+
+% ═══════════════════════════════════════════════════════════════════
+% OPERADOR SATOSHI (INFERÊNCIA DE COLAPSO)
+% ═══════════════════════════════════════════════════════════════════
+
+satoshi_operator(States, BestState) :-
+    % Seleciona o estado com maior amplitude de coerência
+    maplist(get_amplitude, States, Amplitudes),
+    max_list(Amplitudes, MaxAmp),
+    member(BestState, States),
+    get_amplitude(BestState, MaxAmp).
+
+get_amplitude(state(_, Amplitude, _), Amplitude).

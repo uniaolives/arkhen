@@ -36,6 +36,22 @@ class HermesBridge:
         symbol = "tt" if result == 0 else "ff"
         return Term(symbol=symbol, sort=sort)
 
+    def to_qasm(self, term: Term, qubit_idx: int = 0) -> str:
+        """
+        Maps a K Term (Structure ℤ) to an OpenQASM 3.0 gate sequence.
+        """
+        if term.symbol == "tt":
+            # |0> - Identity
+            return f"id q[{qubit_idx}];"
+        elif term.symbol == "ff":
+            # |1> - X gate
+            return f"x q[{qubit_idx}];"
+        elif term.symbol == "undecided":
+            # |+> - Hadamard
+            return f"h q[{qubit_idx}];"
+        else:
+            return f"id q[{qubit_idx}];"
+
 if __name__ == "__main__":
     q = QEngine()
     h = HermesBridge(q)

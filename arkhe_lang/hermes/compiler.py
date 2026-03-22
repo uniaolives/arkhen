@@ -59,6 +59,15 @@ class HardwareBackend:
                 val = instr['params'].get('value', 0)
                 qasm.append(f"gkp_{val} q[0];")
 
+        no command_buffer.
+        """
+        qasm = ["OPENQASM 3;", 'include "stdgates.inc";', "qubit[1] q;"]
+        for instr in self.command_buffer:
+            if instr['action'] == 'OPTO_STIM':
+                # Map opto_stim to a rotation or gate sequence in QASM
+                qasm.append(f"rx(pi/4) q[0]; // OPTO_STIM map")
+            elif instr['action'] == 'ONTOLOGICAL_PATCH':
+                qasm.append(f"h q[0]; // ONTOLOGICAL_PATCH map")
         return "\n".join(qasm)
 
 class TzinorCompiler:

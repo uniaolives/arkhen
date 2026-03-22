@@ -24,6 +24,7 @@ from .explanation_generator import ExplanationGenerator
 from ..skills.bioreason.predict import BioReasonPredict
 from ..skills.subatomic.reason import SubatomicReasonPredict
 from ..skills.hermes.understand import UnderstandAnything
+from ..skills.quantum.openqasm_executor import OpenQASMExecutor
 
 class HumanASIInterface:
     """
@@ -47,19 +48,11 @@ class HumanASIInterface:
         """
         Inicializa a interface.
         """
-        # Registra skills Gstack
-        self.orchestrator.register_skill('hal_omega_trigger', MockSkill())
-        self.orchestrator.register_skill('retrocausal_handshake', MockSkill())
-
         # Registra skills de domínio
         self.orchestrator.register_skill('bioreason_predict', BioReasonPredict())
         self.orchestrator.register_skill('subatomic_reason_predict', SubatomicReasonPredict())
         self.orchestrator.register_skill('understand_anything', UnderstandAnything())
-        # Registra skills BioReason e Subatomic
-        self.orchestrator.register_skill('bioreason_predict', BioReasonPredict())
-        self.orchestrator.register_skill('subatomic_reason_predict', SubatomicReasonPredict())
-        # Registra a nova skill BioReason-Pro
-        self.orchestrator.register_skill('bioreason_predict', BioReasonPredict())
+        self.orchestrator.register_skill('openqasm_executor', OpenQASMExecutor())
 
         # Registra skills Gstack (Mocks for now or actual implementations)
         self.orchestrator.register_skill('hal_omega_trigger', MockSkill())

@@ -51,12 +51,17 @@ class TestInterfaceIntegration(unittest.IsolatedAsyncioTestCase):
         self.assertIn("ANÁLISE DE CÓDIGO: Tzinor", response)
         self.assertIn("O Tzinor é a ponte semântica", response)
         self.assertIn("Tour Guiado Sugerido", response)
+
+    async def test_particle_query_details(self):
+        response = await self.interface.chat("Como decai o Kaon?")
         self.assertIn("Méson (Hadrón)", response)
         self.assertIn("Vértice: s -> W- -> u + π", response)
         self.assertIn("Fidelidade Ω_s", response)
         self.assertIn("0.9998", response)
 
-        self.assertIn("Lys-245 e Arg-312", response) # Check refined mock mechanism
+    async def test_protein_query_details(self):
+        response = await self.interface.chat("Qual a função da proteína CFAP61?")
+        self.assertIn("Lys-245 e Arg-312", response)
         self.assertIn("**Confiança:** 91.5%", response)
 
 if __name__ == '__main__':

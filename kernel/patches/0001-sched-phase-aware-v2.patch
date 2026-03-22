@@ -1,0 +1,67 @@
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -3540,6 +3540,18 @@
+
+	/* Core scheduling check */
+	if (unlikely(rq->core && !rq->core->core_cookie))
+		goto out;
++
++    /* ARKHE(L) PHASE-AWARE SCHEDULER INJECTION */
++    /* Check if Phase-Scheduling is enabled and coherent */
++    if (static_key_true(&phase_scheduling_enabled)) {
++        p = pick_next_task_phase(rq, prev, rf);
++        if (p) {
++            /* Update global phase metrics */
++            update_phase_stats(rq);
++            goto out;
++        }
++    }
++    /* END INJECTION */
+
+	/* Fallback to CFS */
+	p = pick_next_task_fair(rq, prev, rf);
+--- a/kernel/sched/phase_sched.c
++++ b/kernel/sched/phase_sched.c
+@@ -0,0 +1,45 @@
++// SPDX-License-Identifier: GPL-2.0
++#include "sched.h"
++#include <linux/orbitronic.h>
++#include <linux/math64.h>
++
++/* Mydland Constants */
++#define K1 0.015311f
++#define K2 0.05200f
++#define RHO_EQ 0.367879f
++
++struct task_struct *pick_next_task_phase(struct rq *rq,
++                                         struct task_struct *prev,
++                                         struct rq_flags *rf)
++{
++    struct task_struct *p = NULL;
++    struct tzinor_task *tz_next = NULL;
++    s64 global_phase_ns;
++
++    /* 1. Read Global Phase from Orbitronic Driver */
++    global_phase_ns = orbit_get_phase_ns();
++
++    /* 2. Iterate runqueue sorted by Impedance Z (Eikonal metric) */
++    list_for_each_entry(tz_next, &rq->phase_runnable, run_list) {
++        /* Select task with lowest impedance */
++        if (tz_next->impedance < MIN_IMPEDANCE_THRESHOLD) {
++            p = task_of(tz_next);
++            break;
++        }
++    }
++
++    if (p) {
++        /* Compute damping factor */
++        u64 param_norm = atomic64_read(&rq->param_norm); // ρ₁
++        u64 token_count = atomic64_read(&rq->token_count); // ρ₂
++
++        float sigma = (K1 * param_norm + K2 * token_count); // Simplified sigma
++        rq->damping = exp(-RHO_EQ * sigma);
++    }
++
++    return p;
++}
++

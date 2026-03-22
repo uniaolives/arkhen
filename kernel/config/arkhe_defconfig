@@ -1,0 +1,6 @@
+# Arkhe(L) Default Configuration
+CONFIG_ORBITRONIC=y
+CONFIG_TZINOR=y
+CONFIG_SCHED_PHASE=y
+# CONFIG_SCHED_CORE is not set
+# CONFIG_CFS_BANDWIDTH is not set

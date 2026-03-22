@@ -34,6 +34,20 @@ class HardwareBackend:
         }
         return json.dumps(script, indent=2)
 
+    def generate_qasm(self) -> str:
+        """
+        Gera uma representação OpenQASM 3.0 para as operações quânticas
+        no command_buffer.
+        """
+        qasm = ["OPENQASM 3;", 'include "stdgates.inc";', "qubit[1] q;"]
+        for instr in self.command_buffer:
+            if instr['action'] == 'OPTO_STIM':
+                # Map opto_stim to a rotation or gate sequence in QASM
+                qasm.append(f"rx(pi/4) q[0]; // OPTO_STIM map")
+            elif instr['action'] == 'ONTOLOGICAL_PATCH':
+                qasm.append(f"h q[0]; // ONTOLOGICAL_PATCH map")
+        return "\n".join(qasm)
+
 class TzinorCompiler:
     def __init__(self, k_engine: KEngine, q_engine: QEngine):
         self.k_engine = k_engine
@@ -130,7 +144,8 @@ class TzinorCompiler:
             "proof": final_proof_pi2,
             "zk_proof": zk_proof,
             "log": log,
-            "hardware_script": self.hardware_backend.generate_control_script()
+            "hardware_script": self.hardware_backend.generate_control_script(),
+            "openqasm": self.hardware_backend.generate_qasm()
         }
 
     def compile_step(self, k_term: Term, target_q_label: str) -> Tuple[Term, Pi2Proof]:

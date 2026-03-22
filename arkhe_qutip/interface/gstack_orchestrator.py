@@ -86,8 +86,8 @@ class GstackOrchestrator:
             return await self._handle_particle_query(parsed)
         elif intent == QueryIntent.CODEBASE_QUERY: # Handled CODEBASE_QUERY
             return await self._handle_codebase_query(parsed)
-        elif intent == QueryIntent.PARTICLE_QUERY: # Handled PARTICLE_QUERY
-            return await self._handle_particle_query(parsed)
+        elif intent == QueryIntent.OPENQASM_QUERY:
+            return await self._handle_openqasm_query(parsed)
         else:
             return await self._handle_general_query(parsed)
 
@@ -274,6 +274,37 @@ class GstackOrchestrator:
             return response
         return "Skill Understand-Anything não disponível."
 
+    async def _handle_openqasm_query(self, parsed: ParsedQuery) -> str:
+        """
+        Handler para execução de OpenQASM.
+        """
+        qasm_code = parsed.entities.get('qasm_code')
+        if not qasm_code:
+            return "Por favor, forneça o código OpenQASM 3.0 para simulação."
+
+        skill = self.skills.get('openqasm_executor')
+        if skill:
+            ctx = Context({"qasm_code": qasm_code})
+            result = await skill.execute(ctx)
+
+            if not result.get("success"):
+                return f"❌ **ERRO NA EXECUÇÃO OPENQASM:**\n{result.get('error')}"
+
+            response = f"""
+⚛️ **SIMULAÇÃO QUANTICA (OpenQASM 3.0)**
+
+**Resultados (Counts):**
+{result['counts']}
+
+**Profundidade do Circuito:** {result['depth']}
+**Número de Qubits:** {result['qubits']}
+
+**Resumo do Statevector:**
+{result['statevector_summary']}
+"""
+            return response
+        return "Skill OpenQASM-Executor não disponível."
+
     def _format_annotations(self, annotations: List[Dict]) -> str:
         return "\n".join([f"• {a['id']} ({a['term']}) - Confiança: {a['confidence']:.1%}" for a in annotations])
 
@@ -366,4 +397,5 @@ Posso responder sobre:
 - Predição de função proteica (BioReason-Pro)
 - Raciocínio subatômico e partículas elementares
 - Explicação da arquitetura do código (Understand-Anything)
+- Simulação de circuitos quânticos (OpenQASM 3.0)
 """

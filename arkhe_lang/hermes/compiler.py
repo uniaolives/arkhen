@@ -37,6 +37,28 @@ class HardwareBackend:
     def generate_qasm(self) -> str:
         """
         Gera uma representação OpenQASM 3.0 para as operações quânticas
+        no command_buffer. Inclui definições para gates GKP.
+        """
+        qasm = [
+            "OPENQASM 3.0;",
+            'include "stdgates.inc";',
+            "",
+            "// GKP Gate Definitions",
+            "gate gkp_0 q { rx(pi/4) q; x q; }",
+            "gate gkp_1 q { rx(pi/4) q; id q; }",
+            "",
+            "qubit[1] q;"
+        ]
+        for instr in self.command_buffer:
+            if instr['action'] == 'OPTO_STIM':
+                # Map opto_stim to a rotation or gate sequence in QASM
+                qasm.append("rx(pi/4) q[0]; // OPTO_STIM map")
+            elif instr['action'] == 'ONTOLOGICAL_PATCH':
+                qasm.append("h q[0]; // ONTOLOGICAL_PATCH map")
+            elif instr['action'] == 'GKP_PREPARE':
+                val = instr['params'].get('value', 0)
+                qasm.append(f"gkp_{val} q[0];")
+
         no command_buffer.
         """
         qasm = ["OPENQASM 3;", 'include "stdgates.inc";', "qubit[1] q;"]
